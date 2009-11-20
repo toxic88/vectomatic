@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 	<version>0.3.1</version>
 	<name>GWT version of Carballo Chess Engine</name>
-	<url>http://www.alonsoruibal.com/chess</url>
+	<url>http://www.vectomatic.org/carballo-gwt</url>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -41,9 +41,13 @@
 		</developer>
 		<developer>
 			<id>laaglu</id>
-			<name>Alberto Alonso Ruibal</name>
+			<name>Lukas Laag</name>
 			<email>laaglu@gmail.com</email>
 			<url>http://www.vectomatic.org</url>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>1</timezone>
 		</developer>
 	</developers>
 	<licenses>
