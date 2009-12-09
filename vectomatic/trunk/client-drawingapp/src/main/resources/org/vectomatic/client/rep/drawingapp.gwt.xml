@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.gwt.components.User'/>
+	<inherits name='com.google.gwt.widgetideas.User'/>
+	<inherits name='com.gwtext.GwtExt' />
+	<inherits name='org.vectomatic.drawingmodel' />
+	<inherits name='org.vectomatic.rpcinterfaces' />
+	<inherits name='org.vectomatic.clientbase' />
+
+	<source path="client"/>
+	<source path="common"/>
+
+	<!-- NLS -->
+	<inherits name="com.google.gwt.i18n.I18N" />
+	<extend-property name="locale" values="fr" />
+	<extend-property name="locale" values="en" />
+
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='org.vectomatic.client.rep.RepApplication'/>
+	<stylesheet src="App.css"/>
+	<stylesheet src="Canvas.css"/>
+	<stylesheet src="HSliderBar.css"/>
+	<stylesheet src="VSliderBar.css"/>
+	<stylesheet src="TooltipPopup.css"/>
+  
+</module>

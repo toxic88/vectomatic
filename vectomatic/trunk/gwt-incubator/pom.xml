@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>vectomatic</artifactId>
+		<groupId>org.vectomatic</groupId>
+		<version>0.1</version>
+	</parent>
+	<groupId>com.google</groupId>
+	<artifactId>gwt-incubator</artifactId>
+	<name>gwt-incubator</name>
+	<description>This module contains an old snapshot of GWT incubator slider
+	widget. It has been modified to support vertical sliders as well as
+	horizontal ones. The project homepage is here: http://code.google.com/p/google-web-toolkit-incubator/</description>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<!--
+			Include SOURCE in output artifact for GWT (GWT libraries must include
+			source)
+		-->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+	</build>
+	
+</project>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>vectomatic</artifactId>
+		<groupId>org.vectomatic</groupId>
+		<version>0.1</version>
+		<relativePath>../vectomatic</relativePath>
+	</parent>
+
+	<artifactId>client-drawingapp</artifactId>
+	<name>Drawing application</name>
+	<description>This module contains the GWT application</description>
+	<licenses>
+		<license>
+			<name>GPLv3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+		</license>
+	</licenses>
+	
+	<dependencies>
+		<!-- GWT -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+
+		<!-- Siblings -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>common-drawingmodel</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>common-rpc-interfaces</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>client-base</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Third-party dependencies -->
+		<dependency>
+			<groupId>com.sokolov</groupId>
+			<artifactId>gwt-components</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google</groupId>
+			<artifactId>gwt-incubator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gwtext</groupId>
+			<artifactId>gwtext</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<!--  configure the GWT-Maven plugin -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>gwt compilation</id>
+						<configuration>
+							<modules>
+								<module>${gwt.module}</module>
+							</modules>
+							<style>${gwt.style}</style>
+							<logLevel>${gwt.logLevel}</logLevel>
+							<extraJvmArgs>-Xmx512m</extraJvmArgs>
+							<localWorkers>${gwt.localWorkers}</localWorkers>
+						</configuration>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>gwt-tests</id>
+						<configuration>
+							<includes>**/*GWTTestSuite.java</includes>
+						</configuration>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+      	</plugins>
+		<!--
+			Include SOURCE in output artifact for GWT (GWT libraries must include
+			source)
+		-->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>production</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<!-- Product full set of permutations -->
+			<properties>
+				<gwt.module>org.vectomatic.client.rep.drawingapp</gwt.module>
+			</properties>
+		</profile>
+		<profile>
+			<id>development</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Only produce one permutation (agent=firefox, locale=default) -->
+				<gwt.module>org.vectomatic.client.rep.drawingappdev</gwt.module>
+			</properties>
+		</profile>
+	</profiles>
+</project>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.vectomatic</groupId>
+	<artifactId>vectomatic</artifactId>
+	<packaging>pom</packaging>
+	<version>0.1</version>
+
+	<name>Vectomatic</name>
+	<description>Vectomatic is an HTML5 and javascript based free 
+	software drawing application. The project uses several open 
+	source technologies: GWT, gwt-ext, widget from the GWT 
+	incubator, the HTML5 canvas element</description>
+	<licenses>
+		<license>
+			<name>GPLv3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<properties>
+		<gwt.version>1.7.1</gwt.version>
+	</properties>
+
+
+	<modules>
+		<module>common-drawingmodel</module>
+		<module>common-rpc-interfaces</module>
+		<module>gwt-components</module>
+		<module>gwt-incubator</module>
+		<module>client-base</module>
+		<module>client-drawingapp</module>
+		<module>gae-export</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Third-party dependencies -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.gwtext</groupId>
+				<artifactId>gwtext</artifactId>
+				<version>2.0.4</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.15</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<developers>
+		<developer>
+			<id>laaglu</id>
+			<name>Lukas Laag</name>
+			<email>laaglu@gmail.com</email>
+			<url>www.vectomatic.org</url>
+		</developer>
+	</developers>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+
+				<!-- Build using java 1.6. GWT requires at least Java 1.5 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+
+				<!-- Special configuration for GWT test cases -->
+				<!-- Prevent surefire plugin from replaying GWT tests -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<configuration>
+						<excludes>
+							<exclude>**/*GWT*.java</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+	<profiles>
+
+		<!--
+			There are two build profiles: development and production + by
+			default, the production profile is assumed It builds all GWT
+			permutations and generates reports for the website + Use the '-P
+			development' mvn flag, or within eclipse, set the Project >
+			Properties > Maven > Active Maven Profiles to 'development' to
+			activate the development profile It builds only one permutation
+			(firefox) and generates no reports
+		-->
+
+		<profile>
+			<id>development</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Configuration of Maven GWT Plugin in manual mode -->
+				<google.webtoolkit.home>/home/laaglu/gwt/1.7.1</google.webtoolkit.home>
+
+				<deployment.id>local-server</deployment.id>
+				<deployment.root>scp://localhost/var/www/vectomatic</deployment.root>
+				<!-- Build options for development mode -->
+				<gwt.style>DETAILED</gwt.style>
+				<gwt.logLevel>WARN</gwt.logLevel>
+				<gwt.localWorkers>1</gwt.localWorkers>
+			</properties>
+
+			<dependencyManagement>
+				<dependencies>
+					<!-- Dependency configuration for Maven GWT Plugin in manual mode -->
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-user</artifactId>
+						<version>${gwt.version}</version>
+						<scope>system</scope>
+						<systemPath>${google.webtoolkit.home}/gwt-user.jar</systemPath>
+					</dependency>
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-servlet</artifactId>
+						<version>${gwt.version}</version>
+						<scope>system</scope>
+						<systemPath>${google.webtoolkit.home}/gwt-servlet.jar</systemPath>
+					</dependency>
+				</dependencies>
+			</dependencyManagement>
+
+			<!-- skip javadoc and jxr report generation -->
+			<reporting />
+
+		</profile>
+		<profile>
+			<id>production</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Build options for production mode -->
+				<gwt.style>OBF</gwt.style>
+				<gwt.logLevel>INFO</gwt.logLevel>
+				<gwt.localWorkers>2</gwt.localWorkers>
+			</properties>
+			<dependencyManagement>
+				<dependencies>
+					<!-- Dependency configuration for Maven GWT Plugin in automatic mode -->
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-user</artifactId>
+						<version>${gwt.version}</version>
+						<scope>provided</scope>
+					</dependency>
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-servlet</artifactId>
+						<version>${gwt.version}</version>
+						<scope>provided</scope>
+					</dependency>
+				</dependencies>
+			</dependencyManagement>
+		</profile>
+	</profiles>
+	<distributionManagement>
+		<repository>
+			<id>${deployment.id}</id>
+			<name>maven repository</name>
+			<url>${deployment.root}/mvn</url>
+		</repository>
+		<site>
+			<id>${deployment.id}</id>
+			<name>maven site</name>
+			<url>${deployment.root}/mvn-sites/vectomatic</url>
+		</site>
+	</distributionManagement>
+</project>
