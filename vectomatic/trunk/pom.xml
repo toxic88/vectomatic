@@ -191,6 +191,7 @@
 				<gwt.style>OBF</gwt.style>
 				<gwt.logLevel>INFO</gwt.logLevel>
 				<gwt.localWorkers>2</gwt.localWorkers>
+				<google.webtoolkit.home>/home/laaglu/gwt/1.7.1</google.webtoolkit.home>
 			</properties>
 			<dependencyManagement>
 				<dependencies>
