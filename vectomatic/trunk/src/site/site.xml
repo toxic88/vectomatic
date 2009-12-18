@@ -2,11 +2,11 @@
 <project name="Vectomatic">
   <bannerLeft>
     <name>Foo</name>
-    <src>images/vectomatic.png</src>
+    <src>http://www.vectomatic.org/images/vectomatic.png</src>
     <href>http://www.vectomatic.org</href>
   </bannerLeft>
   <bannerRight>
-    <src>images/badge.png</src>
+    <src>http://www.vectomatic.org/images/badge.png</src>
     <href>http://www.chromeexperiments.com/detail/vectomatic/</href>
   </bannerRight>
   <body>
