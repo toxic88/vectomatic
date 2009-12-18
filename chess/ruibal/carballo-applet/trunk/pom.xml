@@ -7,7 +7,7 @@
 	<version>0.3.1</version>
 	<name>carballo-applet</name>
 	<description>UI frontend for the Carballo Chess Engine. The UI is implemented as an applet and targets web browsers</description>
-	<url>http://www.alonsoruibal.com/chess</url>
+	<url>http://www.vectomatic.org/mvn-sites/carballo-applet</url>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
