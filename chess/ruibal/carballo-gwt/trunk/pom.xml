@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 	<version>0.3.1</version>
 	<name>GWT version of Carballo Chess Engine</name>
-	<url>http://www.vectomatic.org/carballo-gwt</url>
+	<url>http://www.vectomatic.org/mvn-sites/carballo-gwt</url>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
