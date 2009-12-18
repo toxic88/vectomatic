@@ -5,6 +5,7 @@
 		<artifactId>vectomatic</artifactId>
 		<groupId>org.vectomatic</groupId>
 		<version>0.1</version>
+		<relativePath>../vectomatic</relativePath>
 	</parent>
 	<groupId>com.google</groupId>
 	<artifactId>gwt-incubator</artifactId>
