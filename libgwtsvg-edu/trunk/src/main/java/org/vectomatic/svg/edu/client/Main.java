@@ -823,7 +823,7 @@ public class Main implements MouseDownHandler, MouseMoveHandler, MouseOutHandler
 	}
 	
 	private static String toDotName(int pIndex) {
-		return "dot #" + (pIndex + 1);
+		return EduConstants.INSTANCE.dot() + " #" + (pIndex + 1);
 	}
 	
 	@UiFactory

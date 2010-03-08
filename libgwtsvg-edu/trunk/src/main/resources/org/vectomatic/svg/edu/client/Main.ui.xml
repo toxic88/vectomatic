@@ -2,6 +2,7 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
 	xmlns:i='urn:import:com.google.gwt.widgetideas.client'>
 	<ui:with field='resources' type='org.vectomatic.svg.edu.client.EduImages' />
+	<ui:with field='constants' type='org.vectomatic.svg.edu.client.EduConstants' />
 	<g:VerticalPanel spacing="10" width="100%">
 	    <g:cell horizontalAlignment='ALIGN_CENTER'>
 			<g:HTML ui:field="svgContainer"></g:HTML>
@@ -16,13 +17,13 @@
 			<g:DecoratorPanel ui:field="designPanel">
 				<g:VerticalPanel width="100%">
 					<g:HorizontalPanel spacing="10">
-						<g:Button ui:field='addButton' text="add" />
-						<g:Button ui:field='removeButton' text="remove" />
-						<g:Button ui:field='saveButton' text="save" />
-						<g:Button ui:field='testButton' text="test" />
-						<g:CheckBox ui:field='showLineCheck' text="show line"/>
+						<g:Button ui:field='addButton' text="{constants.add}" />
+						<g:Button ui:field='removeButton' text="{constants.remove}" />
+						<g:Button ui:field='saveButton' text="{constants.save}" />
+						<g:Button ui:field='testButton' text="{constants.test}" />
+						<g:CheckBox ui:field='showLineCheck' text="{constants.showLine}"/>
 						<g:VerticalPanel>
-							<g:Label text="Picture alpha"/>
+							<g:Label text="{constants.pictureAlpha}"/>
 							<i:HSliderBar ui:field='pictureAlphaSlider' width="200px"/>
 						</g:VerticalPanel>
 						<g:Label ui:field='fileLabel'/>

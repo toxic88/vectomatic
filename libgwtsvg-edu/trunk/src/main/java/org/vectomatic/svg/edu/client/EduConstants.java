@@ -32,4 +32,11 @@ public interface EduConstants extends Constants {
 	public String license();
 	public String start();
 	public String ok();
+	public String add();
+	public String remove();
+	public String save();
+	public String test();
+	public String showLine();
+	public String pictureAlpha();
+	public String dot();
 }
