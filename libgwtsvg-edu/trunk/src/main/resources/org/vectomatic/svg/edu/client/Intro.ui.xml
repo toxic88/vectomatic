@@ -1,0 +1,28 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+	<ui:with field='constants' type='org.vectomatic.svg.edu.client.EduConstants' />
+	<ui:style>
+	  .gameRule {
+	  	border-style:double;
+	  	background-color: LightGoldenRodYellow;
+	  	margin:10px;
+	  	padding:10px;
+	  }
+	</ui:style>
+	<g:VerticalPanel spacing="10" width="100%">
+	    <g:cell horizontalAlignment='ALIGN_CENTER'>
+			<g:HTML ui:field="svgContainer"></g:HTML>
+		</g:cell>
+	    <g:cell horizontalAlignment='ALIGN_CENTER' spacing="10">
+		    <g:HorizontalPanel>
+		   		<g:Label text="{constants.connectDotsGoal}" styleName='{style.gameRule}'/>
+		    </g:HorizontalPanel>
+		</g:cell>
+	    <g:cell horizontalAlignment='ALIGN_CENTER' width="90%">
+			<g:HorizontalPanel>
+				<g:Button ui:field='licenseButton' text="{constants.license}" />
+				<g:Button ui:field='startButton' text="{constants.start}" />
+			</g:HorizontalPanel>
+		</g:cell>
+	</g:VerticalPanel>
+</ui:UiBinder>
