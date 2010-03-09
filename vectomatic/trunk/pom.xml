@@ -6,7 +6,7 @@
 	<groupId>org.vectomatic</groupId>
 	<artifactId>vectomatic</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1</version>
+	<version>0.1.1</version>
 
 	<name>Vectomatic</name>
 	<description>Vectomatic is an HTML5 and javascript based free 
@@ -21,7 +21,7 @@
 	</licenses>
 
 	<properties>
-		<gwt.version>1.7.1</gwt.version>
+		<gwt.version>2.0.3</gwt.version>
 	</properties>
 
 
@@ -29,7 +29,6 @@
 		<module>common-drawingmodel</module>
 		<module>common-rpc-interfaces</module>
 		<module>gwt-components</module>
-		<module>gwt-incubator</module>
 		<module>client-base</module>
 		<module>client-drawingapp</module>
 		<module>gae-export</module>
@@ -147,7 +146,7 @@
 			</activation>
 			<properties>
 				<!-- Configuration of Maven GWT Plugin in manual mode -->
-				<google.webtoolkit.home>/home/laaglu/gwt/1.7.1</google.webtoolkit.home>
+				<google.webtoolkit.home>/home/laaglu/gwt/2.0.3</google.webtoolkit.home>
 
 				<deployment.id>local-server</deployment.id>
 				<deployment.root>scp://localhost/var/www/vectomatic</deployment.root>
@@ -174,6 +173,13 @@
 						<scope>system</scope>
 						<systemPath>${google.webtoolkit.home}/gwt-servlet.jar</systemPath>
 					</dependency>
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-dev</artifactId>
+						<version>${gwt.version}</version>
+						<scope>system</scope>
+						<systemPath>${google.webtoolkit.home}/gwt-dev.jar</systemPath>
+					</dependency>
 				</dependencies>
 			</dependencyManagement>
 
@@ -191,7 +197,7 @@
 				<gwt.style>OBF</gwt.style>
 				<gwt.logLevel>INFO</gwt.logLevel>
 				<gwt.localWorkers>2</gwt.localWorkers>
-				<google.webtoolkit.home>/home/laaglu/gwt/1.7.1</google.webtoolkit.home>
+				<google.webtoolkit.home>/home/laaglu/gwt/2.0.3</google.webtoolkit.home>
 			</properties>
 			<dependencyManagement>
 				<dependencies>
@@ -205,6 +211,12 @@
 					<dependency>
 						<groupId>com.google.gwt</groupId>
 						<artifactId>gwt-servlet</artifactId>
+						<version>${gwt.version}</version>
+						<scope>provided</scope>
+					</dependency>
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-dev</artifactId>
 						<version>${gwt.version}</version>
 						<scope>provided</scope>
 					</dependency>
