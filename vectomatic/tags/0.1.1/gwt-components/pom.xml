@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>vectomatic</artifactId>
+		<groupId>org.vectomatic</groupId>
+		<version>0.1.1</version>
+		<relativePath>../vectomatic</relativePath>
+	</parent>
+	<groupId>com.sokolov</groupId>
+	<artifactId>gwt-components</artifactId>
+
+	<name>GWT Component Library</name>
+	<description>This module contains a GWT library which provides 
+	a canvas and a tooltip widget developed by Mr. Sokolov.
+	The project homepage is here: http://gwt.components.googlepages.com/canvas</description>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<!--
+			Include SOURCE in output artifact for GWT (GWT libraries must include
+			source)
+		-->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+	</build>
+	
+</project>

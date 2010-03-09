@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tactical module to speed up GWT compilation by generating just one permutation -->
+<module>
+	<inherits name='org.vectomatic.client.rep.drawingapp'/>
+	<set-property name="user.agent" value="gecko1_8"/>
+	<set-property name="locale" value="default"/>
+</module>

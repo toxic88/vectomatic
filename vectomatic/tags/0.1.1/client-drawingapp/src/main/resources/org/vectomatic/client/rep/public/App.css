@@ -1,0 +1,359 @@
+.gwt-MenuBar {
+  background-color: #C3D9FF;
+  border: 1px solid #87B3FF;
+  cursor: default;
+}
+
+.gwt-MenuBar .gwt-MenuItem {
+  padding: 1px 4px 1px 4px;
+  cursor: default;
+}
+
+.gwt-MenuBar .gwt-MenuItem-selected {
+  background-color: #E8EEF7;
+}
+
+.gwt-MenuItem-disabled {
+  background-color: #C3D9FF;	
+  color: #aaaaaa;
+}
+
+.gwt-ToggleButton {
+	border: 1px solid #000000;
+}
+.gwt-ToggleButton-down {
+	background-color: #00bbff
+}
+.gwt-ToggleButton-down-hovering {
+	background-color: #0383c3
+}
+.gwt-ToggleButton-up {
+	background-color: #ffffff
+}
+.gwt-ToggleButton-up-hovering {
+	background-color: #9cd2f3
+}
+
+.gwt-PushButton {
+	border: 1px solid #000000;
+}
+.gwt-PushButton-down {
+	background-color: #00bbff
+}
+.gwt-PushButton-down-disabled {
+	background-color: #ffffff
+}
+.gwt-PushButton-down-hovering {
+	background-color: #0383c3
+}
+.gwt-PushButton-up {
+	background-color: #ffffff
+}
+.gwt-PushButton-up-disabled {
+	background-color: #ffffff
+}
+.gwt-PushButton-up-hovering {
+	background-color: #9cd2f3
+}
+
+/*=== Begin Color Editor ===*/
+
+.gwt-DialogBox {
+  border: 2px outset;
+  background-color: white;
+}
+
+.gwt-DialogBox .Caption {
+  background-color: #C3D9FF;
+  padding: 3px;
+  margin: 2px;
+  font-weight: bold;
+  cursor: default;
+}
+
+.gwt-TabPanel {
+  margin-top: 4px;
+}
+
+.gwt-TabPanelBottom {
+  background-color: #E8EEF7;
+}
+
+.gwt-TabBar {
+  padding-top: 2px;
+  border-bottom: 4px solid #87B3FF;
+  background-color: #fff;
+}
+
+.gwt-TabBar .gwt-TabBarFirst {
+}
+
+.gwt-TabBar .gwt-TabBarRest {
+}
+
+.gwt-TabBar .gwt-TabBarItem {
+  padding: 4px;
+  cursor: pointer;
+  cursor: hand;
+
+  background-color: #e8eef7;
+  border-bottom: 2px solid white;
+  margin-right: 2px;
+}
+
+.gwt-TabBar .gwt-TabBarItem-selected {
+  padding: 4px;
+  font-weight: bold;
+  cursor: default;
+
+  background-color: #87b3ff;
+  border-bottom: 2px solid #87b3ff;
+  margin-right: 2px;
+}
+
+
+.colorEditor-styleWell {
+	border: 2px solid black;
+	margin: 2px;
+	padding: 4px;
+}
+
+.colorEditor-HSliderBar-shell {
+  height: 15pt;
+  width: 170px;
+}
+
+.colorEditor-HSliderBar-shell .colorEditor-HSliderBar-line {
+  border: 1px solid black;
+  background-color: white;
+  height: 4px;
+  width: 160px;
+  top: 8px;
+  overflow: hidden;
+}
+
+.colorEditor-HSliderBar-shell .colorEditor-HSliderBar-knob {
+  top: 1pt;
+  width: 11px;
+  height: 16px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.colorEditor-HSliderBar-shell .colorEditor-HSliderBar-tick {
+}
+.colorEditor-HSliderBar-shell .colorEditor-HSliderBar-label {
+}
+.colorEditor-HSliderBar-shell-focused {
+}
+.colorEditor-HSliderBar-shell .colorEditor-HSliderBar-line-sliding {
+  cursor: pointer;
+}
+
+
+.colorEditor-VSliderBar-shell {
+  width: 19pt;
+  height: 154px;
+}
+
+.colorEditor-VSliderBar-shell .colorEditor-VSliderBar-line {
+  border: 1px solid black;
+  background-color: white;
+  width: 5px;
+  height: 144px;
+  left: 10px;
+  overflow: hidden;
+}
+
+.colorEditor-VSliderBar-shell .colorEditor-VSliderBar-knob {
+  left: 6pt;
+  width: 16px;
+  height: 11px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.colorEditor-VSliderBar-shell .colorEditor-VSliderBar-tick {
+  left: 22pt;
+  width: 8pt;
+  height: 1px;
+  background: black;
+  overflow: hidden;
+}
+
+.colorEditor-VSliderBar-shell .colorEditor-VSliderBar-label {
+  left: 2pt;
+  font-size: 8pt;
+  cursor: default;
+}
+
+.colorEditor-VSliderBar-shell-focused {
+}
+
+.colorEditor-VSliderBar-shell .colorEditor-VSliderBar-line-sliding {
+  background-color: #CDE2F7;
+  cursor: pointer;
+}
+
+/*=== End Color Editor ===*/
+
+/*=== Begin Palette Editor ===*/
+
+div.palette {
+	border:1px dotted black;
+}
+
+div.palette-selected {
+	border:2px double black;
+}
+	
+div.palette:hover {
+	border:1px solid red;
+}
+
+.plainColorMenu-HSliderBar-shell {
+  height: 15pt;
+  width: 115px;
+}
+
+.plainColorMenu-HSliderBar-shell .plainColorMenu-HSliderBar-line {
+  border: 1px solid black;
+  background-color: white;
+  height: 4px;
+  width: 92%;
+  top: 8px;
+  overflow: hidden;
+}
+
+.plainColorMenu-HSliderBar-shell .plainColorMenu-HSliderBar-knob {
+  top: 1pt;
+  width: 11px;
+  height: 16px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.plainColorMenu-HSliderBar-shell-focused {
+}
+
+.plainColorMenu-HSliderBar-shell .plainColorMenu-HSliderBar-line-sliding {
+  cursor: pointer;
+}
+
+.plainColorMenu {
+  border: 2px outset;
+  background-color: white;
+}
+
+div.plainColorMenuItem {
+  border-style: outset;
+  cursor: default;
+}
+
+div.plainColorMenuItem:hover {
+  border-style: inset;
+  cursor: default;
+}
+	
+/*=== End Palette Editor ===*/
+
+
+/*=== Begin ScrollTable ===*/
+
+.gwt-ScrollTable {
+  border-color: #aaa;
+  border-style: solid;
+  border-width: 1px 0px 3px 1px;
+  width:100%;
+  height:200px;
+}
+
+.gwt-ScrollTable .gwt-ScrollTable-header-wrapper {
+  background: #8bd url(bg_header_gradient.gif) repeat-x bottom left;
+}
+
+
+.gwt-ScrollTable .gwt-ScrollTable-data td,
+.gwt-ScrollTable .gwt-ScrollTable-header td,
+.gwt-ScrollTable .gwt-ScrollTable-footer td {
+  border-color: #aaa;
+  border-style: solid;
+  border-width: 0px 1px 1px 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 3px;
+  text-overflow: ellipsis;
+}
+
+.gwt-ScrollTable .gwt-ScrollTable-header td,
+.gwt-ScrollTable .gwt-ScrollTable-footer td {
+  color: #fff;
+}
+	
+.gwt-ScrollTable .gwt-ScrollTable-data tr.selected {
+  background: #7AA5D6;
+}
+
+.gwt-ScrollTable .gwt-ScrollTable-data tr.hovering {
+  background: #F3F3E0;
+}
+
+.gwt-ScrollTable .gwt-ScrollTable-data td.hovering {
+  background: #C3D9FF;
+}
+/*=== End ScrollTable ===*/
+
+/*=== Begin Line Width Editor ===*/
+
+.lineWidthMenu {
+  background-color:white;
+  border:1px solid #87B3FF;
+  padding:1px;
+}
+
+div.lineWidthMenuCustom {
+}
+div.lineWidthMenuCustom:hover {
+  background-color: #A0FFFF;
+}
+
+div.lineWidthWidget {
+  height:9px;
+  width:30px;
+}
+
+div.lineWidthWidgetSelectable {
+  height:9px;
+}
+
+div.lineWidthWidgetSelectable:hover {
+  background-color: #A0FFFF;
+}
+
+.lineWidthWell {
+  width:30px;
+  height:8px;
+  border: 2px solid black;
+  margin: 2px;
+  padding: 4px;
+}
+
+/*=== End Line Width Editor ===*/
+
+/*=== Begin Spinner ===*/
+
+.spinner-button {
+  border: 1px solid #C3D9FF;
+  border-right: 1px solid #7AA5D6;
+  border-bottom: 1px solid #7AA5D6;
+  background-color: #E8EEF7;
+  cursor: pointer;
+}
+.spinner-button-up-hovering {
+  background-color: #B8BEC7;
+}
+.spinner-button-up-disabled {
+  cursor: default;
+}
+
+/*=== End Spinner ===*/

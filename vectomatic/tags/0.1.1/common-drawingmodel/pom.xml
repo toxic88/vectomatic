@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.vectomatic</groupId>
+		<artifactId>vectomatic</artifactId>
+		<version>0.1.1</version>
+		<relativePath>../vectomatic</relativePath>
+	</parent>
+	<artifactId>common-drawingmodel</artifactId>
+	<!-- default jar packaging -->
+
+	<name>Vectomatic Drawing Model</name>
+	<description>This modules contains the data model of the application.
+	It contains classes to represent the geometry and the style of the 2D primitives.
+	This datamodel is used currently used by the drawing application. It
+	does not have a strong dependency on GWT though in order to be instantiable
+	on the server too.</description>
+	<licenses>
+		<license>
+			<name>GPLv3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!--
+				Set the naming pattern for GWT test cases to *GWTTestSuite. Only GWT
+				test suites will be replayed
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>gwt-tests</id>
+						<configuration>
+							<includes>**/*GWTTestSuite.java</includes>
+						</configuration>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<!--
+			Include SOURCE in output artifact for GWT (GWT libraries must include
+			source)
+		-->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		
+	</build>
+
+</project>

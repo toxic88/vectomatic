@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Vectomatic">
+  <bannerLeft>
+    <name>Foo</name>
+    <src>http://www.vectomatic.org/images/vectomatic.png</src>
+    <href>http://www.vectomatic.org</href>
+  </bannerLeft>
+  <bannerRight>
+    <src>http://www.vectomatic.org/images/badge.png</src>
+    <href>http://www.chromeexperiments.com/detail/vectomatic/</href>
+  </bannerRight>
+  <body>
+    <links>
+      <item name="Vectomatic" href="http://www.vectomatic.org/"/>
+      <item name="Chrome Experiments" href="http://www.chromeexperiments.com/detail/vectomatic/"/>
+    </links>
+    <menu ref="modules" />
+    <menu ref="reports"/>
+  </body>
+</project>

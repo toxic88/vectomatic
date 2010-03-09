@@ -1,0 +1,52 @@
+.gwt-Canvas {
+    width:400px;
+    height:400px;
+    border: 1px solid black;
+}
+.gwt-Canvas-pointer {
+	cursor:pointer;
+}
+.gwt-Canvas-move {
+	cursor:move;
+}
+.gwt-Canvas-nw-resize {
+	cursor:nw-resize;
+}
+.gwt-Canvas-n-resize {
+	cursor:n-resize;
+}
+.gwt-Canvas-ne-resize {
+	cursor:ne-resize;
+}
+.gwt-Canvas-w-resize {
+	cursor:w-resize;
+}
+.gwt-Canvas-e-resize {
+	cursor:e-resize;
+}
+.gwt-Canvas-sw-resize {
+	cursor:sw-resize;
+}
+.gwt-Canvas-s-resize {
+	cursor:s-resize;
+}
+.gwt-Canvas-se-resize {
+	cursor:se-resize;
+}
+.gwt-Canvas-rotate {
+	cursor:url('rotateShape.png') 11 11, auto;
+}
+.gwt-Canvas-pickColor {
+	cursor:url('colorpicker.png') 2 20, auto;
+}
+
+.gwt-Canvas-openPolyline {
+	cursor:url('openPolyline.png') 8 8, auto;
+}
+.gwt-Canvas-closedPolyline {
+	cursor:url('closedPolyline.png') 8 8, auto;
+}
+.gwt-Canvas-crosshair {
+	cursor:crosshair;
+}
+
