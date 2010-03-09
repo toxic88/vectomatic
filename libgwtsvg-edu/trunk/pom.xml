@@ -4,7 +4,7 @@
 	<groupId>org.vectomatic</groupId>
 	<artifactId>libgwtsvg-edu</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1</version>
+	<version>0.1</version>
 	<name>libgwtsvg-edu</name>
 	<description>Education games for kindergarten children, based on libgwtsvg</description>
 	<url>http://www.vectomatic.org/mvn-sites/libgwtsvg-edu</url>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>org.vectomatic</groupId>
 			<artifactId>libgwtsvg</artifactId>
-			<version>0.2</version>
+			<version>0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google</groupId>

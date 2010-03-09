@@ -445,6 +445,10 @@ public class Main implements MouseDownHandler, MouseMoveHandler, MouseOutHandler
 	}
 	
 	public void readDots() {
+		// Add a bogus query to bypass the browser cache as advised by:
+		// https://developer.mozilla.org/En/Using_XMLHttpRequest#Bypassing_the_cache
+		String url = getDotsUrl();
+		url += (url.indexOf("?") == -1) ? ("?ts=" + System.currentTimeMillis()) : ("&ts=" + + System.currentTimeMillis());
 		final RequestBuilder dotsBuilder = new RequestBuilder(RequestBuilder.GET, getDotsUrl());
 		dotsBuilder.setCallback(new RequestCallback() {
 			/**
