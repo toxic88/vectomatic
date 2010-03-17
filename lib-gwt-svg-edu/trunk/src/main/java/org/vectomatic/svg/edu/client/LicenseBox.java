@@ -1,6 +1,6 @@
 /**********************************************
  * Copyright (C) 2010 Lukas Laag
- * This file is part of libgwtsvg-edu.
+ * This file is part of lib-gwt-svg-edu.
  * 
  * libgwtsvg-edu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
