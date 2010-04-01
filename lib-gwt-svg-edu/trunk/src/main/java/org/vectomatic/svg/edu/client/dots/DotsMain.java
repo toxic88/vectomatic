@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.dots;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,10 +97,10 @@ import com.google.gwt.widgetideas.client.SliderListenerAdapter;
  * Main game class
  * @author laaglu
  */
-public class Main implements MouseDownHandler, MouseMoveHandler, MouseOutHandler, MouseOverHandler, MouseUpHandler, LoseCaptureHandler {
-	interface MainBinder extends UiBinder<VerticalPanel, Main> {
+public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHandler, MouseOverHandler, MouseUpHandler, LoseCaptureHandler {
+	interface DotsMainBinder extends UiBinder<VerticalPanel, DotsMain> {
 	}
-	private static MainBinder mainBinder = GWT.create(MainBinder.class);
+	private static DotsMainBinder mainBinder = GWT.create(DotsMainBinder.class);
 	
 	private static String[] pictures;
 	
@@ -336,7 +336,7 @@ public class Main implements MouseDownHandler, MouseMoveHandler, MouseOutHandler
 		div.appendChild(rootSvg.getElement());					
 
 		// Read the picture list
-		pictures = EduImages.INSTANCE.pictureList().getText().split("\\s");
+		pictures = DotsResources.INSTANCE.pictureList().getText().split("\\s");
 		updateLevel();
 	}
 	
@@ -510,13 +510,13 @@ public class Main implements MouseDownHandler, MouseMoveHandler, MouseOutHandler
 				OMNodeList childNodes = dotGroup.getChildNodes();
 				for (int i = 0, size = childNodes.getLength(); i < size; i++) {
 					OMSVGGElement g1 = (OMSVGGElement) childNodes.getItem(i);
-					g1.addMouseDownHandler(Main.this);
+					g1.addMouseDownHandler(DotsMain.this);
 					if (mode == Mode.DESIGN) {
-						g1.addMouseMoveHandler(Main.this);
-						g1.addMouseUpHandler(Main.this);
+						g1.addMouseMoveHandler(DotsMain.this);
+						g1.addMouseUpHandler(DotsMain.this);
 					}
-					g1.addMouseOverHandler(Main.this);
-					g1.addMouseOutHandler(Main.this);
+					g1.addMouseOverHandler(DotsMain.this);
+					g1.addMouseOutHandler(DotsMain.this);
 					dots.add(g1);
 					dotList.addItem(toDotName(i));
 					if (mode == Mode.DESIGN) {
@@ -827,7 +827,7 @@ public class Main implements MouseDownHandler, MouseMoveHandler, MouseOutHandler
 	}
 	
 	private static String toDotName(int pIndex) {
-		return EduConstants.INSTANCE.dot() + " #" + (pIndex + 1);
+		return DotsConstants.INSTANCE.dot() + " #" + (pIndex + 1);
 	}
 	
 	@UiFactory

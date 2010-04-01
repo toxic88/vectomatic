@@ -1,5 +1,9 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:svgui='urn:import:org.vectomatic.dom.svg.ui'
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+    ui:generateLocales="default">
 	<ui:with field='constants' type='org.vectomatic.svg.edu.client.EduConstants' />
 	<ui:style>
 	  .gameRule {
@@ -11,11 +15,49 @@
 	</ui:style>
 	<g:VerticalPanel spacing="10" width="100%">
 	    <g:cell horizontalAlignment='ALIGN_CENTER'>
-			<g:HTML ui:field="svgContainer"></g:HTML>
+	      <svgui:SVGImage>
+	      	<svg version="1.0" width="500" height="200" viewBox="100 200 350 80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+			  <defs>
+			    <filter id="shadow"> 
+			      <feGaussianBlur stdDeviation="1" in="SourceAlpha" result="blur"/>
+			      <feOffset in="blur" dx="4" dy="4" result="offsetBlur"/>
+			      <feComposite in="SourceGraphic" in2="offsetBlur" operator="arithmetic" 
+			               k1="0" k2="1" k3="1" k4="0"/>
+			    </filter>
+			  </defs>
+			  
+			  <g id="layer1">
+			    <text filter="url(#shadow)" id="text2995" style="font-size:40px;font-style:normal;font-weight:bold;fill:MediumSeaGreen;stroke:none;font-family:Arial;" transform="translate(6.0714286,-32.857143)"><textPath id="textPath3001" xlink:href="#path2999"><tspan ><ui:msg description="connect the dots game title">Connect the dots</ui:msg></tspan></textPath></text>
+			    <path d="m 114.64286,284.50504 c 31.78571,-26.78571 85.48182,-33.49385 117.5,-13.57143 48.21428,30 124.8341,41.37232 161.78571,7.5 42.85715,-39.28571 35.71429,-30 35.71429,-30" id="path2999" style="fill:none;stroke:black;visibility:hidden;"/>
+			    <rect x="100" y="200" width="350" height="80" style="stroke:black;fill:none;visibility:hidden;"/>
+			    <path d="m 114.64286,284.50504 c 31.78571,-26.78571 85.48182,-33.49385 117.5,-13.57143 48.21428,30 124.8341,41.37232 161.78571,7.5" style="fill:none;stroke:black;stroke-dasharray:5,2"/>
+			    <g transform="translate(114.64286,284.50504)">
+			    <circle r="5" cx="0" cy="0" class="dot1"/>
+			    <circle r="3" cx="0" cy="0" class="dot2"/>
+			    <text class="dot3" x="0" y="16">1</text>
+			    </g>
+			    <g transform="translate(231,271)">
+			    <circle r="5" cx="0" cy="0" class="dot1"/>
+			    <circle r="3" cx="0" cy="0" class="dot2"/>
+			    <text class="dot3" x="0" y="16">2</text>
+			    </g>
+			    <g transform="translate(392,278)">
+			    <circle r="5" cx="0" cy="0" class="dot1"/>
+			    <circle r="3" cx="0" cy="0" class="dot2"/>
+			    <text class="dot3" x="0" y="16">3</text>
+			    </g>
+			    <g transform="translate(427,248)">
+			    <circle r="5" cx="0" cy="0" class="dot1"/>
+			    <circle r="3" cx="0" cy="0" class="dot2"/>
+			    <text class="dot3" x="0" y="16">4</text>
+			    </g>
+			  </g>
+			</svg>
+	      </svgui:SVGImage>
 		</g:cell>
 	    <g:cell horizontalAlignment='ALIGN_CENTER' spacing="10">
 		    <g:HorizontalPanel>
-		   		<g:Label text="{constants.connectDotsGoal}" styleName='{style.gameRule}'/>
+		   		<g:Label styleName='{style.gameRule}'><ui:msg description="goal of the game">Game rule: The goal of the game is to connect the dots in order to form a picture</ui:msg></g:Label>
 		    </g:HorizontalPanel>
 		</g:cell>
 	    <g:cell horizontalAlignment='ALIGN_CENTER' width="90%">

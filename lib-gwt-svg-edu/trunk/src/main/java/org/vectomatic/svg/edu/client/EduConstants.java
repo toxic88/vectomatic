@@ -26,17 +26,9 @@ import com.google.gwt.i18n.client.Constants;
  */
 public interface EduConstants extends Constants {
 	public static final EduConstants INSTANCE =  GWT.create(EduConstants.class);
-	public String connectDotsTitle();
-	public String connectDotsGoal();
 	public String connectDotsAbout();
 	public String license();
 	public String start();
 	public String ok();
-	public String add();
-	public String remove();
-	public String save();
-	public String test();
-	public String showLine();
-	public String pictureAlpha();
-	public String dot();
+	public String loadError();
 }

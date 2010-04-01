@@ -1,8 +1,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
 	xmlns:i='urn:import:com.google.gwt.widgetideas.client'>
-	<ui:with field='resources' type='org.vectomatic.svg.edu.client.EduImages' />
-	<ui:with field='constants' type='org.vectomatic.svg.edu.client.EduConstants' />
+	<ui:with field='resources' type='org.vectomatic.svg.edu.client.dots.DotsResources' />
+	<ui:with field='constants' type='org.vectomatic.svg.edu.client.dots.DotsConstants' />
 	<g:VerticalPanel spacing="10" width="100%">
 	    <g:cell horizontalAlignment='ALIGN_CENTER'>
 			<g:HTML ui:field="svgContainer"></g:HTML>

@@ -19,8 +19,6 @@ package org.vectomatic.svg.edu.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.TextResource;
 
 /**
  * Game resources
@@ -28,16 +26,4 @@ import com.google.gwt.resources.client.TextResource;
  */
 public interface EduImages extends ClientBundle {
 	public static final EduImages INSTANCE =  GWT.create(EduImages.class);
-	
-	@Source("tasto_5_architetto_franc_01.png")
-	public ImageResource rightArrow();
-	
-	@Source("tasto_6_architetto_franc_01.png")
-	public ImageResource leftArrow();
-
-	@Source("logo.svg")
-	public TextResource logo();
-
-	@Source("pictures.txt")
-	public TextResource pictureList();
 }
