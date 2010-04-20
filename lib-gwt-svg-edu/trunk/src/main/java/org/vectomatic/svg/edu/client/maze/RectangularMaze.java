@@ -27,6 +27,7 @@ import org.vectomatic.dom.svg.OMSVGPathElement;
 import org.vectomatic.dom.svg.OMSVGPathSegList;
 import org.vectomatic.dom.svg.OMSVGRect;
 import org.vectomatic.dom.svg.OMSVGRectElement;
+import org.vectomatic.dom.svg.OMSVGStyle;
 import org.vectomatic.svg.edu.client.maze.Rasterizer.RasterizationResult;
 
 import com.google.gwt.core.client.GWT;
@@ -82,6 +83,9 @@ public class RectangularMaze extends Maze {
 		}
 		public boolean isOnPath() {
 			return onPath;
+		}
+		public OMSVGStyle getStyle() {
+			return rect.getStyle();
 		}
 	}
 	
@@ -210,7 +214,14 @@ public class RectangularMaze extends Maze {
 			}
 		}
 	}
-	
+
+	public boolean gameWon() {
+		return currentX == destX && currentY == destY;
+	}
+	public Stack<Cell> getSolution() {
+		return solution;
+	}
+
 	public void displaySolution(boolean show) {
 		if (show) {
 			for (Cell cell : solution) {

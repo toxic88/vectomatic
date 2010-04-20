@@ -29,6 +29,7 @@ import org.vectomatic.svg.edu.client.ConfirmBox;
 import org.vectomatic.svg.edu.client.Intro;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -103,16 +104,19 @@ public class MazeMain {
 
 	String[] levels;
 	int currentLevel;
-	Timer timer;
+	Timer positionTimer;
+	Timer solutionTimer;
 	DialogBox confirmBox;
+	JavaScriptObject pathRule;
+	boolean frozen;
 		
 	RectangularMaze maze;
 	public void onModuleLoad2() {
-		StyleInjector.inject(style.getText());
+		StyleInjector.inject(style.getText(), true);
+		pathRule = getRule("." + style.path());
 		
 		// Load the game levels
 		levels = resources.levels().getText().split("\\s");
-
 		
 		// Initialize the UI with UiBinder
 		VerticalPanel panel = mainBinder.createAndBindUi(this);
@@ -128,12 +132,16 @@ public class MazeMain {
 	@UiHandler("generateButton")
 	public void generate(ClickEvent event) {
 		maze.perfectRandomize();
+		if (solutionTimer != null) {
+			solutionTimer.cancel();
+		}
+		setFillProperty(pathRule, SVGConstants.CSS_LIGHTGREEN_VALUE);
 		update();
 	}
 	
 	void clear() {
-		if (timer != null) {
-			timer.cancel();
+		if (positionTimer != null) {
+			positionTimer.cancel();
 		}
 		OMSVGGElement g = document.createSVGGElement();
 		if (cellGroup != null) {
@@ -170,7 +178,7 @@ public class MazeMain {
 		int rowCount = Integer.parseInt(res[1]);
 		maze = RectangularMaze.createMaze(colCount, rowCount, document, mazeDef, cellGroup, borderPath, wallPath);
 		// A timer to make the current position blink
-		timer = new Timer() {
+		positionTimer = new Timer() {
 			@Override
 			public void run() {
 				if (maze != null) {
@@ -178,7 +186,7 @@ public class MazeMain {
 				}
 			}
 		};
-		timer.scheduleRepeating(250);
+		positionTimer.scheduleRepeating(250);
 	}
 	
 	@UiHandler("leftButton")
@@ -207,6 +215,7 @@ public class MazeMain {
 		update();
 	}
 	private void update() {
+		frozen = false;
 		leftButton.setEnabled(maze.canGoLeft());
 		rightButton.setEnabled(maze.canGoRight());
 		upButton.setEnabled(maze.canGoUp());
@@ -220,17 +229,92 @@ public class MazeMain {
 				focusPanel.setFocus(true);
 			}			
 		});
+		if (maze.gameWon()) {
+			freeze();
+			solutionTimer = new Timer() {
+				private int H = 120, S = 40, V = 93;
+				@Override
+				public void run() {
+					H += 7;
+					H = H % 360;
+					int R = 0, G = 0, B = 0;
+                    int h = (H / 60);
+                    int p = (255 * V * (100 - S)) / 10000;
+                    int q = (255 * V * (6000 - S * (H - 60 * h))) / 600000;
+                    int t = (255 * V * (6000 - S * (60 - (H - 60 * h)))) / 600000;
+                    switch(h) {
+                            case 0:
+                                    R = V * 255 / 100;
+                                    G  = t;
+                                    B  = p;
+                                    break;
+                            case 1:
+                                    R = q;
+                                    G  = V * 255 / 100;
+                                    B  = p;
+                                    break;
+                            case 2:
+                                    R = p;
+                                    G  = V * 255 / 100;
+                                    B  = t;
+                                    break;
+                            case 3:
+                                    R = p;
+                                    G  = q;
+                                    B  = V * 255 / 100;
+                                    break;
+                            case 4:
+                                    R = t;
+                                    G  = p;
+                                    B  = V * 255 / 100;
+                                    break;
+                            case 5:
+                                    R = V * 255 / 100;
+                                    G = p;
+                                    B  = q;
+                                    break;
+                    }
+                    setFillProperty(pathRule, "rgb(" + R + "," + G + "," + B +")");
+				}
+
+			};
+			solutionTimer.scheduleRepeating(50);
+		}
 	}
-	@UiHandler("helpButton")
-	public void help(ClickEvent event) {
+	private static final native JavaScriptObject getRule(String selector) /*-{
+	  for (var i = 0; i < $doc.styleSheets.length; i++) {
+	    var stylesheet = $doc.styleSheets[i];
+	    for (var j = 0; j < stylesheet.cssRules.length; j++) {
+	      var rule = stylesheet.cssRules[j];
+	      if (rule.selectorText == selector) {
+	        return rule;
+	      }
+	    }
+	  }
+	  return null;
+	}-*/;
+	
+	private static final native void setFillProperty(JavaScriptObject rule, String color) /*-{
+	  if (rule != null) {
+	    rule.style.setProperty('fill', color, '');
+	  }
+	}-*/;
+	
+	private void freeze() {
 		helpButton.setEnabled(false);
-		generateButton.setEnabled(false);
 		levelList.setEnabled(false);
 		leftButton.setEnabled(false);
 		rightButton.setEnabled(false);
 		upButton.setEnabled(false);
 		downButton.setEnabled(false);
 		backButton.setEnabled(false);
+		frozen = true;
+	}
+
+	@UiHandler("helpButton")
+	public void help(ClickEvent event) {
+		freeze();
+		generateButton.setEnabled(false);
 		maze.displaySolution(true);
 		Timer solutionTimer = new Timer() {
 			@Override
@@ -268,26 +352,28 @@ public class MazeMain {
 	
 	@UiHandler("focusPanel")
 	public void onKeyPress(KeyPressEvent event) {
-		switch (event.getCharCode()) {
-			case KeyCodes.KEY_DOWN:
-				maze.down();
-				break;
-			case KeyCodes.KEY_RIGHT:
-				maze.right();
-				break;
-			case KeyCodes.KEY_UP:
-				maze.up();
-				break;
-			case KeyCodes.KEY_LEFT:
-				maze.left();
-				break;
-			case ' ':
-				maze.back();
-				break;
-			default:
-				GWT.log("key code:" + event.getCharCode());
+		if (!frozen) {
+			switch (event.getCharCode()) {
+				case KeyCodes.KEY_DOWN:
+					maze.down();
+					break;
+				case KeyCodes.KEY_RIGHT:
+					maze.right();
+					break;
+				case KeyCodes.KEY_UP:
+					maze.up();
+					break;
+				case KeyCodes.KEY_LEFT:
+					maze.left();
+					break;
+				case ' ':
+					maze.back();
+					break;
+				default:
+					GWT.log("key code:" + event.getCharCode());
+			}
+			update();
 		}
-		update();
 	}
 	
 	@UiHandler("levelList")

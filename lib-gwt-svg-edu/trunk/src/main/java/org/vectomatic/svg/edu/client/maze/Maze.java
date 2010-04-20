@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
+import org.vectomatic.svg.edu.client.maze.RectangularMaze.RectangularCell;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Random;
 
@@ -38,6 +40,7 @@ public class Maze {
 		for (Cell cell : cells) {
 			for (Cell neighbor : cell.getNeighbors()) {
 				cell.setHasWall(neighbor, true);
+				((RectangularCell)cell).setOnPath(false);
 			}
 		}
 
