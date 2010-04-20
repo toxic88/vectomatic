@@ -1,0 +1,18 @@
+.blank {
+ fill:white;
+}
+.src {
+ fill:lightblue;
+}
+.dest {
+ fill:red;
+}
+.path {
+ fill:lightgreen;
+}
+.current {
+ fill:yellow;
+}
+.solution {
+ fill:aquamarine;
+}
