@@ -18,6 +18,7 @@
 package org.vectomatic.svg.edu.client;
 
 import org.vectomatic.svg.edu.client.dots.DotsMain;
+import org.vectomatic.svg.edu.client.maze.MazeMain;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -28,6 +29,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -36,14 +38,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author laaglu
  */
 public class Intro implements EntryPoint {
+	public static final String ID_UIROOT = "uiRoot";
 	interface IntroBinder extends UiBinder<VerticalPanel, Intro> {
 	}
 	private static IntroBinder introBinder = GWT.create(IntroBinder.class);
 	
 	@UiField
-	Button licenseButton;
+	Hyperlink licenseLink;
 	@UiField
-	Button startButton;
+	Button dotsButton;
+	@UiField
+	Button mazeButton;
 	private VerticalPanel panel;
 	private LicenseBox licenseBox;
 
@@ -55,15 +60,15 @@ public class Intro implements EntryPoint {
 		RootPanel.get("uiRoot").add(panel);
 	}
 
-	@UiHandler("licenseButton")
+	@UiHandler("licenseLink")
 	public void license(ClickEvent event) {
 		licenseBox.box.center();
 		licenseBox.box.show();
 	}
 
-	@UiHandler("startButton")
-	public void start(ClickEvent event) {
-		RootPanel.get("uiRoot").remove(panel);
+	@UiHandler("dotsButton")
+	public void startDots(ClickEvent event) {
+		RootPanel.get(ID_UIROOT).remove(panel);
         GWT.runAsync(new RunAsyncCallback() {
             public void onFailure(Throwable caught) {
               Window.alert(EduConstants.INSTANCE.loadError());
@@ -74,5 +79,22 @@ public class Intro implements EntryPoint {
         		main.onModuleLoad2();
             }
           });
+	}
+
+	@UiHandler("mazeButton")
+	public void startMaze(ClickEvent event) {
+		RootPanel.get(ID_UIROOT).remove(panel);
+        GWT.runAsync(new RunAsyncCallback() {
+            public void onFailure(Throwable caught) {
+              Window.alert(EduConstants.INSTANCE.loadError());
+            }
+
+            public void onSuccess() {
+            	MazeMain main = new MazeMain();
+        		main.onModuleLoad2();
+            }
+          });
+//		MazeMain main = new MazeMain();
+//		main.onModuleLoad2();
 	}
 }

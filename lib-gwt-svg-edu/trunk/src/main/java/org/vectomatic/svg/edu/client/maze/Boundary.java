@@ -15,25 +15,40 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.maze;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Constants;
-
-/**
- * Game constants
- * @author laaglu
- */
-public interface EduConstants extends Constants {
-	public static final EduConstants INSTANCE =  GWT.create(EduConstants.class);
-	public String connectDotsAbout();
-	public String license();
-	public String start();
-	public String ok();
-	public String loadError();
-
-	public String restart();
-	public String confirmRestart();
-	public String confirmYes();
-	public String confirmNo();
+public class Boundary {
+	protected boolean hasWall;
+	protected Cell cell1;
+	protected Cell cell2;
+	public Boundary(Cell cell1, Cell cell2) {
+		this.cell1 = cell1;
+		this.cell2 = cell2;
+		cell1.boundaries.put(cell2, this);
+		cell2.boundaries.put(cell1, this);
+		hasWall = true;
+	}
+	public void setHasWall(boolean hasWall) {
+		this.hasWall = hasWall;
+	}
+	public boolean hasWall() {
+		return hasWall;
+	}
+	public Cell getCell1() {
+		return cell1;
+	}
+	public Cell getCell2() {
+		return cell2;
+	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder("(");
+		builder.append(cell1.getId());
+		builder.append("-");
+		builder.append(cell2.getId());
+		builder.append(" : ");
+		builder.append(hasWall);
+		builder.append(")");
+		return builder.toString();
+	}
 }

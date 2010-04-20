@@ -15,25 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.maze;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Constants;
 
-/**
- * Game constants
- * @author laaglu
- */
-public interface EduConstants extends Constants {
-	public static final EduConstants INSTANCE =  GWT.create(EduConstants.class);
-	public String connectDotsAbout();
-	public String license();
-	public String start();
-	public String ok();
-	public String loadError();
+public interface MazeConstants extends Constants {
+	public static final MazeConstants INSTANCE =  GWT.create(MazeConstants.class);
 
-	public String restart();
-	public String confirmRestart();
-	public String confirmYes();
-	public String confirmNo();
+	String easy();
+	String medium();
+	String hard();
 }

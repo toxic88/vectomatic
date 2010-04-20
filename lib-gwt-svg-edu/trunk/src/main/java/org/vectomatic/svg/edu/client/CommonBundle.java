@@ -17,23 +17,23 @@
  **********************************************/
 package org.vectomatic.svg.edu.client;
 
+import org.vectomatic.dom.svg.ui.SVGResource;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.resources.client.ClientBundle;
 
 /**
- * Game constants
+ * Bundle class for resources which are common to
+ * all lig-gwt-svg-edu games
  * @author laaglu
  */
-public interface EduConstants extends Constants {
-	public static final EduConstants INSTANCE =  GWT.create(EduConstants.class);
-	public String connectDotsAbout();
-	public String license();
-	public String start();
-	public String ok();
-	public String loadError();
+public interface CommonBundle extends ClientBundle {
+	public static CommonBundle INSTANCE = GWT.create(CommonBundle.class);
+	@Source("home12.svg")
+	public SVGResource home();
+	@Source("pulsante_03_architetto_f_01a.svg")
+	public SVGResource next();
+	@Source("pulsante_04_architetto_f_01a.svg")
+	public SVGResource previous();
 
-	public String restart();
-	public String confirmRestart();
-	public String confirmYes();
-	public String confirmNo();
 }

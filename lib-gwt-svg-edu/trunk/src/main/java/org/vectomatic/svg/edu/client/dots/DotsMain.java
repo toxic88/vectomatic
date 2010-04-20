@@ -39,9 +39,13 @@ import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.OMSVGTextElement;
 import org.vectomatic.dom.svg.OMSVGTransform;
 import org.vectomatic.dom.svg.OMText;
+import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.DOMHelper;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
+import org.vectomatic.svg.edu.client.CommonBundle;
+import org.vectomatic.svg.edu.client.ConfirmBox;
+import org.vectomatic.svg.edu.client.Intro;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Duration;
@@ -81,6 +85,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -109,7 +114,6 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		DESIGN
 	};
 	private static final String DIR = "connectdots";
-	private static final String ID_UIROOT = "uiRoot";
 	private static final String ID_ALPHA1_FILTER = "pictureAlpha";
 	private static final String ID_TRANSITION_FILTER = "pictureTransition";
 	private static final String ID_ALPHA2_FILTER = "dotAlpha";
@@ -126,13 +130,17 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	private static final String STYLE_LINE1 = "line1";
 	private static final String STYLE_LINE2 = "line2";
 	
+	@UiField(provided=true)
+	CommonBundle common = CommonBundle.INSTANCE;
 	@UiField
 	HTML svgContainer;
 	@UiField
-	PushButton prevButton;
+	SVGPushButton prevButton;
 	@UiField
-	PushButton nextButton;
-	
+	SVGPushButton nextButton;
+	@UiField
+	SVGPushButton homeButton;
+
 	@UiField
 	DecoratorPanel designPanel;
 	@UiField
@@ -154,6 +162,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	@UiField
 	TextArea textArea;
 	private VerticalPanel panel;
+	DialogBox confirmBox;
 	
 	/**
 	 * Index of the currently displayed image in the pictures array
@@ -237,8 +246,9 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		
 		// Initialize the UI with UiBinder
 		panel = mainBinder.createAndBindUi(this);
+		confirmBox = ConfirmBox.createConfirmBox();
 		designPanel.setVisible(false);
-		RootPanel.get(ID_UIROOT).add(panel);
+		RootPanel.get(Intro.ID_UIROOT).add(panel);
 		Element div = svgContainer.getElement();
 		div.getStyle().setWidth(100, Style.Unit.PCT);
 		div.getStyle().setHeight(100, Style.Unit.PCT);
@@ -584,6 +594,12 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		updateLevel();
 	}
 	
+	@UiHandler("homeButton")
+	public void homeButton(ClickEvent event) {
+        confirmBox.center();
+        confirmBox.show();
+	}
+
 	private OMSVGPoint getLocalCoordinates(MouseEvent<? extends EventHandler> e) {
 		OMSVGPoint p = dotSvg.createSVGPoint(e.getClientX(), e.getClientY());
 		OMSVGMatrix m = dotSvg.getScreenCTM().inverse();

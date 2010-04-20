@@ -89,6 +89,8 @@
 							<logLevel>${gwt.logLevel}</logLevel>
 							<extraJvmArgs>-Xmx512m</extraJvmArgs>
 							<localWorkers>${gwt.localWorkers}</localWorkers>
+							<gen>${project.build.directory}/gen</gen>
+							<extra>${project.build.directory}/aux</extra>
 						</configuration>
 						<goals>
 							<goal>compile</goal>
