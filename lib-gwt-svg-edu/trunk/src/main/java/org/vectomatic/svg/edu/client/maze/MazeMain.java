@@ -216,6 +216,7 @@ public class MazeMain {
 	}
 	private void update() {
 		frozen = false;
+		levelList.setEnabled(true);
 		leftButton.setEnabled(maze.canGoLeft());
 		rightButton.setEnabled(maze.canGoRight());
 		upButton.setEnabled(maze.canGoUp());
