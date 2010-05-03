@@ -517,9 +517,9 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 				lineGroup.appendChild(polyline);
 				
 				// Parse the dots to recreate the polyline
-				OMNodeList childNodes = dotGroup.getChildNodes();
+				OMNodeList<OMSVGGElement> childNodes = dotGroup.getChildNodes();
 				for (int i = 0, size = childNodes.getLength(); i < size; i++) {
-					OMSVGGElement g1 = (OMSVGGElement) childNodes.getItem(i);
+					OMSVGGElement g1 = childNodes.getItem(i);
 					g1.addMouseDownHandler(DotsMain.this);
 					if (mode == Mode.DESIGN) {
 						g1.addMouseMoveHandler(DotsMain.this);
