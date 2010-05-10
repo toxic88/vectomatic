@@ -19,8 +19,11 @@ package org.vectomatic.svg.edu.client.maze;
 
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGGElement;
+import org.vectomatic.dom.svg.OMSVGLength;
 import org.vectomatic.dom.svg.OMSVGPathElement;
+import org.vectomatic.dom.svg.OMSVGRect;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
+import org.vectomatic.dom.svg.OMSVGStyleElement;
 import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
@@ -48,6 +51,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -55,6 +59,9 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * Main class of the maze game
+ */
 public class MazeMain {
 	private static final String DIR = "maze";
 	private static final String ID_MAZE = "maze";
@@ -69,10 +76,26 @@ public class MazeMain {
 	CommonBundle common = CommonBundle.INSTANCE;
 	MazeCss style = resources.getCss();
 	OMSVGDocument document;
+	/**
+	 * Root element of the maze SVG document
+	 */
 	OMSVGSVGElement svgRoot;
+	/**
+	 * The path which delimits the region where the maze will be generated.
+	 * It also contains attributes describing the maze characteristics
+	 */
 	OMSVGPathElement mazeDef;
+	/**
+	 * A group of maze cells
+	 */
 	OMSVGGElement cellGroup;
+	/**
+	 * A path to represent the external boundaries of the maze
+	 */
 	OMSVGPathElement borderPath;
+	/**
+	 * A path to represent walls between maze cells
+	 */
 	OMSVGPathElement wallPath;
 	
 	@UiField
@@ -101,15 +124,37 @@ public class MazeMain {
 	HTML svgContainer;
 	@UiField
 	ListBox levelList;
-
+	/**
+	 * Game SVG level definitions
+	 */
 	String[] levels;
-	int currentLevel;
+	/**
+	 * Current index in the levels arrays
+	 */
+	int level;
+	/**
+	 * A timer to make the current position in the maze blink 
+	 */
 	Timer positionTimer;
+	/**
+	 * A timer to flash the maze solution when the user requests it
+	 */
 	Timer solutionTimer;
+	/**
+	 * A dialog box to ask for confirmation before leaving the game
+	 */
 	DialogBox confirmBox;
+	/**
+	 * The CSS rule which governs the color of the user path 
+	 * in the maze (use for the color animation when the player wins)
+	 */
 	JavaScriptObject pathRule;
+	/**
+	 * Use to free the UI at specific times (when displaying help,
+	 * when loading a new level, ...)
+	 */
 	boolean frozen;
-		
+
 	RectangularMaze maze;
 	public void onModuleLoad2() {
 		StyleInjector.inject(style.getText(), true);
@@ -124,8 +169,33 @@ public class MazeMain {
 		levelList.addItem(MazeConstants.INSTANCE.easy());
 		levelList.addItem(MazeConstants.INSTANCE.medium());
 		levelList.addItem(MazeConstants.INSTANCE.hard());
-		levelList.setSelectedIndex(0);
+	
+		int difficulty = 0;
+		String difficultyParam = Window.Location.getParameter("difficulty");
+		if (difficultyParam != null) {
+			if (MazeConstants.INSTANCE.easy().equals(difficultyParam)) {
+				difficulty = 0;
+			} else if (MazeConstants.INSTANCE.medium().equals(difficultyParam)) {
+				difficulty = 1;
+			} else if (MazeConstants.INSTANCE.hard().equals(difficultyParam)) {
+				difficulty = 2;				
+			}
+		}
+		levelList.setSelectedIndex(difficulty);
 		RootPanel.get(Intro.ID_UIROOT).add(panel);
+		
+		String levelParam = Window.Location.getParameter("level");
+		if (levelParam != null) {
+			try {
+				int value = Integer.parseInt(levelParam);
+				if (value >= 0 && value < levels.length) {
+					level = value;
+				}
+			} catch(NumberFormatException e) {
+				GWT.log("Cannot parse level=" + levelParam, e);
+			}
+		}
+		
 		readMazeDef();
 	}
 	
@@ -134,6 +204,22 @@ public class MazeMain {
 		maze.perfectRandomize();
 		if (solutionTimer != null) {
 			solutionTimer.cancel();
+		}
+		if (!GWT.isScript()) {
+			OMSVGSVGElement root2 = (OMSVGSVGElement)svgRoot.cloneNode(true);
+			OMSVGRect viewBox = root2.getViewBox().getBaseVal();
+			if (viewBox.getWidth() <= viewBox.getHeight()) {
+				root2.setWidth(OMSVGLength.SVG_LENGTHTYPE_CM, 21f);
+				root2.setHeight(OMSVGLength.SVG_LENGTHTYPE_CM, 29.7f);
+			} else {
+				root2.setWidth(OMSVGLength.SVG_LENGTHTYPE_CM, 29.7f);
+				root2.setHeight(OMSVGLength.SVG_LENGTHTYPE_CM, 21f);
+			}
+			OMSVGStyleElement styleElement = document.createSVGStyleElement();
+			styleElement.setType(SVGConstants.CSS_TYPE);
+			styleElement.appendChild(document.createTextNode(style.getText()));
+			root2.insertBefore(styleElement, root2.getFirstChild());
+			GWT.log(root2.getMarkup());
 		}
 		setFillProperty(pathRule, SVGConstants.CSS_LIGHTGREEN_VALUE);
 		update();
@@ -331,17 +417,17 @@ public class MazeMain {
 	}
 	@UiHandler("prevButton")
 	public void prevButton(ClickEvent event) {
-		currentLevel--;
-		if (currentLevel < 0) {
-			currentLevel = levels.length - 1;
+		level--;
+		if (level < 0) {
+			level = levels.length - 1;
 		}
 		readMazeDef();
 	}
 	@UiHandler("nextButton")
 	public void nextButton(ClickEvent event) {
-		currentLevel++;
-		if (currentLevel >= levels.length) {
-			currentLevel = 0;
+		level++;
+		if (level >= levels.length) {
+			level = 0;
 		}
 		readMazeDef();
 	}
@@ -384,7 +470,7 @@ public class MazeMain {
 	}
 	
 	private String getLevelUrl() {
-		return GWT.getModuleBaseURL() + DIR + "/" + levels[currentLevel];
+		return GWT.getModuleBaseURL() + DIR + "/" + levels[level];
 	}
 
 	

@@ -19,6 +19,7 @@ package org.vectomatic.svg.edu.client;
 
 import org.vectomatic.svg.edu.client.dots.DotsMain;
 import org.vectomatic.svg.edu.client.maze.MazeMain;
+import org.vectomatic.svg.edu.client.push.PushMain;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -49,6 +50,8 @@ public class Intro implements EntryPoint {
 	Button dotsButton;
 	@UiField
 	Button mazeButton;
+	@UiField
+	Button pushButton;
 	private VerticalPanel panel;
 	private LicenseBox licenseBox;
 
@@ -94,7 +97,20 @@ public class Intro implements EntryPoint {
         		main.onModuleLoad2();
             }
           });
-//		MazeMain main = new MazeMain();
-//		main.onModuleLoad2();
+	}
+
+	@UiHandler("pushButton")
+	public void startPush(ClickEvent event) {
+		RootPanel.get(ID_UIROOT).remove(panel);
+        GWT.runAsync(new RunAsyncCallback() {
+            public void onFailure(Throwable caught) {
+              Window.alert(EduConstants.INSTANCE.loadError());
+            }
+
+            public void onSuccess() {
+            	PushMain main = new PushMain();
+        		main.onModuleLoad2();
+            }
+          });
 	}
 }

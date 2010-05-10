@@ -167,7 +167,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	/**
 	 * Index of the currently displayed image in the pictures array
 	 */
-	private int pictureIndex;
+	private int level;
 	/**
 	 * The SVG document. The document has the following structure
 	 * <tt>
@@ -347,6 +347,18 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 
 		// Read the picture list
 		pictures = DotsResources.INSTANCE.pictureList().getText().split("\\s");
+		String levelParam = Window.Location.getParameter("level");
+		if (levelParam != null) {
+			try {
+				int value = Integer.parseInt(levelParam);
+				if (value >= 0 && value < pictures.length) {
+					level = value;
+				}
+			} catch(NumberFormatException e) {
+				GWT.log("Cannot parse level=" + levelParam, e);
+			}
+		}
+
 		updateLevel();
 	}
 	
@@ -376,7 +388,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	}
 	
 	private void updateLevel() {
-		fileLabel.setText(pictures[pictureIndex]);
+		fileLabel.setText(pictures[level]);
 		
 		maxIndex = -1;
 		dots.clear();
@@ -395,11 +407,11 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	}
 	
 	private String getPictureUrl() {
-		return GWT.getModuleBaseURL() + DIR + "/" + pictures[pictureIndex];
+		return GWT.getModuleBaseURL() + DIR + "/" + pictures[level];
 	}
 	
 	private String getDotsUrl() {
-		return GWT.getModuleBaseURL() + DIR + "/" + pictures[pictureIndex] + ".dots";
+		return GWT.getModuleBaseURL() + DIR + "/" + pictures[level] + ".dots";
 	}
 	
 	private void readMode() {
@@ -578,18 +590,18 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	
 	@UiHandler("prevButton")
 	public void previousPicture(ClickEvent event) {
-		pictureIndex--;
-		if (pictureIndex < 0) {
-			pictureIndex = pictures.length - 1;
+		level--;
+		if (level < 0) {
+			level = pictures.length - 1;
 		}
 		updateLevel();
 	}
 	
 	@UiHandler("nextButton")
 	public void nextPicture(ClickEvent event) {
-		pictureIndex++;
-		if (pictureIndex >= pictures.length) {
-			pictureIndex = 0;
+		level++;
+		if (level >= pictures.length) {
+			level = 0;
 		}
 		updateLevel();
 	}
