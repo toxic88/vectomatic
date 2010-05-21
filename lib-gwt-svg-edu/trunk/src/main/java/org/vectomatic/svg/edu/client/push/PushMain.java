@@ -250,7 +250,7 @@ public class PushMain implements MouseDownHandler {
 		for (OMNode node : srcSvg.getChildNodes()) {
 			imgGroup.appendChild(node.cloneNode(true));
 		}
-		rootSvg.appendChild(imgGroup);
+		defs.appendChild(imgGroup);
 		
 		OMSVGRect viewBox = srcSvg.getViewBox().getBaseVal();
 		float width = viewBox.getWidth();
@@ -295,8 +295,8 @@ public class PushMain implements MouseDownHandler {
 		borderIn.setClassNameBaseVal(style.borderIn());
 		rootSvg.appendChild(borderOut);
 		rootSvg.appendChild(borderIn);
-		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 90f);
-		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 90f);
+		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 65f);
+		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 65f);
 		rootSvg.setViewBox(
 				viewBox.getX() - borderWidth - MARGIN, 
 				viewBox.getY() - borderHeight - MARGIN,
