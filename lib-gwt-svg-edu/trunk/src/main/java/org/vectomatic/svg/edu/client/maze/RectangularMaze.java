@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.vectomatic.dom.svg.OMSVGCircleElement;
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGGElement;
 import org.vectomatic.dom.svg.OMSVGPathElement;
 import org.vectomatic.dom.svg.OMSVGPathSegList;
 import org.vectomatic.dom.svg.OMSVGRect;
 import org.vectomatic.dom.svg.OMSVGRectElement;
+import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.OMSVGStyle;
 import org.vectomatic.svg.edu.client.maze.Rasterizer.RasterizationResult;
 
@@ -326,10 +328,44 @@ public class RectangularMaze extends Maze {
 				}
 			}
 		}
+		
+		// Draw the start and end markers
 		grid[srcX][srcY].setClassName(style.src());
 		grid[destX][destY].setClassName(style.dest());
-		currentX = srcX;
-		currentY = srcY;
+		OMSVGRectElement srcRect = grid[srcX][srcY].rect;
+		OMSVGDocument document = srcRect.getOwnerDocument();
+		OMSVGSVGElement svgElement = srcRect.getOwnerSVGElement();
+		float srcX = srcRect.getX().getBaseVal().getValue();
+		float srcY = srcRect.getY().getBaseVal().getValue();
+		float srcW = srcRect.getWidth().getBaseVal().getValue();
+		float srcH = srcRect.getHeight().getBaseVal().getValue();
+		srcX += 0.1f * srcW;
+		srcY += 0.1f * srcH;
+		srcW *= 0.8f;
+		srcH *= 0.8f;
+		OMSVGCircleElement srcCircle = document.createSVGCircleElement(srcX + 0.5f * srcW, srcY + 0.5f * srcH, (float)Math.sqrt(0.5f * 0.5f * Math.min(srcW, srcH) * Math.min(srcW, srcH)));
+		srcCircle.setClassNameBaseVal(style.symbol());
+		svgElement.appendChild(srcCircle);
+		OMSVGRectElement destRect = grid[destX][destY].rect;
+		float destX = destRect.getX().getBaseVal().getValue();
+		float destY = destRect.getY().getBaseVal().getValue();
+		float destW = destRect.getWidth().getBaseVal().getValue();
+		float destH = destRect.getHeight().getBaseVal().getValue();
+		destX += 0.1f * destW;
+		destY += 0.1f * destH;
+		destW *= 0.8f;
+		destH *= 0.8f;
+		OMSVGPathElement destPath = document.createSVGPathElement();
+		OMSVGPathSegList destSegs = destPath.getPathSegList();
+		destSegs.appendItem(destPath.createSVGPathSegMovetoAbs(destX, destY));
+		destSegs.appendItem(destPath.createSVGPathSegLinetoAbs(destX + destW, destY));
+		destSegs.appendItem(destPath.createSVGPathSegLinetoAbs(destX + 0.5f * destW, destY + destH));
+		destSegs.appendItem(destPath.createSVGPathSegClosePath());
+		destPath.setClassNameBaseVal(style.symbol());
+		svgElement.appendChild(destPath);
+			
+		currentX = this.srcX;
+		currentY = this.srcY;
 
 		// Ui walls
 		float x = bbox.getX();
@@ -379,7 +415,7 @@ public class RectangularMaze extends Maze {
 			}
 		}
 		long t2 = System.currentTimeMillis();
-		solution = resolve(grid[srcX][srcY], grid[destX][destY]);
+		solution = resolve(grid[this.srcX][this.srcY], grid[this.destX][this.destY]);
 		long t3 = System.currentTimeMillis();
 		GWT.log("ui walls = " + (t2 - t1));
 		GWT.log("wc = " + wc);

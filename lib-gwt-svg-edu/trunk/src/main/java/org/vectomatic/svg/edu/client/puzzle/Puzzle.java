@@ -736,7 +736,7 @@ public class Puzzle implements MouseDownHandler, MouseMoveHandler, MouseUpHandle
 
 	private void onMouseUp_(MouseEvent event) {
 		if (dragging) {
-			if (destTarget == null || getTarget(event) == srcTarget) {
+			if (destTarget == null) {
 				destTarget = srcTarget;
 			} else {
 				if (destTarget != null) {
@@ -761,7 +761,7 @@ public class Puzzle implements MouseDownHandler, MouseMoveHandler, MouseUpHandle
 
 	public boolean isGameOver() {
 		for (int i = 0; i < colCount; i++) {
-			for (int j = 0; j < rowCount - 1; j++) {
+			for (int j = 0; j < rowCount; j++) {
 				Piece piece = assemblyZone.getPiece(i, j);
 				if (piece == null || piece.x != i || piece.y != j) {
 					return false;

@@ -154,7 +154,9 @@ public class MazeMain {
 	 * when loading a new level, ...)
 	 */
 	boolean frozen;
-
+	/**
+	 * The maze model
+	 */
 	RectangularMaze maze;
 	public void onModuleLoad2() {
 		StyleInjector.inject(style.getText(), true);
@@ -205,7 +207,8 @@ public class MazeMain {
 		if (solutionTimer != null) {
 			solutionTimer.cancel();
 		}
-		if (!GWT.isScript()) {
+		String dumpParam = Window.Location.getParameter("dump");
+		if ((!GWT.isScript()) && (dumpParam != null)) {
 			OMSVGSVGElement root2 = (OMSVGSVGElement)svgRoot.cloneNode(true);
 			OMSVGRect viewBox = root2.getViewBox().getBaseVal();
 			if (viewBox.getWidth() <= viewBox.getHeight()) {
@@ -219,6 +222,7 @@ public class MazeMain {
 			styleElement.setType(SVGConstants.CSS_TYPE);
 			styleElement.appendChild(document.createTextNode(style.getText()));
 			root2.insertBefore(styleElement, root2.getFirstChild());
+			
 			GWT.log(root2.getMarkup());
 		}
 		setFillProperty(pathRule, SVGConstants.CSS_LIGHTGREEN_VALUE);
@@ -239,8 +243,8 @@ public class MazeMain {
 
 		String wallStroke = mazeDef.getAttributeNS(RectangularMaze.VECTOMATIC_NS, RectangularMaze.WALL_TAG);
 		OMSVGPathElement p = document.createSVGPathElement();
+		p.setClassNameBaseVal(style.wall());
 		p.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, wallStroke);
-		p.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "1");
 		if (wallPath != null) {
 			svgRoot.replaceChild(p, wallPath);
 		} else {
@@ -250,8 +254,8 @@ public class MazeMain {
 
 		String borderStroke = mazeDef.getAttributeNS(RectangularMaze.VECTOMATIC_NS, RectangularMaze.BORDER_TAG);
 		p = document.createSVGPathElement();
+		p.setClassNameBaseVal(style.border());
 		p.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, borderStroke);
-		p.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "1");
 		if (borderPath != null) {
 			svgRoot.replaceChild(p, borderPath);
 		} else {

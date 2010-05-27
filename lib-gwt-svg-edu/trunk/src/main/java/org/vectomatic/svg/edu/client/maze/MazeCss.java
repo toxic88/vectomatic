@@ -26,4 +26,7 @@ public interface MazeCss extends CssResource {
 	public String path();
 	public String current();
 	public String solution();
+	public String symbol();
+	public String border();
+	public String wall();
 }

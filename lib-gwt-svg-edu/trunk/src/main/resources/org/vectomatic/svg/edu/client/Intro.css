@@ -7,12 +7,15 @@
 }
 .game-logo {
 	cursor:crosshair;
+	border-style:dotted;
+	border-color:white;
+	border-width:1px;
 }
 .game-logo-selected {
 	cursor:crosshair;
-	border-style:groove;
+	border-style:dotted;
 	border-color:blue;
-	border-width:5px;
+	border-width:1px;
 }
 a:link {text-decoration:none;}
 a:visited {text-decoration:none;}

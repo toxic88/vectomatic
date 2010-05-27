@@ -17,7 +17,6 @@
  **********************************************/
 package org.vectomatic.svg.edu.client;
 
-import org.apache.bcel.generic.GETSTATIC;
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGTSpanElement;
 import org.vectomatic.dom.svg.ui.SVGImage;
@@ -42,7 +41,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -98,6 +96,7 @@ public class Intro implements EntryPoint {
 			String gameRule) {
 		OMSVGDocument document = OMSVGParser.currentDocument();
 		final SVGImage svgImage = new SVGImage(gameLogo);
+		svgImage.getElement().setClassName(CommonBundle.INSTANCE.css().gameLogo());
 		svgImage.addMouseOverHandler(new MouseOverHandler() {
 			@Override
 			public void onMouseOver(MouseOverEvent event) {
