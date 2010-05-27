@@ -57,7 +57,9 @@ public class RectangularMaze extends Maze {
 	private int destX, destY;
 	private static MazeCss style = MazeBundle.INSTANCE.getCss();
 	private Stack<Cell> solution;
-	
+	private OMSVGCircleElement srcCircle;
+	OMSVGPathElement destPath;
+
 	static class RectangularCell extends Cell {
 		private int x;
 		private int y;
@@ -334,35 +336,39 @@ public class RectangularMaze extends Maze {
 		grid[destX][destY].setClassName(style.dest());
 		OMSVGRectElement srcRect = grid[srcX][srcY].rect;
 		OMSVGDocument document = srcRect.getOwnerDocument();
-		OMSVGSVGElement svgElement = srcRect.getOwnerSVGElement();
-		float srcX = srcRect.getX().getBaseVal().getValue();
-		float srcY = srcRect.getY().getBaseVal().getValue();
-		float srcW = srcRect.getWidth().getBaseVal().getValue();
-		float srcH = srcRect.getHeight().getBaseVal().getValue();
-		srcX += 0.1f * srcW;
-		srcY += 0.1f * srcH;
-		srcW *= 0.8f;
-		srcH *= 0.8f;
-		OMSVGCircleElement srcCircle = document.createSVGCircleElement(srcX + 0.5f * srcW, srcY + 0.5f * srcH, (float)Math.sqrt(0.5f * 0.5f * Math.min(srcW, srcH) * Math.min(srcW, srcH)));
-		srcCircle.setClassNameBaseVal(style.symbol());
-		svgElement.appendChild(srcCircle);
-		OMSVGRectElement destRect = grid[destX][destY].rect;
-		float destX = destRect.getX().getBaseVal().getValue();
-		float destY = destRect.getY().getBaseVal().getValue();
-		float destW = destRect.getWidth().getBaseVal().getValue();
-		float destH = destRect.getHeight().getBaseVal().getValue();
-		destX += 0.1f * destW;
-		destY += 0.1f * destH;
-		destW *= 0.8f;
-		destH *= 0.8f;
-		OMSVGPathElement destPath = document.createSVGPathElement();
-		OMSVGPathSegList destSegs = destPath.getPathSegList();
-		destSegs.appendItem(destPath.createSVGPathSegMovetoAbs(destX, destY));
-		destSegs.appendItem(destPath.createSVGPathSegLinetoAbs(destX + destW, destY));
-		destSegs.appendItem(destPath.createSVGPathSegLinetoAbs(destX + 0.5f * destW, destY + destH));
-		destSegs.appendItem(destPath.createSVGPathSegClosePath());
-		destPath.setClassNameBaseVal(style.symbol());
-		svgElement.appendChild(destPath);
+		OMSVGGElement cellGroup = (OMSVGGElement)srcRect.getParentNode();
+		if (srcCircle == null) {
+			float srcX = srcRect.getX().getBaseVal().getValue();
+			float srcY = srcRect.getY().getBaseVal().getValue();
+			float srcW = srcRect.getWidth().getBaseVal().getValue();
+			float srcH = srcRect.getHeight().getBaseVal().getValue();
+			srcX += 0.1f * srcW;
+			srcY += 0.1f * srcH;
+			srcW *= 0.8f;
+			srcH *= 0.8f;
+			srcCircle = document.createSVGCircleElement(srcX + 0.5f * srcW, srcY + 0.5f * srcH, (float)Math.sqrt(0.5f * 0.5f * Math.min(srcW, srcH) * Math.min(srcW, srcH)));
+			srcCircle.setClassNameBaseVal(style.symbol());
+			cellGroup.appendChild(srcCircle);
+		}
+		if (destPath == null) {
+			OMSVGRectElement destRect = grid[destX][destY].rect;
+			float destX = destRect.getX().getBaseVal().getValue();
+			float destY = destRect.getY().getBaseVal().getValue();
+			float destW = destRect.getWidth().getBaseVal().getValue();
+			float destH = destRect.getHeight().getBaseVal().getValue();
+			destX += 0.1f * destW;
+			destY += 0.1f * destH;
+			destW *= 0.8f;
+			destH *= 0.8f;
+			destPath = document.createSVGPathElement();
+			OMSVGPathSegList destSegs = destPath.getPathSegList();
+			destSegs.appendItem(destPath.createSVGPathSegMovetoAbs(destX, destY));
+			destSegs.appendItem(destPath.createSVGPathSegLinetoAbs(destX + destW, destY));
+			destSegs.appendItem(destPath.createSVGPathSegLinetoAbs(destX + 0.5f * destW, destY + destH));
+			destSegs.appendItem(destPath.createSVGPathSegClosePath());
+			destPath.setClassNameBaseVal(style.symbol());
+			cellGroup.appendChild(destPath);
+		}
 			
 		currentX = this.srcX;
 		currentY = this.srcY;
