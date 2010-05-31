@@ -62,31 +62,50 @@ public class Intro implements EntryPoint {
 		  public abstract void onSuccess();
 	}
 	
-	RunAsyncCallback connectDotsCallback = new GameCallback() {
-        public void onSuccess() {
-        	DotsMain main = new DotsMain();
-    		main.onModuleLoad2();
-        }
+	enum Game {
+		DOTS {
+			public RunAsyncCallback getCallback() {
+				return new GameCallback() {
+			        public void onSuccess() {
+			        	DotsMain main = new DotsMain();
+			    		main.onModuleLoad2();
+			        }
+				};
+			}
+		},
+		MAZE {
+			public RunAsyncCallback getCallback() {
+				return new GameCallback() {
+			        public void onSuccess() {
+			        	MazeMain main = new MazeMain();
+			    		main.onModuleLoad2();
+			        }
+				};
+			}
+		},
+		PUSH {
+			public RunAsyncCallback getCallback() {
+				return new GameCallback() {
+			        public void onSuccess() {
+			        	PushMain main = new PushMain();
+			    		main.onModuleLoad2();
+			        }
+				};
+			}
+		},
+		PUZZLE {
+			public RunAsyncCallback getCallback() {
+				return new GameCallback() {
+			        public void onSuccess() {
+			        	PuzzleMain main = new PuzzleMain();
+			    		main.onModuleLoad2();
+			        }
+				};
+			}
+		};
+		public abstract RunAsyncCallback getCallback();
 	};
-	RunAsyncCallback mazeCallback = new GameCallback() {
-        public void onSuccess() {
-        	MazeMain main = new MazeMain();
-    		main.onModuleLoad2();
-        }
-	};
-	RunAsyncCallback pushCallback = new GameCallback() {
-        public void onSuccess() {
-        	PushMain main = new PushMain();
-    		main.onModuleLoad2();
-        }
-	};
-	RunAsyncCallback puzzleCallback = new GameCallback() {
-        public void onSuccess() {
-        	PuzzleMain main = new PuzzleMain();
-    		main.onModuleLoad2();
-        }
-	};
-
+	
 	void createGame(FlexTable table,
 			int row, int col,
 			final RunAsyncCallback callback, 
@@ -183,7 +202,7 @@ public class Intro implements EntryPoint {
 				createGame(
 						this, 
 						0, 0, 
-						connectDotsCallback, 
+						Game.DOTS.getCallback(), 
 						CommonBundle.INSTANCE.connectdots(),
 						"connectDotsTitle", 
 						EduConstants.INSTANCE.connectDotsTitle(), 
@@ -191,7 +210,7 @@ public class Intro implements EntryPoint {
 				createGame(
 						this, 
 						0, 1, 
-						mazeCallback, 
+						Game.MAZE.getCallback(), 
 						CommonBundle.INSTANCE.maze(),
 						"mazeTitle", 
 						EduConstants.INSTANCE.mazeTitle(), 
@@ -199,7 +218,7 @@ public class Intro implements EntryPoint {
 				createGame(
 						this, 
 						1, 0, 
-						pushCallback, 
+						Game.PUSH.getCallback(), 
 						CommonBundle.INSTANCE.push(),
 						"pushTitle", 
 						EduConstants.INSTANCE.pushTitle(), 
@@ -207,12 +226,13 @@ public class Intro implements EntryPoint {
 				createGame(
 						this, 
 						1, 1, 
-						puzzleCallback, 
+						Game.PUZZLE.getCallback(), 
 						CommonBundle.INSTANCE.puzzle(),
 						"puzzleTitle", 
 						EduConstants.INSTANCE.puzzleTitle(), 
 						EduConstants.INSTANCE.puzzleRule());
-
+				
+				
 				final LicenseBox licenseBox = new LicenseBox();
 				Anchor licenseAnchor = new Anchor();
 				licenseAnchor.setText(EduConstants.INSTANCE.license());
@@ -229,6 +249,7 @@ public class Intro implements EntryPoint {
 				setWidget(row, 0, licenseAnchor);
 				getFlexCellFormatter().setColSpan(row, 0, 2);
 				getCellFormatter().setAlignment(row, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+				
 			}
 		};
 		table.setBorderWidth(0);
@@ -242,5 +263,4 @@ public class Intro implements EntryPoint {
 		table2.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
 		RootPanel.get("uiRoot").add(table2);
 	}
-
 }

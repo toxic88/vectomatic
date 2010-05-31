@@ -360,6 +360,8 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		}
 
 		updateLevel();
+		// For opera, a second read is necessary of the first level (bug ?)
+		updateLevel();
 	}
 	
 	/**
@@ -380,7 +382,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		if (rootSvg != null) {
 			rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PX, width * 0.8f);
 			rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PX, height * 0.8f);
-			OMSVGMatrix m = dotSvg.getScreenCTM().inverse();
+			OMSVGMatrix m = dotSvg.getCTM().inverse();
 			updateScales(m.getA(), m.getD());
 			panel.setCellWidth(svgContainer, width * 0.8f + "px");
 			panel.setCellHeight(svgContainer, height * 0.8f + "px");
@@ -476,6 +478,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 			/**
 			 * Create a blank dots structure
 			 */
+			@Override
 			public void onError(Request request, Throwable exception) {
 				if (mode == Mode.GAME) {
 					mode = Mode.DESIGN;
@@ -548,6 +551,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 				}
 			}
 
+			@Override
 			public void onResponseReceived(Request request, Response response) {
 
 				if (response.getStatusCode() == Response.SC_OK) {
@@ -585,8 +589,11 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		} catch (RequestException e) {
 			GWT.log("Cannot fetch " + dotsBuilder.getUrl(), e);
 		}
-	
 	}
+	
+	protected static native void operaFix() /*-{
+		$wnd.resizeBy(0,0);
+	}-*/;
 	
 	@UiHandler("prevButton")
 	public void previousPicture(ClickEvent event) {
