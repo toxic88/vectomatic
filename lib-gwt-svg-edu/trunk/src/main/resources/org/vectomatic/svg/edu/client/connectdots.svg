@@ -11,7 +11,7 @@
 	</defs>
 	<g>
 		<text filter="url(#shadow)" id="text2995"
-			style="font-size:40px;font-style:normal;font-weight:bold;fill:MediumSeaGreen;stroke:none;font-family:Arial;"
+			style="font-size:40px;font-style:normal;fill:MediumSeaGreen;stroke:none;font-family:Arial;"
 			transform="translate(6.0714286,-32.857143)">
 			<textPath xlink:href="#path2999" xmlns:v="http://www.vectomatic.org">
 				<tspan v:title="connectDotsTitle"/>
