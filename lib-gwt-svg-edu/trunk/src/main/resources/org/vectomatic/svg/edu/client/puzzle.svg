@@ -1,4 +1,4 @@
-<svg version="1.1" viewBox="0 0 525 590" width="65%" height="65%"
+<svg version="1.1" viewBox="0 0 525 590"
 	xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<style type="text/css">
 		.Gl6nwz5DB {
@@ -448,6 +448,6 @@
 	<use xlink:href="#piece2-2" x="180" y="194.667" />
 	<rect x="1" y="1" width="524" height="590" style="stroke:black;fill:none;visibility:hidden;"/>
 	<text x="115" y="580" class="Gl6nwz5OP">
-		<tspan id="puzzleTitle"></tspan>
+		<tspan xmlns:v="http://www.vectomatic.org" v:title="puzzleTitle"></tspan>
 	</text>
 </svg>

@@ -28,6 +28,6 @@ public interface IntroCss extends CssResource {
 	public String gameRule();
 	@ClassName("game-logo")
 	public String gameLogo();
-	@ClassName("game-logo-selected")
-	public String gameLogoSelected();
+	@ClassName("game-table")
+	public String gameTable();
 }

@@ -25,7 +25,6 @@ import org.vectomatic.dom.svg.OMSVGClipPathElement;
 import org.vectomatic.dom.svg.OMSVGDefsElement;
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGGElement;
-import org.vectomatic.dom.svg.OMSVGLength;
 import org.vectomatic.dom.svg.OMSVGMatrix;
 import org.vectomatic.dom.svg.OMSVGPoint;
 import org.vectomatic.dom.svg.OMSVGRect;
@@ -38,7 +37,6 @@ import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 import org.vectomatic.svg.edu.client.CommonBundle;
-import org.vectomatic.svg.edu.client.ConfirmBox;
 import org.vectomatic.svg.edu.client.Intro;
 
 import com.google.gwt.animation.client.Animation;
@@ -50,6 +48,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseEvent;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -191,8 +191,19 @@ public class PushMain implements MouseDownHandler {
 	}
 	private static PushMainBinder mainBinder = GWT.create(PushMainBinder.class);
 	
+	private ResizeHandler resizeHandler = new ResizeHandler() {
+		@Override
+		public void onResize(ResizeEvent event) {
+			if (pushSvg != null) {
+				float w = Window.getClientWidth() * 0.9f;
+				float h = Window.getClientHeight() * 0.8f;
+				pushSvg.getStyle().setSVGProperty("width", Float.toString(w));
+				pushSvg.getStyle().setSVGProperty("height", Float.toString(h));
+			}		
+		}
+	};
 
-	public void onModuleLoad2() {
+	public void onModuleLoad2(DialogBox confirmBox) {
 		StyleInjector.inject(style.getText(), true);
 		
 		// Load the game levels
@@ -200,11 +211,12 @@ public class PushMain implements MouseDownHandler {
 		
 		// Initialize the UI with UiBinder
 		VerticalPanel panel = mainBinder.createAndBindUi(this);
-		confirmBox = ConfirmBox.createConfirmBox();
+		this.confirmBox = confirmBox;
 		levelList.addItem(PushConstants.INSTANCE.easy());
 		levelList.addItem(PushConstants.INSTANCE.medium());
 		levelList.addItem(PushConstants.INSTANCE.hard());
 		levelList.setSelectedIndex(0);
+		Window.addResizeHandler(resizeHandler);
 		RootPanel.get(Intro.ID_UIROOT).add(panel);
 		readPushDef();
 	}
@@ -295,8 +307,8 @@ public class PushMain implements MouseDownHandler {
 		borderIn.setClassNameBaseVal(style.borderIn());
 		rootSvg.appendChild(borderOut);
 		rootSvg.appendChild(borderIn);
-		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 65f);
-		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 65f);
+//		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 65f);
+//		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 65f);
 		rootSvg.setViewBox(
 				viewBox.getX() - borderWidth - MARGIN, 
 				viewBox.getY() - borderHeight - MARGIN,
@@ -381,6 +393,7 @@ public class PushMain implements MouseDownHandler {
 			div.appendChild(rootSvg.getElement());					
 		}
 		pushSvg = rootSvg;
+		resizeHandler.onResize(null);
 		if (!GWT.isScript()) {
 			GWT.log(pushSvg.getMarkup());
 		}

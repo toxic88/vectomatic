@@ -28,7 +28,6 @@ import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 import org.vectomatic.svg.edu.client.CommonBundle;
-import org.vectomatic.svg.edu.client.ConfirmBox;
 import org.vectomatic.svg.edu.client.Intro;
 
 import com.google.gwt.core.client.GWT;
@@ -71,10 +70,11 @@ public class MazeMain {
 	private static MazeMainBinder mainBinder = GWT.create(MazeMainBinder.class);
 	
 	@UiField(provided=true)
-	MazeBundle resources = MazeBundle.INSTANCE;
+	static MazeBundle resources = MazeBundle.INSTANCE;
 	@UiField(provided=true)
-	CommonBundle common = CommonBundle.INSTANCE;
-	MazeCss style = resources.getCss();
+	static CommonBundle common = CommonBundle.INSTANCE;
+	static MazeCss style = resources.getCss();
+	
 	OMSVGDocument document;
 	/**
 	 * Root element of the maze SVG document
@@ -135,11 +135,11 @@ public class MazeMain {
 	/**
 	 * A timer to make the current position in the maze blink 
 	 */
-	Timer positionTimer;
+	static Timer positionTimer;
 	/**
 	 * A timer to flash the maze solution when the user requests it
 	 */
-	Timer solutionTimer;
+	static Timer solutionTimer;
 	/**
 	 * A dialog box to ask for confirmation before leaving the game
 	 */
@@ -148,7 +148,7 @@ public class MazeMain {
 	 * The CSS rule which governs the color of the user path 
 	 * in the maze (use for the color animation when the player wins)
 	 */
-	JavaScriptObject pathRule;
+	static JavaScriptObject pathRule;
 	/**
 	 * Use to free the UI at specific times (when displaying help,
 	 * when loading a new level, ...)
@@ -158,16 +158,23 @@ public class MazeMain {
 	 * The maze model
 	 */
 	RectangularMaze maze;
-	public void onModuleLoad2() {
+	
+	static {
 		StyleInjector.inject(style.getText(), true);
 		pathRule = getRule("." + style.path());
-		
+	}
+	
+	public void onModuleLoad2(DialogBox confirmBox) {
+		if (solutionTimer != null) {
+			solutionTimer.cancel();
+		}
+
 		// Load the game levels
 		levels = resources.levels().getText().split("\\s");
 		
 		// Initialize the UI with UiBinder
 		VerticalPanel panel = mainBinder.createAndBindUi(this);
-		confirmBox = ConfirmBox.createConfirmBox();
+		this.confirmBox = confirmBox;
 		levelList.addItem(MazeConstants.INSTANCE.easy());
 		levelList.addItem(MazeConstants.INSTANCE.medium());
 		levelList.addItem(MazeConstants.INSTANCE.hard());

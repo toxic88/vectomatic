@@ -44,7 +44,6 @@ import org.vectomatic.dom.svg.utils.DOMHelper;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 import org.vectomatic.svg.edu.client.CommonBundle;
-import org.vectomatic.svg.edu.client.ConfirmBox;
 import org.vectomatic.svg.edu.client.Intro;
 
 import com.google.gwt.animation.client.Animation;
@@ -241,12 +240,11 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	 */
 	private int maxIndex;
 
-	
-	public void onModuleLoad2() {
+	public void onModuleLoad2(DialogBox confirmBox) {
 		
 		// Initialize the UI with UiBinder
 		panel = mainBinder.createAndBindUi(this);
-		confirmBox = ConfirmBox.createConfirmBox();
+		this.confirmBox = confirmBox;
 		designPanel.setVisible(false);
 		RootPanel.get(Intro.ID_UIROOT).add(panel);
 		Element div = svgContainer.getElement();

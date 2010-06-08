@@ -24,7 +24,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * UI panel to ask for confirmation upon game restart
@@ -41,21 +43,26 @@ public class ConfirmBox {
 	@UiField
 	Button confirmNoButton;
 	DialogBox confirmBox;
+	private Widget root;
+
 	
-	public static DialogBox createConfirmBox() {
-		return new ConfirmBox().confirmBox;
+	public static DialogBox createConfirmBox(Widget root) {
+		return new ConfirmBox(root).confirmBox;
 	}
 	
-	private ConfirmBox() {
+	private ConfirmBox(Widget root) {
 		confirmBox = new DialogBox();
 		confirmBox.setTitle(constants.restart());
 		confirmBox.setWidget(restartBinder.createAndBindUi(this));
+		this.root = root;
 	}
 	
 	@UiHandler("confirmYesButton")
 	public void confirmYes(ClickEvent event) {
 		confirmBox.hide();
-		reload();
+		RootPanel rootPanel = RootPanel.get(Intro.ID_UIROOT);
+		rootPanel.remove(rootPanel.getWidget(0));
+		rootPanel.add(root);
 	}
 	
 	private static native void reload() /*-{

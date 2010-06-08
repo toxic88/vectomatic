@@ -17,18 +17,18 @@
  **********************************************/
 package org.vectomatic.svg.edu.client.puzzle;
 
-import org.vectomatic.dom.svg.OMSVGLength;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.svg.edu.client.CommonBundle;
-import org.vectomatic.svg.edu.client.ConfirmBox;
 import org.vectomatic.svg.edu.client.Intro;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -80,8 +80,20 @@ public class PuzzleMain {
 	OMSVGSVGElement puzzleSvg;
 	private Puzzle puzzle;
 	int[][] dimensions = {{3, 3}, {4, 4}, {5, 5}, {7, 5}, {8, 6}};
+	
+	private ResizeHandler resizeHandler = new ResizeHandler() {
+		@Override
+		public void onResize(ResizeEvent event) {
+			if (puzzleSvg != null) {
+				float w = Window.getClientWidth() * 0.9f;
+				float h = Window.getClientHeight() * 0.8f;
+				puzzleSvg.getStyle().setSVGProperty("width", Float.toString(w));
+				puzzleSvg.getStyle().setSVGProperty("height", Float.toString(h));
+			}		
+		}
+	};
 
-	public void onModuleLoad2() {
+	public void onModuleLoad2(DialogBox confirmBox) {
 		StyleInjector.inject(style.getText(), true);
 		
 		// Load the game levels
@@ -89,7 +101,7 @@ public class PuzzleMain {
 		
 		// Initialize the UI with UiBinder
 		VerticalPanel panel = mainBinder.createAndBindUi(this);
-		confirmBox = ConfirmBox.createConfirmBox();
+		this.confirmBox = confirmBox;
 		for (int i = 1; i <= dimensions.length; i++) {
 			levelList.addItem(PuzzleConstants.INSTANCE.level() + " " + i);
 		}
@@ -105,7 +117,7 @@ public class PuzzleMain {
 				GWT.log("Cannot parse level=" + levelParam, e);
 			}
 		}
-
+		Window.addResizeHandler(resizeHandler);
 		RootPanel.get(Intro.ID_UIROOT).add(panel);
 		readPuzzleDef();
 	}
@@ -142,8 +154,10 @@ public class PuzzleMain {
 		puzzle = new Puzzle(srcSvg, dimension[0], dimension[1]);
 		puzzle.shuffle();
 		OMSVGSVGElement rootSvg = puzzle.getSvgElement();
-		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 90f);
-		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 90f);
+//		rootSvg.getStyle().setWidth(90, Unit.PCT);
+//		rootSvg.getStyle().setHeight(90, Unit.PCT);
+//		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 90f);
+//		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 90f);
 //		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PX, 600f);
 //		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PX, 800f);
 		
@@ -155,6 +169,7 @@ public class PuzzleMain {
 			div.appendChild(rootSvg.getElement());					
 		}
 		puzzleSvg = rootSvg;
+		resizeHandler.onResize(null);
 	}
 	
 	private String getLevelUrl() {

@@ -17,11 +17,16 @@
  **********************************************/
 package org.vectomatic.svg.edu.client;
 
+import java.util.Iterator;
+
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGTSpanElement;
 import org.vectomatic.dom.svg.ui.SVGImage;
 import org.vectomatic.dom.svg.ui.SVGResource;
+import org.vectomatic.dom.svg.utils.DOMHelper;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
+import org.vectomatic.dom.svg.utils.SVGConstants;
+import org.vectomatic.dom.svg.utils.SVGPrefixResolver;
 import org.vectomatic.svg.edu.client.dots.DotsMain;
 import org.vectomatic.svg.edu.client.maze.MazeMain;
 import org.vectomatic.svg.edu.client.push.PushMain;
@@ -36,6 +41,8 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
@@ -55,6 +62,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class Intro implements EntryPoint {
 	public static final String ID_UIROOT = "uiRoot";
 	
+	/**
+	 * Utility class to make use of code splitting less verbose
+	 */
 	private static abstract class GameCallback implements RunAsyncCallback {
 		 public void onFailure(Throwable reason) {
               Window.alert(EduConstants.INSTANCE.loadError());
@@ -62,100 +72,165 @@ public class Intro implements EntryPoint {
 		  public abstract void onSuccess();
 	}
 	
+	/**
+	 * Prefix resolver class. The prefix resolver is used by the XPath
+	 * expression which injects the game title in the SVG images
+	 */
+	private static class GamePrefixResolver extends SVGPrefixResolver {
+		public GamePrefixResolver() {
+			prefixToUri.put("v", VECTOMATIC_NS_URI);
+		}
+	}
+	private static final String VECTOMATIC_NS_URI = "http://www.vectomatic.org";
+	private static GamePrefixResolver resolver = new GamePrefixResolver();
+	private static CommonBundle bundle = CommonBundle.INSTANCE;
+	private static IntroCss css = bundle.css();
+	private static EduConstants eduConstants = EduConstants.INSTANCE;
+	private static DialogBox confirmBox;
+
+	/**
+	 * Enum to represent the available games and their characteristics
+	 */
 	enum Game {
 		DOTS {
-			public RunAsyncCallback getCallback() {
+			@Override
+			protected RunAsyncCallback getCallback() {
 				return new GameCallback() {
 			        public void onSuccess() {
+						RootPanel root = RootPanel.get(ID_UIROOT);
+						root.remove(root.getWidget(0));
 			        	DotsMain main = new DotsMain();
-			    		main.onModuleLoad2();
+			    		main.onModuleLoad2(confirmBox);
 			        }
 				};
+			}
+			@Override
+			public SVGImage getImage() {
+				return createImage(
+						bundle.connectdots(), 
+						eduConstants.connectDotsTitle(), 
+						getCallback());
+			}
+			@Override
+			public Label getRule() {
+				return createLabel(eduConstants.connectDotsRule());
 			}
 		},
 		MAZE {
-			public RunAsyncCallback getCallback() {
+			@Override
+			protected RunAsyncCallback getCallback() {
 				return new GameCallback() {
 			        public void onSuccess() {
+						RootPanel root = RootPanel.get(ID_UIROOT);
+						root.remove(root.getWidget(0));
 			        	MazeMain main = new MazeMain();
-			    		main.onModuleLoad2();
+			    		main.onModuleLoad2(confirmBox);
 			        }
 				};
+			}
+			@Override
+			public SVGImage getImage() {
+				return createImage(
+						bundle.maze(), 
+						eduConstants.mazeTitle(), 
+						getCallback());
+			}
+			@Override
+			public Label getRule() {
+				return createLabel(eduConstants.mazeRule());
 			}
 		},
 		PUSH {
-			public RunAsyncCallback getCallback() {
+			@Override
+			protected RunAsyncCallback getCallback() {
 				return new GameCallback() {
 			        public void onSuccess() {
+						RootPanel root = RootPanel.get(ID_UIROOT);
+						root.remove(root.getWidget(0));
 			        	PushMain main = new PushMain();
-			    		main.onModuleLoad2();
+			    		main.onModuleLoad2(confirmBox);
 			        }
 				};
+			}
+			@Override
+			public SVGImage getImage() {
+				return createImage(
+						bundle.push(), 
+						eduConstants.pushTitle(), 
+						getCallback());
+			}
+			@Override
+			public Label getRule() {
+				return createLabel(eduConstants.pushRule());
 			}
 		},
 		PUZZLE {
-			public RunAsyncCallback getCallback() {
+			@Override
+			protected RunAsyncCallback getCallback() {
 				return new GameCallback() {
 			        public void onSuccess() {
+						RootPanel root = RootPanel.get(ID_UIROOT);
+						root.remove(root.getWidget(0));
 			        	PuzzleMain main = new PuzzleMain();
-			    		main.onModuleLoad2();
+			    		main.onModuleLoad2(confirmBox);
 			        }
 				};
 			}
+			@Override
+			public SVGImage getImage() {
+				return createImage(
+						bundle.puzzle(), 
+						eduConstants.puzzleTitle(), 
+						getCallback());
+			}
+			@Override
+			public Label getRule() {
+				return createLabel(eduConstants.puzzleRule());
+			}
 		};
-		public abstract RunAsyncCallback getCallback();
+		public abstract SVGImage getImage();
+		public abstract Label getRule();
+		protected abstract RunAsyncCallback getCallback();
+		private static SVGImage createImage(
+				SVGResource gameLogo,
+				String gameTitle,
+				final RunAsyncCallback callback) {
+			OMSVGDocument document = OMSVGParser.currentDocument();
+			final SVGImage svgImage = new SVGImage(gameLogo);
+			svgImage.setStyleName(css.gameLogo());
+			svgImage.getElement().getStyle().setBorderColor(SVGConstants.CSS_WHITE_VALUE);
+			svgImage.addMouseOverHandler(new MouseOverHandler() {
+				@Override
+				public void onMouseOver(MouseOverEvent event) {
+					svgImage.getElement().getStyle().setBorderColor(SVGConstants.CSS_BLUE_VALUE);
+				}
+			});
+			svgImage.addMouseOutHandler(new MouseOutHandler() {
+				@Override
+				public void onMouseOut(MouseOutEvent event) {
+					svgImage.getElement().getStyle().setBorderColor(SVGConstants.CSS_WHITE_VALUE);
+				}
+			});
+			svgImage.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					svgImage.getElement().getStyle().setBorderColor(SVGConstants.CSS_WHITE_VALUE);
+			        GWT.runAsync(callback);
+				}
+				
+			});
+			Iterator<OMSVGTSpanElement> iterator = DOMHelper.evaluateXPath(svgImage.getSvgElement(), ".//svg:tspan[@v:title]", resolver);
+			iterator.next().appendChild(document.createTextNode(gameTitle));
+			return svgImage;
+		}
+		private static Label createLabel(String gameRule) {
+			Label ruleLabel = new Label(gameRule);
+			ruleLabel.setStyleName(css.gameRule());
+			return ruleLabel;
+		}
 	};
-	
-	void createGame(FlexTable table,
-			int row, int col,
-			final RunAsyncCallback callback, 
-			SVGResource gameLogo,
-			String gameTitleId,
-			String gameTitleValue,
-			String gameRule) {
-		OMSVGDocument document = OMSVGParser.currentDocument();
-		final SVGImage svgImage = new SVGImage(gameLogo);
-		svgImage.getElement().setClassName(CommonBundle.INSTANCE.css().gameLogo());
-		svgImage.addMouseOverHandler(new MouseOverHandler() {
-			@Override
-			public void onMouseOver(MouseOverEvent event) {
-				svgImage.getElement().setClassName(CommonBundle.INSTANCE.css().gameLogoSelected());
-			}
-		});
-		svgImage.addMouseOutHandler(new MouseOutHandler() {
-			@Override
-			public void onMouseOut(MouseOutEvent event) {
-				svgImage.getElement().setClassName(CommonBundle.INSTANCE.css().gameLogo());
-			}
-		});
-		svgImage.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				GWT.log("click");
-				RootPanel root = RootPanel.get(ID_UIROOT);
-				root.remove(root.getWidget(0));
-		        GWT.runAsync(callback);
-			}
-			
-		});
-		table.setWidget(row * 2, col, svgImage);
 		
-		Label ruleLabel = new Label(gameRule);
-		ruleLabel.setStyleName(CommonBundle.INSTANCE.css().gameRule());
-		
-		table.setWidget(1 + row * 2, col, ruleLabel);
-		
-		table.getCellFormatter().setWidth(row * 2, col, "50%");
-		table.getCellFormatter().setWidth(1 + row * 2, col, "50%");
-
-		table.getCellFormatter().setAlignment(row * 2, col, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-		table.getCellFormatter().setAlignment(1 + row * 2, col, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-
-		OMSVGTSpanElement tspan = document.getElementById(gameTitleId);
-		tspan.appendChild(document.createTextNode(gameTitleValue));
-	}
-	
 	@Override
     public void onModuleLoad() {
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {                                                                              
@@ -195,72 +270,68 @@ public class Intro implements EntryPoint {
 	
 	public void onModuleLoad2() {
 		CommonBundle.INSTANCE.css().ensureInjected();
-		FlexTable table = new FlexTable() {
-			@Override
-			protected void onLoad() {
-				super.onLoad();
-				createGame(
-						this, 
-						0, 0, 
-						Game.DOTS.getCallback(), 
-						CommonBundle.INSTANCE.connectdots(),
-						"connectDotsTitle", 
-						EduConstants.INSTANCE.connectDotsTitle(), 
-						EduConstants.INSTANCE.connectDotsRule());
-				createGame(
-						this, 
-						0, 1, 
-						Game.MAZE.getCallback(), 
-						CommonBundle.INSTANCE.maze(),
-						"mazeTitle", 
-						EduConstants.INSTANCE.mazeTitle(), 
-						EduConstants.INSTANCE.mazeRule());
-				createGame(
-						this, 
-						1, 0, 
-						Game.PUSH.getCallback(), 
-						CommonBundle.INSTANCE.push(),
-						"pushTitle", 
-						EduConstants.INSTANCE.pushTitle(), 
-						EduConstants.INSTANCE.pushRule());
-				createGame(
-						this, 
-						1, 1, 
-						Game.PUZZLE.getCallback(), 
-						CommonBundle.INSTANCE.puzzle(),
-						"puzzleTitle", 
-						EduConstants.INSTANCE.puzzleTitle(), 
-						EduConstants.INSTANCE.puzzleRule());
-				
-				
-				final LicenseBox licenseBox = new LicenseBox();
-				Anchor licenseAnchor = new Anchor();
-				licenseAnchor.setText(EduConstants.INSTANCE.license());
-				licenseAnchor.addClickHandler(new ClickHandler() {
-
-					@Override
-					public void onClick(ClickEvent event) {
-						licenseBox.box.center();
-						licenseBox.box.show();
-					}
-					
-				});
-				int row = getRowCount();
-				setWidget(row, 0, licenseAnchor);
-				getFlexCellFormatter().setColSpan(row, 0, 2);
-				getCellFormatter().setAlignment(row, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-				
-			}
-		};
+		final FlexTable table = new FlexTable();
 		table.setBorderWidth(0);
 		table.setCellSpacing(5);
-		table.setWidth("70%");
-		table.setHeight("100%");
-		FlexTable table2 = new FlexTable();
-		table2.setWidth("100%");
-		table2.setHeight("100%");
-		table2.setWidget(0, 0, table);
-		table2.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-		RootPanel.get("uiRoot").add(table2);
+		table.setStyleName(css.gameTable());
+		
+		table.setWidget(0, 0, Game.DOTS.getImage());
+		table.setWidget(1, 0, Game.DOTS.getRule());
+		table.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+		table.getCellFormatter().setAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+
+		table.setWidget(0, 1, Game.MAZE.getImage());
+		table.setWidget(1, 1, Game.MAZE.getRule());
+		table.getCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+		table.getCellFormatter().setAlignment(1, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+
+		table.setWidget(2, 0, Game.PUSH.getImage());
+		table.setWidget(3, 0, Game.PUSH.getRule());
+		table.getCellFormatter().setAlignment(2, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+		table.getCellFormatter().setAlignment(3, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+
+		table.setWidget(2, 1, Game.PUZZLE.getImage());
+		table.setWidget(3, 1, Game.PUZZLE.getRule());
+		table.getCellFormatter().setAlignment(2, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+		table.getCellFormatter().setAlignment(3, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+
+		final LicenseBox licenseBox = new LicenseBox();
+		Anchor licenseAnchor = new Anchor();
+		licenseAnchor.setText(EduConstants.INSTANCE.license());
+		licenseAnchor.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				licenseBox.box.center();
+				licenseBox.box.show();
+			}
+			
+		});
+		table.setWidget(4, 0, licenseAnchor);
+		table.getFlexCellFormatter().setColSpan(4, 0, 2);
+		table.getCellFormatter().setAlignment(4, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+		ResizeHandler resizeHandler = new ResizeHandler() {
+
+			@Override
+			public void onResize(ResizeEvent event) {
+				float w = Window.getClientWidth() * 0.45f;
+				float h = Window.getClientHeight() * 0.3f;
+				for (int i = 0; i < 4; i += 2) {
+					for (int j = 0; j < 2; j++) {
+						SVGImage svgImage = (SVGImage) table.getWidget(i, j);
+						svgImage.getSvgElement().getStyle().setSVGProperty("width", Float.toString(w));
+						svgImage.getSvgElement().getStyle().setSVGProperty("height", Float.toString(h));
+					}
+				}
+				GWT.log(w + "x" + h);
+			}
+			
+		};
+		Window.addResizeHandler(resizeHandler);
+		resizeHandler.onResize(null);
+		RootPanel.get(ID_UIROOT).add(table);
+		confirmBox = ConfirmBox.createConfirmBox(table);
 	}
+	
 }
+

@@ -1,4 +1,4 @@
-<svg version="1.0" viewBox="100 160 350 200"
+<svg version="1.0" viewBox="100 160 380 200"
 	xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<defs>
 		<filter id="shadow">
@@ -13,8 +13,8 @@
 		<text filter="url(#shadow)" id="text2995"
 			style="font-size:40px;font-style:normal;font-weight:bold;fill:MediumSeaGreen;stroke:none;font-family:Arial;"
 			transform="translate(6.0714286,-32.857143)">
-			<textPath xlink:href="#path2999">
-				<tspan id="connectDotsTitle"/>
+			<textPath xlink:href="#path2999" xmlns:v="http://www.vectomatic.org">
+				<tspan v:title="connectDotsTitle"/>
 			</textPath>
 		</text>
 		<path

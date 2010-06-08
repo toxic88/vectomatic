@@ -1,5 +1,5 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	viewBox="-32 -32 454 454" width="60%" height="60%">
+	viewBox="-32 -32 454 454">
 	<style type="text/css">
 		.G1c9hzx2I {
 		fill:lightblue;
@@ -302,6 +302,6 @@
 	<use y="156" x="312" xlink:href="#t22" />
 	<use y="234" x="312" xlink:href="#t23" />
 	<text class="G1c9hzx2K">
-		<tspan id="pushTitle" x="16 94 172 250 324 94 94 94 94" y="140 140 140 140 140 66 214 288 362"/>
+		<tspan xmlns:v="http://www.vectomatic.org" v:title="pushTitle" x="16 94 172 250 324 94 94 94 94" y="140 140 140 140 140 66 214 288 362"/>
 	</text>
 </svg>

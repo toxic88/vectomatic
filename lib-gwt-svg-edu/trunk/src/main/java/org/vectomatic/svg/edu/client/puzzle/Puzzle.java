@@ -746,7 +746,7 @@ public class Puzzle implements MouseDownHandler, MouseMoveHandler, MouseUpHandle
 						srcTarget.setPiece(null);
 					}
 					if (isGameOver()) {
-						Window.alert("Game over !");
+						Window.alert(PuzzleConstants.INSTANCE.congratulations());
 					}
 				} else {
 					srcTarget.setPosition(srcTarget.getPosition());
