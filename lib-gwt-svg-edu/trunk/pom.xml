@@ -4,7 +4,7 @@
 	<groupId>org.vectomatic</groupId>
 	<artifactId>lib-gwt-svg-edu</artifactId>
 	<packaging>war</packaging>
-	<version>0.3.6</version>
+	<version>0.3.7</version>
 	<name>lib-gwt-svg-edu</name>
 	<description>Education games for kindergarten children, based on lib-gwt-svg</description>
 	<url>http://www.vectomatic.org/mvn-sites/lib-gwt-svg-edu</url>
