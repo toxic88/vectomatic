@@ -390,9 +390,6 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	private void updateLevel() {
 		fileLabel.setText(pictures[level]);
 		
-		maxIndex = -1;
-		dots.clear();
-		dotList.clear();
 
 		// The data come in two files: a picture file and a dot file
 		// In design mode, both must be read
@@ -551,6 +548,9 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
+				maxIndex = -1;
+				dots.clear();
+				dotList.clear();
 
 				if (response.getStatusCode() == Response.SC_OK) {
 					onSuccess(request, response);
