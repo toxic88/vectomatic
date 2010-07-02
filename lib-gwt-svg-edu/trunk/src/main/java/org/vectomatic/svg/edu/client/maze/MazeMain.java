@@ -32,6 +32,7 @@ import org.vectomatic.svg.edu.client.Intro;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -448,10 +449,17 @@ public class MazeMain {
         confirmBox.show();
 	}
 	
+	private static final native int eventGetKeyCode(NativeEvent evt) /*-{
+	  // 'which' gives the right key value, except when it doesn't -- in which
+	  // case, keyCode gives the right value on all browsers.
+	  // If all else fails, return an error code
+	  return evt.which || evt.keyCode || 0;
+	}-*/;
+	  
 	@UiHandler("focusPanel")
 	public void onKeyPress(KeyPressEvent event) {
 		if (!frozen) {
-			switch (event.getCharCode()) {
+			switch (eventGetKeyCode(event.getNativeEvent())) {
 				case KeyCodes.KEY_DOWN:
 					maze.down();
 					break;
@@ -468,7 +476,7 @@ public class MazeMain {
 					maze.back();
 					break;
 				default:
-					GWT.log("key code:" + event.getCharCode());
+					GWT.log("key code:" + (int)event.getCharCode() + " " + (int)event.getUnicodeCharCode());
 			}
 			update();
 		}
