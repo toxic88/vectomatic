@@ -273,6 +273,7 @@ public class Intro implements EntryPoint {
 	
 	public void onModuleLoad2() {
 		CommonBundle.INSTANCE.css().ensureInjected();
+		
 		final FlexTable table = new FlexTable();
 		table.setBorderWidth(0);
 		table.setCellSpacing(5);
@@ -334,5 +335,17 @@ public class Intro implements EntryPoint {
 		resizeHandler.onResize(null);
 		RootPanel.get(ID_UIROOT).add(table);
 		confirmBox = ConfirmBox.createConfirmBox(table);
+		
+		String gameParam = Window.Location.getParameter("game");
+		Game game = null;
+		if (gameParam != null) {
+			try {
+				game = Game.valueOf(gameParam.toUpperCase());
+			} catch (IllegalArgumentException e) {
+			}
+		}
+		if (game != null) {
+	        GWT.runAsync(game.getCallback());
+		}
 	}
 }
