@@ -43,11 +43,12 @@ import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.DOMHelper;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
-import org.vectomatic.svg.edu.client.CommonBundle;
-import org.vectomatic.svg.edu.client.Intro;
+import org.vectomatic.svg.edu.client.commons.CommonBundle;
+import org.vectomatic.svg.edu.client.menu.Menu;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Duration;
+import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Visibility;
@@ -84,8 +85,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DecoratorPanel;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -93,6 +94,7 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.HSliderBar;
 import com.google.gwt.widgetideas.client.SliderBar;
 import com.google.gwt.widgetideas.client.SliderListenerAdapter;
@@ -101,7 +103,7 @@ import com.google.gwt.widgetideas.client.SliderListenerAdapter;
  * Main game class
  * @author laaglu
  */
-public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHandler, MouseOverHandler, MouseUpHandler, LoseCaptureHandler {
+public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHandler, MouseOverHandler, MouseUpHandler, LoseCaptureHandler, EntryPoint {
 	interface DotsMainBinder extends UiBinder<VerticalPanel, DotsMain> {
 	}
 	private static DotsMainBinder mainBinder = GWT.create(DotsMainBinder.class);
@@ -117,17 +119,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	private static final String ID_TRANSITION_FILTER = "pictureTransition";
 	private static final String ID_ALPHA2_FILTER = "dotAlpha";
 
-	private static final String STYLE_DOT1 = "dot1";
-	private static final String STYLE_DOT2 = "dot2";
-	private static final String STYLE_DOT3 = "dot3";
-	private static final String STYLE_DOT1S = "dot1s";
-	@SuppressWarnings("unused")
-	private static final String STYLE_DOT2S = "dot2s";
-	private static final String STYLE_DOT1V = "dot1v";
-	@SuppressWarnings("unused")
-	private static final String STYLE_DOT2V = "dot2v";
-	private static final String STYLE_LINE1 = "line1";
-	private static final String STYLE_LINE2 = "line2";
+	private DotsCss css = DotsResources.INSTANCE.css();
 	
 	@UiField(provided=true)
 	CommonBundle common = CommonBundle.INSTANCE;
@@ -138,7 +130,8 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	@UiField
 	SVGPushButton nextButton;
 	@UiField
-	SVGPushButton homeButton;
+	HorizontalPanel navigationPanel;
+	Widget menuWidget;
 
 	@UiField
 	DecoratorPanel designPanel;
@@ -161,7 +154,6 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	@UiField
 	TextArea textArea;
 	private VerticalPanel panel;
-	DialogBox confirmBox;
 	
 	/**
 	 * Index of the currently displayed image in the pictures array
@@ -239,14 +231,34 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	 * The index of the last dot found by the player
 	 */
 	private int maxIndex;
+	
+	/**
+	 * Constructor for standalone game
+	 */
+	public DotsMain() {
+	}
+	/**
+	 * Constructor for integration in a menu
+	 */
+	public DotsMain(Widget menuWidget) {
+		this.menuWidget = menuWidget;
+	}
 
-	public void onModuleLoad2(DialogBox confirmBox) {
+	/**
+	 * Entry point
+	 */
+	@Override
+	public void onModuleLoad() {
+		css.ensureInjected();
+		common.css().ensureInjected();
 		
 		// Initialize the UI with UiBinder
 		panel = mainBinder.createAndBindUi(this);
-		this.confirmBox = confirmBox;
+		if (menuWidget != null) {
+			navigationPanel.insert(menuWidget, 0);
+		}
 		designPanel.setVisible(false);
-		RootPanel.get(Intro.ID_UIROOT).add(panel);
+		RootPanel.get(Menu.ID_UIROOT).add(panel);
 		Element div = svgContainer.getElement();
 		div.getStyle().setWidth(100, Style.Unit.PCT);
 		div.getStyle().setHeight(100, Style.Unit.PCT);
@@ -495,7 +507,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 				lineGroup = doc.createSVGGElement();
 				dotSvg.appendChild(lineGroup);
 				polyline = doc.createSVGPolylineElement();
-				polyline.setClassNameBaseVal(STYLE_LINE2);			
+				polyline.setClassNameBaseVal(css.lineInvisible());			
 				points = polyline.getPoints();
 				lineGroup.appendChild(polyline);
 				
@@ -522,7 +534,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 				lineGroup = doc.createSVGGElement();
 				dotSvg.appendChild(lineGroup);
 				polyline = doc.createSVGPolylineElement();
-				polyline.setClassNameBaseVal(STYLE_LINE2);			
+				polyline.setClassNameBaseVal(css.lineInvisible());			
 				points = polyline.getPoints();
 				lineGroup.appendChild(polyline);
 				
@@ -537,6 +549,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 					}
 					g1.addMouseOverHandler(DotsMain.this);
 					g1.addMouseOutHandler(DotsMain.this);
+					setDotClassName(g1, css.dotBorder(), css.dotContent());
 					dots.add(g1);
 					dotList.addItem(toDotName(i));
 					if (mode == Mode.DESIGN) {
@@ -570,7 +583,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 					pictureAlphaSlider.setCurrentValue(1);			
 				} else {
 					pictureSvg.getStyle().setVisibility(Visibility.HIDDEN);
-					polyline.setClassNameBaseVal(STYLE_LINE1);
+					polyline.setClassNameBaseVal(css.lineVisible());
 				}
 				dotAlpha.setValue(1f);
 				dotSvg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA2_FILTER));
@@ -609,12 +622,6 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 			level = 0;
 		}
 		updateLevel();
-	}
-	
-	@UiHandler("homeButton")
-	public void homeButton(ClickEvent event) {
-        confirmBox.center();
-        confirmBox.show();
 	}
 
 	private OMSVGPoint getLocalCoordinates(MouseEvent<? extends EventHandler> e) {
@@ -663,7 +670,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 
 	@UiHandler("showLineCheck")
 	public void toggleShowLine(ClickEvent event) {
-		polyline.setClassNameBaseVal(showLineCheck.getValue() ? STYLE_LINE1 : STYLE_LINE2);
+		polyline.setClassNameBaseVal(showLineCheck.getValue() ? css.lineVisible() : css.lineInvisible());
 	}
 		
 	@UiHandler("dotList")
@@ -675,7 +682,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	public void transition(ClickEvent event) {
 		pictureAlpha2.setValue(0f);
 		gaussianBlur.setStdDeviation(10f, 10f);
-		polyline.setClassNameBaseVal(STYLE_LINE1);
+		polyline.setClassNameBaseVal(css.lineVisible());
 		pictureSvg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_TRANSITION_FILTER));
 		if (points.getNumberOfItems() > 0) {
 			points.appendItem(points.getItem(0).assignTo(dotSvg.createSVGPoint()));
@@ -691,7 +698,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 			@Override
 			protected void onComplete() {
 				if (mode == Mode.DESIGN) {
-					polyline.setClassNameBaseVal(showLineCheck.getValue() ? STYLE_LINE1 : STYLE_LINE2);
+					polyline.setClassNameBaseVal(showLineCheck.getValue() ? css.lineVisible() : css.lineInvisible());
 					pictureSvg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA1_FILTER));
 					dotAlpha.setValue(1f);
 					if (points.getNumberOfItems() > 0) {
@@ -726,13 +733,13 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		g2.getTransform().getBaseVal().appendItem(scaling);
 
 		OMSVGCircleElement circle1 = doc.createSVGCircleElement(0f, 0f, 5f);
-		circle1.setClassNameBaseVal(STYLE_DOT1);
+		circle1.setClassNameBaseVal(css.dotBorder());
 		
 		OMSVGCircleElement circle2 = doc.createSVGCircleElement(0f, 0f, 3f);
-		circle2.setClassNameBaseVal(STYLE_DOT2);
+		circle2.setClassNameBaseVal(css.dotContent());
 		
 		OMSVGTextElement text = doc.createSVGTextElement(0f, 16f, OMSVGLength.SVG_LENGTHTYPE_PX, Integer.toString(pIndex));
-		text.setClassNameBaseVal(STYLE_DOT3);
+		text.setClassNameBaseVal(css.dotText());
 		
 		g1.appendChild(g2);
 		g2.appendChild(circle1);
@@ -785,7 +792,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		} else {
 			if (currentDotIndex == maxIndex + 1) {
 				maxIndex++;
-				setDotClassName(currentDot, STYLE_DOT1V);
+				setDotClassName(currentDot, css.dotContentValidated(), css.dotBorderValidated());
 				OMSVGMatrix m = currentDot.getTransform().getBaseVal().getItem(0).getMatrix();
 				points.appendItem(dotSvg.createSVGPoint(m.getE(), m.getF()));
 				if (maxIndex + 1 == dots.size()) {
@@ -835,24 +842,24 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	@Override
 	public void onMouseOut(MouseOutEvent event) {
 		OMSVGGElement dot = (OMSVGGElement)event.getSource();
-		if (mode == Mode.DESIGN || !STYLE_DOT1V.equals(getDotClassName(dot))) {
-			setDotClassName(dot, STYLE_DOT1);
+		if (mode == Mode.DESIGN || !css.dotContentValidated().equals(getDotClassName(dot))) {
+			setDotClassName(dot, css.dotBorder(), css.dotContent());
 		}
 	}
 
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
 		OMSVGGElement dot = (OMSVGGElement)event.getSource();
-		if (mode == Mode.DESIGN || !STYLE_DOT1V.equals(getDotClassName(dot))) {
-			setDotClassName((OMSVGGElement)event.getSource(), STYLE_DOT1S);
+		if (mode == Mode.DESIGN || !css.dotContentValidated().equals(getDotClassName(dot))) {
+			setDotClassName((OMSVGGElement)event.getSource(), css.dotBorderSelected(), css.dotContentSelected());
 		}
 	}
 	
-	private void setDotClassName(OMSVGGElement dot, String className) {
+	private void setDotClassName(OMSVGGElement dot, String className1, String className2) {
 		OMSVGCircleElement circle1 = (OMSVGCircleElement) dot.getFirstChild().getFirstChild();
-		circle1.setClassNameBaseVal(className);
+		circle1.setClassNameBaseVal(className1);
 		OMSVGCircleElement circle2 = (OMSVGCircleElement) circle1.getNextSibling();
-		circle2.setClassNameBaseVal(className.replace('1', '2'));
+		circle2.setClassNameBaseVal(className2);
 	}
 	private String getDotClassName(OMSVGGElement dot) {
 		OMSVGCircleElement circle1 = (OMSVGCircleElement) dot.getFirstChild().getFirstChild();

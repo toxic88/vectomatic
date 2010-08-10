@@ -15,15 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.commons;
+
+import org.vectomatic.dom.svg.ui.SVGResource;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 
 /**
- * Game resources
+ * Bundle class for resources which are common to
+ * all lig-gwt-svg-edu games
  * @author laaglu
  */
-public interface EduImages extends ClientBundle {
-	public static final EduImages INSTANCE =  GWT.create(EduImages.class);
+public interface CommonBundle extends ClientBundle {
+	public static CommonBundle INSTANCE = GWT.create(CommonBundle.class);
+	@Source("pulsante_03_architetto_f_01a.svg")
+	public SVGResource next();
+	@Source("pulsante_04_architetto_f_01a.svg")
+	public SVGResource previous();
+	@Source("common.css")
+	public CommonCss css();
 }

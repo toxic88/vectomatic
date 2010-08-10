@@ -15,19 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client.dots;
+package org.vectomatic.svg.edu.client.menu;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
+import com.google.gwt.i18n.client.Constants;
 
-public interface DotsResources extends ClientBundle {
-	public static final DotsResources INSTANCE =  GWT.create(DotsResources.class);
+public interface MenuConstants extends Constants {
+	public static final MenuConstants INSTANCE =  GWT.create(MenuConstants.class);
 
-	@Source("pictures.txt")
-	public TextResource pictureList();
-	
-	@Source("dots.css")
-	public DotsCss css();
+	public String connectDotsTitle();
+	public String connectDotsRule();
+	public String mazeTitle();
+	public String mazeRule();
+	public String pushTitle();
+	public String pushRule();
+	public String puzzleTitle();
+	public String puzzleRule();
 
 }

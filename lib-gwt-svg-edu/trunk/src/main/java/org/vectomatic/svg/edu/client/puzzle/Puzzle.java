@@ -45,6 +45,7 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
 
@@ -182,7 +183,7 @@ public class Puzzle implements MouseDownHandler, MouseMoveHandler, MouseUpHandle
 		public Target getTarget(int col, int row) {
 			return targets[col][row];
 		}
-		public Target getTarget(MouseEvent e) {
+		public Target getTarget(MouseEvent<? extends EventHandler> e) {
 			OMSVGPoint p = getCoordinates(e).substract(rootSvg.createSVGPoint(x, y)).product(rootSvg.createSVGPoint(1f / w, 1f / h)).floor();
 			return p.getX() >= 0 && p.getX() < colCount && p.getY() >= 0 && p.getY() < rowCount ? targets[(int)p.getX()][(int)p.getY()] : null;
 		}
@@ -734,7 +735,7 @@ public class Puzzle implements MouseDownHandler, MouseMoveHandler, MouseUpHandle
 		onMouseUp_(event);
 	}
 
-	private void onMouseUp_(MouseEvent event) {
+	private void onMouseUp_(MouseEvent<? extends EventHandler> event) {
 		if (dragging) {
 			if (destTarget == null) {
 				destTarget = srcTarget;
@@ -771,13 +772,13 @@ public class Puzzle implements MouseDownHandler, MouseMoveHandler, MouseUpHandle
 		return true;
 	}
 	
-	public OMSVGPoint getCoordinates(MouseEvent e) {
+	public OMSVGPoint getCoordinates(MouseEvent<? extends EventHandler> e) {
 		OMSVGPoint p = rootSvg.createSVGPoint(e.getClientX(), e.getClientY());
 		OMSVGMatrix m = rootSvg.getScreenCTM().inverse();
 		return p.matrixTransform(m);
 	}
 	
-	public Target getTarget(MouseEvent e) {
+	public Target getTarget(MouseEvent<? extends EventHandler> e) {
 		Target target = tileZone.getTarget(e);
 		if (target == null) {
 			target = assemblyZone.getTarget(e);

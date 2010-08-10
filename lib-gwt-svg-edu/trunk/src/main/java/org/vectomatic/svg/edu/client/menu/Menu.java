@@ -15,18 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.menu;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGTSpanElement;
 import org.vectomatic.dom.svg.ui.SVGImage;
+import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.ui.SVGResource;
+import org.vectomatic.dom.svg.ui.SVGButtonBase.SVGFace;
+import org.vectomatic.dom.svg.ui.SVGButtonBase.SVGFaceName;
+import org.vectomatic.dom.svg.ui.SVGButtonBase.SVGStyleChange;
 import org.vectomatic.dom.svg.utils.DOMHelper;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 import org.vectomatic.dom.svg.utils.SVGPrefixResolver;
+import org.vectomatic.svg.edu.client.commons.CommonBundle;
+import org.vectomatic.svg.edu.client.commons.CommonConstants;
+import org.vectomatic.svg.edu.client.commons.ConfirmBox;
+import org.vectomatic.svg.edu.client.commons.LicenseBox;
 import org.vectomatic.svg.edu.client.dots.DotsMain;
 import org.vectomatic.svg.edu.client.maze.MazeMain;
 import org.vectomatic.svg.edu.client.push.PushMain;
@@ -59,7 +69,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Main game menu
  * @author laaglu
  */
-public class Intro implements EntryPoint {
+public class Menu implements EntryPoint {
 	public static final String ID_UIROOT = "uiRoot";
 	
 	/**
@@ -67,7 +77,7 @@ public class Intro implements EntryPoint {
 	 */
 	private static abstract class GameCallback implements RunAsyncCallback {
 		 public void onFailure(Throwable reason) {
-              Window.alert(EduConstants.INSTANCE.loadError());
+              Window.alert(CommonConstants.INSTANCE.loadError());
 		  }
 		  public abstract void onSuccess();
 	}
@@ -83,9 +93,12 @@ public class Intro implements EntryPoint {
 	}
 	private static final String VECTOMATIC_NS_URI = "http://www.vectomatic.org";
 	private static GamePrefixResolver resolver = new GamePrefixResolver();
-	private static CommonBundle bundle = CommonBundle.INSTANCE;
-	private static IntroCss css = bundle.css();
-	private static EduConstants eduConstants = EduConstants.INSTANCE;
+	private static MenuBundle bundle = MenuBundle.INSTANCE;
+	private static MenuCss css = bundle.css();
+	private static MenuConstants menuConstants = MenuConstants.INSTANCE;
+	/**
+	 * A dialog box to ask for confirmation before leaving the game
+	 */
 	private static DialogBox confirmBox;
 
 	/**
@@ -99,8 +112,8 @@ public class Intro implements EntryPoint {
 			        public void onSuccess() {
 						RootPanel root = RootPanel.get(ID_UIROOT);
 						root.remove(root.getWidget(0));
-			        	DotsMain main = new DotsMain();
-			    		main.onModuleLoad2(confirmBox);
+						DotsMain main = new DotsMain(Game.createHomeButton());
+		    			main.onModuleLoad();
 			        }
 				};
 			}
@@ -108,12 +121,12 @@ public class Intro implements EntryPoint {
 			public SVGImage getImage() {
 				return createImage(
 						bundle.connectdots(), 
-						eduConstants.connectDotsTitle(), 
+						menuConstants.connectDotsTitle(), 
 						getCallback());
 			}
 			@Override
 			public Label getRule() {
-				return createLabel(eduConstants.connectDotsRule());
+				return createLabel(menuConstants.connectDotsRule());
 			}
 		},
 		MAZE {
@@ -123,8 +136,8 @@ public class Intro implements EntryPoint {
 			        public void onSuccess() {
 						RootPanel root = RootPanel.get(ID_UIROOT);
 						root.remove(root.getWidget(0));
-			        	MazeMain main = new MazeMain();
-			    		main.onModuleLoad2(confirmBox);
+			        	MazeMain main = new MazeMain(Game.createHomeButton());
+			    		main.onModuleLoad();
 			        }
 				};
 			}
@@ -132,12 +145,12 @@ public class Intro implements EntryPoint {
 			public SVGImage getImage() {
 				return createImage(
 						bundle.maze(), 
-						eduConstants.mazeTitle(), 
+						menuConstants.mazeTitle(), 
 						getCallback());
 			}
 			@Override
 			public Label getRule() {
-				return createLabel(eduConstants.mazeRule());
+				return createLabel(menuConstants.mazeRule());
 			}
 		},
 		PUSH {
@@ -147,8 +160,8 @@ public class Intro implements EntryPoint {
 			        public void onSuccess() {
 						RootPanel root = RootPanel.get(ID_UIROOT);
 						root.remove(root.getWidget(0));
-			        	PushMain main = new PushMain();
-			    		main.onModuleLoad2(confirmBox);
+			        	PushMain main = new PushMain(Game.createHomeButton());
+			    		main.onModuleLoad();
 			        }
 				};
 			}
@@ -156,12 +169,12 @@ public class Intro implements EntryPoint {
 			public SVGImage getImage() {
 				return createImage(
 						bundle.push(), 
-						eduConstants.pushTitle(), 
+						menuConstants.pushTitle(), 
 						getCallback());
 			}
 			@Override
 			public Label getRule() {
-				return createLabel(eduConstants.pushRule());
+				return createLabel(menuConstants.pushRule());
 			}
 		},
 		PUZZLE {
@@ -171,8 +184,8 @@ public class Intro implements EntryPoint {
 			        public void onSuccess() {
 						RootPanel root = RootPanel.get(ID_UIROOT);
 						root.remove(root.getWidget(0));
-			        	PuzzleMain main = new PuzzleMain();
-			    		main.onModuleLoad2(confirmBox);
+			        	PuzzleMain main = new PuzzleMain(Game.createHomeButton());
+			    		main.onModuleLoad();
 			        }
 				};
 			}
@@ -180,12 +193,12 @@ public class Intro implements EntryPoint {
 			public SVGImage getImage() {
 				return createImage(
 						bundle.puzzle(), 
-						eduConstants.puzzleTitle(), 
+						menuConstants.puzzleTitle(), 
 						getCallback());
 			}
 			@Override
 			public Label getRule() {
-				return createLabel(eduConstants.puzzleRule());
+				return createLabel(menuConstants.puzzleRule());
 			}
 		};
 		public abstract SVGImage getImage();
@@ -228,6 +241,20 @@ public class Intro implements EntryPoint {
 			Label ruleLabel = new Label(gameRule);
 			ruleLabel.setStyleName(css.gameRule());
 			return ruleLabel;
+		}
+		private static SVGPushButton createHomeButton() {
+			Map<SVGFaceName, SVGFace> faces = new HashMap<SVGFaceName, SVGFace>();
+			faces.put(SVGFaceName.UP, new SVGFace(new SVGStyleChange[] { new SVGStyleChange( new String[] { CommonBundle.INSTANCE.css().navigationUp()} )}));
+			faces.put(SVGFaceName.UP_HOVERING, new SVGFace(new SVGStyleChange[] { new SVGStyleChange( new String[] { CommonBundle.INSTANCE.css().navigationUpHovering()} )}));
+			SVGPushButton homeButton = new SVGPushButton(bundle.home().getSvg(), faces);
+			homeButton.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+			        confirmBox.center();
+			        confirmBox.show();
+				}
+			});
+			return homeButton;
 		}
 	};
 		
@@ -272,7 +299,7 @@ public class Intro implements EntryPoint {
 	} 
 	
 	public void onModuleLoad2() {
-		CommonBundle.INSTANCE.css().ensureInjected();
+		MenuBundle.INSTANCE.css().ensureInjected();
 		
 		final FlexTable table = new FlexTable();
 		table.setBorderWidth(0);
@@ -301,13 +328,13 @@ public class Intro implements EntryPoint {
 
 		final LicenseBox licenseBox = new LicenseBox();
 		Anchor licenseAnchor = new Anchor();
-		licenseAnchor.setText(EduConstants.INSTANCE.license());
+		licenseAnchor.setText(CommonConstants.INSTANCE.license());
 		licenseAnchor.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				licenseBox.box.center();
-				licenseBox.box.show();
+				licenseBox.getBox().center();
+				licenseBox.getBox().show();
 			}
 			
 		});

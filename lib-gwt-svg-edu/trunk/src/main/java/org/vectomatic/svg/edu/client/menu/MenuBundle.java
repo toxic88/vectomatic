@@ -15,19 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client.dots;
+package org.vectomatic.svg.edu.client.menu;
+
+import org.vectomatic.dom.svg.ui.SVGResource;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
 
-public interface DotsResources extends ClientBundle {
-	public static final DotsResources INSTANCE =  GWT.create(DotsResources.class);
-
-	@Source("pictures.txt")
-	public TextResource pictureList();
-	
-	@Source("dots.css")
-	public DotsCss css();
-
+/**
+ * Bundle class for resources which belong to the navigation menu
+ * @author laaglu
+ */
+public interface MenuBundle extends ClientBundle {
+	public static MenuBundle INSTANCE = GWT.create(MenuBundle.class);
+	@Source("home12.svg")
+	public SVGResource home();
+	@Source("connectdots.svg")
+	public SVGResource connectdots();
+	@Source("maze.svg")
+	public SVGResource maze();
+	@Source("push.svg")
+	public SVGResource push();
+	@Source("puzzle.svg")
+	public SVGResource puzzle();
+	@Source("Menu.css")
+	public MenuCss css();
 }

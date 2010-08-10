@@ -27,9 +27,10 @@ import org.vectomatic.dom.svg.OMSVGStyleElement;
 import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
-import org.vectomatic.svg.edu.client.CommonBundle;
-import org.vectomatic.svg.edu.client.Intro;
+import org.vectomatic.svg.edu.client.commons.CommonBundle;
+import org.vectomatic.svg.edu.client.menu.Menu;
 
+import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.NativeEvent;
@@ -52,17 +53,18 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Main class of the maze game
  */
-public class MazeMain {
+public class MazeMain implements EntryPoint {
 	private static final String DIR = "maze";
 	private static final String ID_MAZE = "maze";
 
@@ -116,8 +118,6 @@ public class MazeMain {
 	@UiField
 	SVGPushButton helpButton;
 	@UiField
-	SVGPushButton homeButton;
-	@UiField
 	SVGPushButton prevButton;
 	@UiField
 	SVGPushButton nextButton;
@@ -125,6 +125,9 @@ public class MazeMain {
 	HTML svgContainer;
 	@UiField
 	ListBox levelList;
+	@UiField
+	HorizontalPanel navigationPanel;
+	Widget menuWidget;
 	/**
 	 * Game SVG level definitions
 	 */
@@ -141,10 +144,6 @@ public class MazeMain {
 	 * A timer to flash the maze solution when the user requests it
 	 */
 	static Timer solutionTimer;
-	/**
-	 * A dialog box to ask for confirmation before leaving the game
-	 */
-	DialogBox confirmBox;
 	/**
 	 * The CSS rule which governs the color of the user path 
 	 * in the maze (use for the color animation when the player wins)
@@ -165,7 +164,25 @@ public class MazeMain {
 		pathRule = getRule("." + style.path());
 	}
 	
-	public void onModuleLoad2(DialogBox confirmBox) {
+	/**
+	 * Constructor for standalone game
+	 */
+	public MazeMain() {		
+	}
+	/**
+	 * Constructor for integration in a menu
+	 */
+	public MazeMain(Widget menuWidget) {
+		this.menuWidget = menuWidget;
+	}
+	
+	/**
+	 * Entry point
+	 */
+	@Override
+	public void onModuleLoad() {
+		common.css().ensureInjected();
+		
 		if (solutionTimer != null) {
 			solutionTimer.cancel();
 		}
@@ -175,7 +192,9 @@ public class MazeMain {
 		
 		// Initialize the UI with UiBinder
 		VerticalPanel panel = mainBinder.createAndBindUi(this);
-		this.confirmBox = confirmBox;
+		if (menuWidget != null) {
+			navigationPanel.insert(menuWidget, 0);
+		}
 		levelList.addItem(MazeConstants.INSTANCE.easy());
 		levelList.addItem(MazeConstants.INSTANCE.medium());
 		levelList.addItem(MazeConstants.INSTANCE.hard());
@@ -192,7 +211,7 @@ public class MazeMain {
 			}
 		}
 		levelList.setSelectedIndex(difficulty);
-		RootPanel.get(Intro.ID_UIROOT).add(panel);
+		RootPanel.get(Menu.ID_UIROOT).add(panel);
 		
 		String levelParam = Window.Location.getParameter("level");
 		if (levelParam != null) {
@@ -442,11 +461,6 @@ public class MazeMain {
 			level = 0;
 		}
 		readMazeDef();
-	}
-	@UiHandler("homeButton")
-	public void homeButton(ClickEvent event) {
-        confirmBox.center();
-        confirmBox.show();
 	}
 	
 	private static final native int eventGetKeyCode(NativeEvent evt) /*-{

@@ -2,7 +2,7 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
 	xmlns:svgui='urn:import:org.vectomatic.dom.svg.ui'>
 	<ui:with field='resources' type='org.vectomatic.svg.edu.client.maze.MazeBundle' />
-	<ui:with field='common' type='org.vectomatic.svg.edu.client.CommonBundle' />
+	<ui:with field='common' type='org.vectomatic.svg.edu.client.commons.CommonBundle' />
 	<ui:style>	
 		@external .bgcolor;
 		
@@ -48,12 +48,6 @@
 		}
 		.btn-up-disabled .bgcolor {
 		  fill:white;
-		}
-		.nav-up {
-		  opacity:0.9
-		}
-		.nav-up-hovering {
-		  opacity:1.0
 		}
 		.focus {
 		  outline:none;
@@ -131,18 +125,14 @@
 			</g:cell>
 		</g:HorizontalPanel>
 		<g:cell horizontalAlignment="ALIGN_CENTER">
-			<g:HorizontalPanel>
-			  <svgui:SVGPushButton ui:field='homeButton' resource='{common.home}'>
-			    <svgui:upFace><svgui:styleChange classNames="{style.nav-up}"/></svgui:upFace>
-			    <svgui:upHoveringFace><svgui:styleChange classNames="{style.nav-up-hovering}"/></svgui:upHoveringFace>
-			  </svgui:SVGPushButton>
+			<g:HorizontalPanel ui:field="navigationPanel">
 			  <svgui:SVGPushButton ui:field='prevButton' resource='{common.previous}'>
-			    <svgui:upFace><svgui:styleChange classNames="{style.nav-up}"/></svgui:upFace>
-			    <svgui:upHoveringFace><svgui:styleChange classNames="{style.nav-up-hovering}"/></svgui:upHoveringFace>
+			    <svgui:upFace><svgui:styleChange classNames="{common.css.navigationUp}"/></svgui:upFace>
+			    <svgui:upHoveringFace><svgui:styleChange classNames="{common.css.navigationUpHovering}"/></svgui:upHoveringFace>
 			  </svgui:SVGPushButton>
 			  <svgui:SVGPushButton ui:field='nextButton' resource='{common.next}'>
-			    <svgui:upFace><svgui:styleChange classNames="{style.nav-up}"/></svgui:upFace>
-			    <svgui:upHoveringFace><svgui:styleChange classNames="{style.nav-up-hovering}"/></svgui:upHoveringFace>
+			    <svgui:upFace><svgui:styleChange classNames="{common.css.navigationUp}"/></svgui:upFace>
+			    <svgui:upHoveringFace><svgui:styleChange classNames="{common.css.navigationUpHovering}"/></svgui:upHoveringFace>
 			  </svgui:SVGPushButton>
 			</g:HorizontalPanel>
 		</g:cell>

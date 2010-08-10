@@ -36,11 +36,12 @@ import org.vectomatic.dom.svg.OMSVGUseElement;
 import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
-import org.vectomatic.svg.edu.client.CommonBundle;
-import org.vectomatic.svg.edu.client.Intro;
+import org.vectomatic.svg.edu.client.commons.CommonBundle;
+import org.vectomatic.svg.edu.client.menu.Menu;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Duration;
+import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -50,6 +51,7 @@ import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -64,13 +66,14 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class PushMain implements MouseDownHandler {
+public class PushMain implements MouseDownHandler, EntryPoint {
 	private static final String DIR = "push";
 	private static final String ID_CLIP_PATH = "cp";
 	private static final String ID_CLIP_RECT = "cpr";
@@ -84,8 +87,6 @@ public class PushMain implements MouseDownHandler {
 	CommonBundle common = CommonBundle.INSTANCE;
 	PushCss style = resources.getCss();
 	@UiField
-	SVGPushButton homeButton;
-	@UiField
 	SVGPushButton prevButton;
 	@UiField
 	SVGPushButton nextButton;
@@ -93,10 +94,12 @@ public class PushMain implements MouseDownHandler {
 	HTML svgContainer;
 	@UiField
 	ListBox levelList;
+	@UiField
+	HorizontalPanel navigationPanel;
+	Widget menuWidget;
 
 	private String[] levels;
 	private int currentLevel;
-	private DialogBox confirmBox;
 	/**
 	 * The source image svg element
 	 */
@@ -202,8 +205,25 @@ public class PushMain implements MouseDownHandler {
 			}		
 		}
 	};
-
-	public void onModuleLoad2(DialogBox confirmBox) {
+	
+	/**
+	 * Constructor for standalone game
+	 */
+	public PushMain() {
+	}
+	/**
+	 * Constructor for integration in a menu
+	 */
+	public PushMain(Widget menuWidget) {
+		this.menuWidget = menuWidget;
+	}
+	
+	/**
+	 * Entry point when the game is run in standalone mode
+	 */
+	@Override
+	public void onModuleLoad() {
+		common.css().ensureInjected();
 		StyleInjector.inject(style.getText(), true);
 		
 		// Load the game levels
@@ -211,13 +231,15 @@ public class PushMain implements MouseDownHandler {
 		
 		// Initialize the UI with UiBinder
 		VerticalPanel panel = mainBinder.createAndBindUi(this);
-		this.confirmBox = confirmBox;
+		if (menuWidget != null) {
+			navigationPanel.insert(menuWidget, 0);
+		}
 		levelList.addItem(PushConstants.INSTANCE.easy());
 		levelList.addItem(PushConstants.INSTANCE.medium());
 		levelList.addItem(PushConstants.INSTANCE.hard());
 		levelList.setSelectedIndex(0);
 		Window.addResizeHandler(resizeHandler);
-		RootPanel.get(Intro.ID_UIROOT).add(panel);
+		RootPanel.get(Menu.ID_UIROOT).add(panel);
 		readPushDef();
 	}
 	
@@ -236,11 +258,6 @@ public class PushMain implements MouseDownHandler {
 			currentLevel = 0;
 		}
 		readPushDef();
-	}
-	@UiHandler("homeButton")
-	public void homeButton(ClickEvent event) {
-        confirmBox.center();
-        confirmBox.show();
 	}
 
 	@UiHandler("levelList")
@@ -518,7 +535,7 @@ public class PushMain implements MouseDownHandler {
 		}
 	}
 	
-	public OMSVGPoint getTileCoordinates(MouseEvent e) {
+	public OMSVGPoint getTileCoordinates(MouseEvent<? extends EventHandler> e) {
 		OMSVGPoint p = pushSvg.createSVGPoint(e.getClientX(), e.getClientY());
 		OMSVGMatrix m = pushSvg.getScreenCTM().inverse();
 		p = p.matrixTransform(m).substract(pushSvg.createSVGPoint(bbox.getX(), bbox.getY())).product(pushSvg.createSVGPoint(xcount / bbox.getWidth(), ycount / bbox.getHeight())).floor();

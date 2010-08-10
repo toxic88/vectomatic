@@ -15,19 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.dots;
 
 import com.google.gwt.resources.client.CssResource;
 
-/**
- * CSS interface
- * @author laaglu
- */
-public interface IntroCss extends CssResource {
-	@ClassName("game-rule")
-	public String gameRule();
-	@ClassName("game-logo")
-	public String gameLogo();
-	@ClassName("game-table")
-	public String gameTable();
+public interface DotsCss extends CssResource {
+	@ClassName("dot-border")
+	String dotBorder();
+	@ClassName("dot-content")
+	String dotContent();
+	@ClassName("dot-text")
+	String dotText();
+	@ClassName("dot-border-selected")
+	String dotBorderSelected();
+	@ClassName("dot-content-selected")
+	String dotContentSelected();
+	@ClassName("dot-border-validated")
+	String dotBorderValidated();
+	@ClassName("dot-content-validated")
+	String dotContentValidated();
+	@ClassName("line-visible")
+	String lineVisible();
+	@ClassName("line-invisible")
+	String lineInvisible();
 }

@@ -15,19 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client.dots;
+package org.vectomatic.svg.edu.client.commons;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
+import com.google.gwt.i18n.client.Constants;
 
-public interface DotsResources extends ClientBundle {
-	public static final DotsResources INSTANCE =  GWT.create(DotsResources.class);
+/**
+ * Game constants
+ * @author laaglu
+ */
+public interface CommonConstants extends Constants {
+	public static final CommonConstants INSTANCE =  GWT.create(CommonConstants.class);
+	public String about();
+	public String license();
+	public String start();
+	public String ok();
+	public String loadError();
 
-	@Source("pictures.txt")
-	public TextResource pictureList();
-	
-	@Source("dots.css")
-	public DotsCss css();
-
+	public String restart();
+	public String confirmRestart();
+	public String confirmYes();
+	public String confirmNo();
 }

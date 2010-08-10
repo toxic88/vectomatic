@@ -1,38 +1,38 @@
-.dot1 {
+.dot-border {
   fill:white;
   stroke:black;
 }
-.dot2 {
+.dot-content {
   fill:black;
   stroke:none;
 }
-.dot3 {
+.dot-text {
   font-family:"Verdana";
   font-size:10px;
   fill:black;
 }
-.dot1s {
+.dot-border-selected {
   fill:white;
   stroke:red;
 }
-.dot2s {
+.dot-content-selected {
   fill:red;
   stroke:none;
 }
-.dot1v {
+.dot-border-validated {
   fill:white;
   stroke:green;
 }
-.dot2v {
+.dot-content-validated {
   fill:green;
   stroke:none;
 }
-.line1 {
+.line-visible {
   fill:none;
   stroke:black;
   visibility:visible;
 }
-.line2 {
+.line-invisible {
   fill:none;
   stroke:black;
   visibility:hidden;

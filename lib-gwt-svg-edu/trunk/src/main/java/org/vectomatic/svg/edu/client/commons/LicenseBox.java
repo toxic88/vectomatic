@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.commons;
+
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,15 +42,19 @@ public class LicenseBox {
 	@UiField
 	Button okButton;
 	
-	DialogBox box;
+	private DialogBox box;
 
-	LicenseBox() {
+	public LicenseBox() {
 		box = new DialogBox();
 		box.setAnimationEnabled(true);
 		box.setGlassEnabled(true);
-		box.setTitle(EduConstants.INSTANCE.license());
+		box.setTitle(CommonConstants.INSTANCE.license());
 		box.setWidget(licenseBoxBinder.createAndBindUi(this));
-		about.setHTML(EduConstants.INSTANCE.connectDotsAbout());
+		about.setHTML(CommonConstants.INSTANCE.about());
+	}
+	
+	public DialogBox getBox() {
+		return box;
 	}
 
 	@UiHandler("okButton")

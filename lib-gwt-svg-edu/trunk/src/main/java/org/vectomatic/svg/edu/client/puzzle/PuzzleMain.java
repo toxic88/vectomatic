@@ -20,9 +20,10 @@ package org.vectomatic.svg.edu.client.puzzle;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
-import org.vectomatic.svg.edu.client.CommonBundle;
-import org.vectomatic.svg.edu.client.Intro;
+import org.vectomatic.svg.edu.client.commons.CommonBundle;
+import org.vectomatic.svg.edu.client.menu.Menu;
 
+import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -39,17 +40,18 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Main class for the puzzle game
  */
-public class PuzzleMain {
-	private static final String DIR = "puzzle";
+public class PuzzleMain implements EntryPoint {
+	private static final String DIR = "push";
 	interface PuzzleMainBinder extends UiBinder<VerticalPanel, PuzzleMain> {
 	}
 	private static PuzzleMainBinder mainBinder = GWT.create(PuzzleMainBinder.class);
@@ -61,8 +63,6 @@ public class PuzzleMain {
 	CommonBundle common = CommonBundle.INSTANCE;
 	PuzzleCss style = resources.getCss();
 	@UiField
-	SVGPushButton homeButton;
-	@UiField
 	SVGPushButton prevButton;
 	@UiField
 	SVGPushButton nextButton;
@@ -70,9 +70,11 @@ public class PuzzleMain {
 	HTML svgContainer;
 	@UiField
 	ListBox levelList;
+	@UiField
+	HorizontalPanel navigationPanel;
+	Widget menuWidget;
 	private String[] levels;
 	private int level;
-	private DialogBox confirmBox;
 	/**
 	 * The source image svg element
 	 */
@@ -93,7 +95,24 @@ public class PuzzleMain {
 		}
 	};
 
-	public void onModuleLoad2(DialogBox confirmBox) {
+	/**
+	 * Constructor for standalone game
+	 */
+	public PuzzleMain() {
+	}
+	/**
+	 * Constructor for integration in a menu
+	 */
+	public PuzzleMain(Widget menuWidget) {
+		this.menuWidget = menuWidget;
+	}
+	
+	/**
+	 * Entry point
+	 */
+	@Override
+	public void onModuleLoad() {
+		common.css().ensureInjected();
 		StyleInjector.inject(style.getText(), true);
 		
 		// Load the game levels
@@ -101,7 +120,9 @@ public class PuzzleMain {
 		
 		// Initialize the UI with UiBinder
 		VerticalPanel panel = mainBinder.createAndBindUi(this);
-		this.confirmBox = confirmBox;
+		if (menuWidget != null) {
+			navigationPanel.insert(menuWidget, 0);
+		}
 		for (int i = 1; i <= dimensions.length; i++) {
 			levelList.addItem(PuzzleConstants.INSTANCE.level() + " " + i);
 		}
@@ -118,7 +139,7 @@ public class PuzzleMain {
 			}
 		}
 		Window.addResizeHandler(resizeHandler);
-		RootPanel.get(Intro.ID_UIROOT).add(panel);
+		RootPanel.get(Menu.ID_UIROOT).add(panel);
 		readPuzzleDef();
 	}
 
@@ -137,11 +158,6 @@ public class PuzzleMain {
 			level = 0;
 		}
 		readPuzzleDef();
-	}
-	@UiHandler("homeButton")
-	public void homeButton(ClickEvent event) {
-        confirmBox.center();
-        confirmBox.show();
 	}
 
 	@UiHandler("levelList")

@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.commons;
+
+import org.vectomatic.svg.edu.client.menu.Menu;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -37,7 +39,7 @@ public class ConfirmBox {
 	private static RestartBinder restartBinder = GWT.create(RestartBinder.class);
 	
 	@UiField(provided=true)
-	EduConstants constants = EduConstants.INSTANCE;
+	CommonConstants constants = CommonConstants.INSTANCE;
 	@UiField
 	Button confirmYesButton;
 	@UiField
@@ -60,15 +62,11 @@ public class ConfirmBox {
 	@UiHandler("confirmYesButton")
 	public void confirmYes(ClickEvent event) {
 		confirmBox.hide();
-		RootPanel rootPanel = RootPanel.get(Intro.ID_UIROOT);
+		RootPanel rootPanel = RootPanel.get(Menu.ID_UIROOT);
 		rootPanel.remove(rootPanel.getWidget(0));
 		rootPanel.add(root);
 	}
 	
-	private static native void reload() /*-{
-	  $wnd.location.href = $wnd.location.href;
-    }-*/;
-
 	@UiHandler("confirmNoButton")
 	public void confirmNo(ClickEvent event) {
 		confirmBox.hide();

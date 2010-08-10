@@ -15,34 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edu.client;
+package org.vectomatic.svg.edu.client.menu;
 
-import org.vectomatic.dom.svg.ui.SVGResource;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
 
 /**
- * Bundle class for resources which are common to
- * all lig-gwt-svg-edu games
+ * CSS interface
  * @author laaglu
  */
-public interface CommonBundle extends ClientBundle {
-	public static CommonBundle INSTANCE = GWT.create(CommonBundle.class);
-	@Source("home12.svg")
-	public SVGResource home();
-	@Source("pulsante_03_architetto_f_01a.svg")
-	public SVGResource next();
-	@Source("pulsante_04_architetto_f_01a.svg")
-	public SVGResource previous();
-	@Source("connectdots.svg")
-	public SVGResource connectdots();
-	@Source("maze.svg")
-	public SVGResource maze();
-	@Source("push.svg")
-	public SVGResource push();
-	@Source("puzzle.svg")
-	public SVGResource puzzle();
-	@Source("Intro.css")
-	public IntroCss css();
+public interface MenuCss extends CssResource {
+	@ClassName("game-rule")
+	public String gameRule();
+	@ClassName("game-logo")
+	public String gameLogo();
+	@ClassName("game-table")
+	public String gameTable();
 }
