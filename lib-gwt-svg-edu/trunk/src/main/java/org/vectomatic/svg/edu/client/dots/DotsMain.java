@@ -114,7 +114,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		GAME,
 		DESIGN
 	};
-	private static final String DIR = "connectdots";
+	private static final String DIR = "dots";
 	private static final String ID_ALPHA1_FILTER = "pictureAlpha";
 	private static final String ID_TRANSITION_FILTER = "pictureTransition";
 	private static final String ID_ALPHA2_FILTER = "dotAlpha";
