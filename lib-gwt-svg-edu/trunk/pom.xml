@@ -56,6 +56,39 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.vectomatic</groupId>
+			<artifactId>lib-gwt-svg-edu-commons</artifactId>
+			<version>0.3.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vectomatic</groupId>
+			<artifactId>lib-gwt-svg-edu-dots</artifactId>
+			<version>0.3.7</version>
+			<classifier>classes</classifier>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.vectomatic</groupId>
+			<artifactId>lib-gwt-svg-edu-maze</artifactId>
+			<version>0.3.7</version>
+			<classifier>classes</classifier>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.vectomatic</groupId>
+			<artifactId>lib-gwt-svg-edu-push</artifactId>
+			<version>0.3.7</version>
+			<classifier>classes</classifier>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.vectomatic</groupId>
+			<artifactId>lib-gwt-svg-edu-puzzle</artifactId>
+			<version>0.3.7</version>
+			<classifier>classes</classifier>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 	<properties>
 		<google.webtoolkit.home>/home/laaglu/gwt/2.1.0.M1</google.webtoolkit.home>
@@ -70,6 +103,24 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<!-- By default, javac will automatically compile classes 
+					if it finds the source in its classpath. This will happen since
+					this pom depends on GWT jars. That would cause another
+					copy of the dependencies .class to land in the target/classes of
+					the project. To disable automatic recompilation, this pom
+					specifies the -sourcepath with an empty directory  -->
+					<fork>true</fork>
+					<compilerArguments>
+						<sourcepath>\"\"</sourcepath>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!-- Produce a skinny war as only the GWT-generated files are of interest -->
+					<packagingExcludes>WEB-INF/lib/*.jar,WEB-INF/classes/**</packagingExcludes>
 				</configuration>
 			</plugin>
 			<!--  configure the GWT-Maven plugin -->
@@ -82,7 +133,7 @@
 						<id>gwt compilation</id>
 						<configuration>
 							<modules>
-								<module>org.vectomatic.svg.edu.libgwtsvgedu</module>
+								<module>org.vectomatic.svg.edu.menu</module>
 							</modules>
 							<style>${gwt.style}</style>
 							<!-- <style>OBF</style>-->

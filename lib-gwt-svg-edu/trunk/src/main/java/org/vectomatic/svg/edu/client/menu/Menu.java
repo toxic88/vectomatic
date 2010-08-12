@@ -70,14 +70,18 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author laaglu
  */
 public class Menu implements EntryPoint {
-	public static final String ID_UIROOT = "uiRoot";
 	
 	/**
 	 * Utility class to make use of code splitting less verbose
 	 */
 	private static abstract class GameCallback implements RunAsyncCallback {
 		 public void onFailure(Throwable reason) {
-              Window.alert(CommonConstants.INSTANCE.loadError());
+			final String debugParam = Window.Location.getParameter("debug");
+			if (!GWT.isScript() || debugParam != null) {
+				handleFatalError(reason);
+			} else {
+				Window.alert(CommonConstants.INSTANCE.loadError());
+			}
 		  }
 		  public abstract void onSuccess();
 	}
@@ -110,7 +114,7 @@ public class Menu implements EntryPoint {
 			protected RunAsyncCallback getCallback() {
 				return new GameCallback() {
 			        public void onSuccess() {
-						RootPanel root = RootPanel.get(ID_UIROOT);
+						RootPanel root = RootPanel.get(CommonConstants.ID_UIROOT);
 						root.remove(root.getWidget(0));
 						DotsMain main = new DotsMain(Game.createHomeButton());
 		    			main.onModuleLoad();
@@ -134,7 +138,7 @@ public class Menu implements EntryPoint {
 			protected RunAsyncCallback getCallback() {
 				return new GameCallback() {
 			        public void onSuccess() {
-						RootPanel root = RootPanel.get(ID_UIROOT);
+						RootPanel root = RootPanel.get(CommonConstants.ID_UIROOT);
 						root.remove(root.getWidget(0));
 			        	MazeMain main = new MazeMain(Game.createHomeButton());
 			    		main.onModuleLoad();
@@ -158,7 +162,7 @@ public class Menu implements EntryPoint {
 			protected RunAsyncCallback getCallback() {
 				return new GameCallback() {
 			        public void onSuccess() {
-						RootPanel root = RootPanel.get(ID_UIROOT);
+						RootPanel root = RootPanel.get(CommonConstants.ID_UIROOT);
 						root.remove(root.getWidget(0));
 			        	PushMain main = new PushMain(Game.createHomeButton());
 			    		main.onModuleLoad();
@@ -182,7 +186,7 @@ public class Menu implements EntryPoint {
 			protected RunAsyncCallback getCallback() {
 				return new GameCallback() {
 			        public void onSuccess() {
-						RootPanel root = RootPanel.get(ID_UIROOT);
+						RootPanel root = RootPanel.get(CommonConstants.ID_UIROOT);
 						root.remove(root.getWidget(0));
 			        	PuzzleMain main = new PuzzleMain(Game.createHomeButton());
 			    		main.onModuleLoad();
@@ -257,34 +261,40 @@ public class Menu implements EntryPoint {
 			return homeButton;
 		}
 	};
+	
+	private static void handleFatalError(Throwable throwable) {
+		final String debugParam = Window.Location.getParameter("debug");
+		if (!GWT.isScript() || debugParam != null) {
+			String text = "Uncaught exception: ";
+			while (throwable != null) {
+				StackTraceElement[] stackTraceElements = throwable
+						.getStackTrace();
+				text += throwable.toString() + "\n";
+				for (int i = 0; i < stackTraceElements.length; i++) {
+					text += "    at " + stackTraceElements[i] + "\n";
+				}
+				throwable = throwable.getCause();
+				if (throwable != null) {
+					text += "Caused by: ";
+				}
+			}
+			DialogBox dialogBox = new DialogBox(true);
+			DOM.setStyleAttribute(dialogBox.getElement(),
+					"backgroundColor", "#ABCDEF");
+			System.err.print(text);
+			text = text.replaceAll(" ", "&nbsp;");
+			dialogBox.setHTML("<pre>" + text + "</pre>");
+			dialogBox.center();
+		} else {
+			GWT.log("Fatal error:", throwable);
+		}
+	}
 		
 	@Override
     public void onModuleLoad() {
-		final String debugParam = Window.Location.getParameter("debug");
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			public void onUncaughtException(Throwable throwable) {
-				if (!GWT.isScript() || debugParam != null) {
-					String text = "Uncaught exception: ";
-					while (throwable != null) {
-						StackTraceElement[] stackTraceElements = throwable
-								.getStackTrace();
-						text += throwable.toString() + "\n";
-						for (int i = 0; i < stackTraceElements.length; i++) {
-							text += "    at " + stackTraceElements[i] + "\n";
-						}
-						throwable = throwable.getCause();
-						if (throwable != null) {
-							text += "Caused by: ";
-						}
-					}
-					DialogBox dialogBox = new DialogBox(true);
-					DOM.setStyleAttribute(dialogBox.getElement(),
-							"backgroundColor", "#ABCDEF");
-					System.err.print(text);
-					text = text.replaceAll(" ", "&nbsp;");
-					dialogBox.setHTML("<pre>" + text + "</pre>");
-					dialogBox.center();
-				}
+				handleFatalError(throwable);
 			}
 		});                                                              
 
@@ -360,7 +370,7 @@ public class Menu implements EntryPoint {
 		};
 		Window.addResizeHandler(resizeHandler);
 		resizeHandler.onResize(null);
-		RootPanel.get(ID_UIROOT).add(table);
+		RootPanel.get(CommonConstants.ID_UIROOT).add(table);
 		confirmBox = ConfirmBox.createConfirmBox(table);
 		
 		String gameParam = Window.Location.getParameter("game");

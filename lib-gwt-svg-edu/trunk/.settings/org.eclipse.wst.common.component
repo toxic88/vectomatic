@@ -7,6 +7,21 @@
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/lib-gwt-svg/lib-gwt-svg">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/lib-gwt-svg-edu-commons/lib-gwt-svg-edu-commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/lib-gwt-svg-edu-dots/lib-gwt-svg-edu-dots">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/lib-gwt-svg-edu-maze/lib-gwt-svg-edu-maze">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/lib-gwt-svg-edu-push/lib-gwt-svg-edu-push">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/lib-gwt-svg-edu-puzzle/lib-gwt-svg-edu-puzzle">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="libgwtsvg-edu"/>
         <property name="java-output-path"/>
     </wb-module>
