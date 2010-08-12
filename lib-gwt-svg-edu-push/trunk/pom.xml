@@ -46,9 +46,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google</groupId>
-			<artifactId>gwt-incubator-slider</artifactId>
-			<version>0.1</version>
+			<groupId>org.vectomatic</groupId>
+			<artifactId>lib-gwt-svg-edu-commons</artifactId>
+			<version>0.3.7</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -70,6 +70,26 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<!-- By default, javac will automatically compile classes 
+					if it finds the source in its classpath. This will happen since
+					this pom depends on GWT jars. That would cause another
+					copy of the dependencies .class to land in the target/classes of
+					the project. To disable automatic recompilation, this pom
+					specifies the -sourcepath with an empty directory  -->
+					<fork>true</fork>
+					<compilerArguments>
+						<sourcepath>\"\"</sourcepath>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!-- Produce a skinny war as only the GWT-generated files are of interest -->
+					<packagingExcludes>WEB-INF/lib/*.jar,WEB-INF/classes/**</packagingExcludes>
+					<!-- Put the pom classes in an external jar -->
+					<attachClasses>true</attachClasses>
 				</configuration>
 			</plugin>
 			<!--  configure the GWT-Maven plugin -->
@@ -108,6 +128,18 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<!-- Add source code to the jar -->
+			<resource>
+				<directory>${basedir}/src/main/java</directory>
+				<includes>
+					<include>**/*.java</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
 		<finalName>lib-gwt-svg-edu-push</finalName>
 	</build>
 	<reporting>

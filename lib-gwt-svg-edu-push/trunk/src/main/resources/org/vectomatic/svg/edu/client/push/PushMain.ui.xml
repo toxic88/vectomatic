@@ -1,0 +1,32 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:svgui='urn:import:org.vectomatic.dom.svg.ui'>
+	<ui:with field='resources' type='org.vectomatic.svg.edu.client.push.PushBundle' />
+	<ui:with field='common' type='org.vectomatic.svg.edu.client.commons.CommonBundle' />
+	<g:VerticalPanel spacing="10" width="100%" height="100%">	
+		<g:HorizontalPanel>
+	     <g:cell horizontalAlignment="ALIGN_CENTER" width="90%">
+			<g:HTML ui:field="svgContainer"/>
+	     </g:cell>
+	     <g:cell horizontalAlignment="ALIGN_CENTER" width="10%">
+	       <g:VerticalPanel>
+	        <g:cell horizontalAlignment="ALIGN_CENTER">
+			  <g:ListBox ui:field='levelList'/>
+			</g:cell>
+		    </g:VerticalPanel>
+	     </g:cell>
+		</g:HorizontalPanel>
+		<g:cell horizontalAlignment="ALIGN_CENTER">
+			<g:HorizontalPanel ui:field="navigationPanel">
+			  <svgui:SVGPushButton ui:field='prevButton' resource='{common.previous}'>
+			    <svgui:upFace><svgui:styleChange classNames="{common.css.navigationUp}"/></svgui:upFace>
+			    <svgui:upHoveringFace><svgui:styleChange classNames="{common.css.navigationUpHovering}"/></svgui:upHoveringFace>
+			  </svgui:SVGPushButton>
+			  <svgui:SVGPushButton ui:field='nextButton' resource='{common.next}'>
+			    <svgui:upFace><svgui:styleChange classNames="{common.css.navigationUp}"/></svgui:upFace>
+			    <svgui:upHoveringFace><svgui:styleChange classNames="{common.css.navigationUpHovering}"/></svgui:upHoveringFace>
+			  </svgui:SVGPushButton>
+			</g:HorizontalPanel>
+		</g:cell>
+	</g:VerticalPanel>
+</ui:UiBinder>
