@@ -51,6 +51,11 @@
 			<version>0.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.vectomatic</groupId>
+			<artifactId>lib-gwt-svg-edu-commons</artifactId>
+			<version>0.3.7</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
@@ -60,7 +65,7 @@
 	<properties>
 		<google.webtoolkit.home>/home/laaglu/gwt/2.1.0.M1</google.webtoolkit.home>
 	</properties>
-	
+
 	<build>
 		<plugins>
 			<!-- Build using java 1.6. GWT requires at least Java 1.5 -->
@@ -70,6 +75,26 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<!-- By default, javac will automatically compile classes 
+					if it finds the source in its classpath. This will happen since
+					this pom depends on GWT jars. That would cause another
+					copy of the dependencies .class to land in the target/classes of
+					the project. To disable automatic recompilation, this pom
+					specifies the -sourcepath with an empty directory  -->
+					<fork>true</fork>
+					<compilerArguments>
+						<sourcepath>\"\"</sourcepath>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!-- Produce a skinny war as only the GWT-generated files are of interest -->
+					<packagingExcludes>WEB-INF/lib/*.jar,WEB-INF/classes/**</packagingExcludes>
+					<!-- Put the pom classes in an external jar -->
+					<attachClasses>true</attachClasses>
 				</configuration>
 			</plugin>
 			<!--  configure the GWT-Maven plugin -->
@@ -108,13 +133,27 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<!-- Add source code to the jar -->
+			<resource>
+				<directory>${basedir}/src/main/java</directory>
+				<includes>
+					<include>**/*.java</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
 		<finalName>lib-gwt-svg-edu-dots</finalName>
 	</build>
 	<reporting>
 		<plugins>
 			<plugin>
-				<!-- Lock down to 2.0.1 + no license report because of
-				http://jira.codehaus.org/browse/MPIR-150 -->
+				<!--
+					Lock down to 2.0.1 + no license report because of
+					http://jira.codehaus.org/browse/MPIR-150
+				-->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.0.1</version>
@@ -159,13 +198,14 @@
 		</site>
 	</distributionManagement>
 	<profiles>
-		<!-- There are two build profiles: development and production
-		+ by default, the production profile is assumed
-		  It builds all GWT permutations and generates reports for the website
-		+ Use the '-P development' mvn flag, or within eclipse, set the
-		  Project > Properties > Maven > Active Maven Profiles to 'development'
-		  to activate the development profile
-		 -->
+		<!--
+			There are two build profiles: development and production + by
+			default, the production profile is assumed It builds all GWT
+			permutations and generates reports for the website + Use the '-P
+			development' mvn flag, or within eclipse, set the Project >
+			Properties > Maven > Active Maven Profiles to 'development' to
+			activate the development profile
+		-->
 		<profile>
 			<id>development</id>
 			<activation>
@@ -174,11 +214,11 @@
 			<properties>
 				<deployment.id>local-server</deployment.id>
 				<deployment.root>scp://localhost/var/www/vectomatic</deployment.root>
- 				<!-- Build options for development mode -->
-    			<gwt.style>DETAILED</gwt.style>
-    			<gwt.logLevel>WARN</gwt.logLevel>
-    			<gwt.localWorkers>1</gwt.localWorkers>
-    		</properties>
+				<!-- Build options for development mode -->
+				<gwt.style>DETAILED</gwt.style>
+				<gwt.logLevel>WARN</gwt.logLevel>
+				<gwt.localWorkers>1</gwt.localWorkers>
+			</properties>
 		</profile>
 		<profile>
 			<id>production</id>
@@ -186,11 +226,11 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
- 				<!-- Build options for production mode -->
-    			<gwt.style>OBF</gwt.style>
-    			<gwt.logLevel>INFO</gwt.logLevel>
-    			<gwt.localWorkers>2</gwt.localWorkers>
-    		</properties>
+				<!-- Build options for production mode -->
+				<gwt.style>OBF</gwt.style>
+				<gwt.logLevel>INFO</gwt.logLevel>
+				<gwt.localWorkers>2</gwt.localWorkers>
+			</properties>
 		</profile>
 	</profiles>
 </project>

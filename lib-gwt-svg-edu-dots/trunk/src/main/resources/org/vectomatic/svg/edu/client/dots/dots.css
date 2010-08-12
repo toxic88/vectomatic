@@ -1,0 +1,39 @@
+.dot-border {
+  fill:white;
+  stroke:black;
+}
+.dot-content {
+  fill:black;
+  stroke:none;
+}
+.dot-text {
+  font-family:"Verdana";
+  font-size:10px;
+  fill:black;
+}
+.dot-border-selected {
+  fill:white;
+  stroke:red;
+}
+.dot-content-selected {
+  fill:red;
+  stroke:none;
+}
+.dot-border-validated {
+  fill:white;
+  stroke:green;
+}
+.dot-content-validated {
+  fill:green;
+  stroke:none;
+}
+.line-visible {
+  fill:none;
+  stroke:black;
+  visibility:visible;
+}
+.line-invisible {
+  fill:none;
+  stroke:black;
+  visibility:hidden;
+}
