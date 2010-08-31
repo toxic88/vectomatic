@@ -17,9 +17,11 @@
  **********************************************/
 package org.vectomatic.svg.edu.client.puzzle;
 
+import org.vectomatic.dom.svg.OMNode;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.ui.SVGPushButton;
-import org.vectomatic.dom.svg.utils.OMSVGParser;
+import org.vectomatic.svg.edu.client.commons.AsyncXmlLoader;
+import org.vectomatic.svg.edu.client.commons.AsyncXmlLoaderCallback;
 import org.vectomatic.svg.edu.client.commons.CommonBundle;
 import org.vectomatic.svg.edu.client.commons.CommonConstants;
 import org.vectomatic.svg.edu.client.commons.LicenseBox;
@@ -29,23 +31,15 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -53,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class PuzzleMain implements EntryPoint {
 	private static final String DIR = "puzzle";
-	interface PuzzleMainBinder extends UiBinder<VerticalPanel, PuzzleMain> {
+	interface PuzzleMainBinder extends UiBinder<FlowPanel, PuzzleMain> {
 	}
 	private static PuzzleMainBinder mainBinder = GWT.create(PuzzleMainBinder.class);
 
@@ -72,10 +66,14 @@ public class PuzzleMain implements EntryPoint {
 	@UiField
 	ListBox levelList;
 	@UiField
-	HorizontalPanel navigationPanel;
+	FlowPanel navigationPanel;
 	Widget menuWidget;
 	private String[] levels;
 	private int level;
+	/**
+	 * To load game levels
+	 */
+	AsyncXmlLoader loader;
 	/**
 	 * The source image svg element
 	 */
@@ -84,18 +82,6 @@ public class PuzzleMain implements EntryPoint {
 	private Puzzle puzzle;
 	int[][] dimensions = {{3, 3}, {4, 4}, {5, 5}, {7, 5}, {8, 6}};
 	
-	private ResizeHandler resizeHandler = new ResizeHandler() {
-		@Override
-		public void onResize(ResizeEvent event) {
-			if (puzzleSvg != null) {
-				float w = Window.getClientWidth() * 0.9f;
-				float h = Window.getClientHeight() * 0.8f;
-				puzzleSvg.getStyle().setSVGProperty("width", Float.toString(w));
-				puzzleSvg.getStyle().setSVGProperty("height", Float.toString(h));
-			}		
-		}
-	};
-
 	/**
 	 * Constructor for standalone game
 	 */
@@ -118,9 +104,10 @@ public class PuzzleMain implements EntryPoint {
 		
 		// Load the game levels
 		levels = resources.levels().getText().split("\\s");
+		loader = GWT.create(AsyncXmlLoader.class);
 		
 		// Initialize the UI with UiBinder
-		VerticalPanel panel = mainBinder.createAndBindUi(this);
+		FlowPanel panel = mainBinder.createAndBindUi(this);
 		if (menuWidget == null) {
 			menuWidget = LicenseBox.createAboutButton();
 		}
@@ -140,7 +127,6 @@ public class PuzzleMain implements EntryPoint {
 				GWT.log("Cannot parse level=" + levelParam, e);
 			}
 		}
-		Window.addResizeHandler(resizeHandler);
 		RootPanel.get(CommonConstants.ID_UIROOT).add(panel);
 		readPuzzleDef();
 	}
@@ -172,12 +158,6 @@ public class PuzzleMain implements EntryPoint {
 		puzzle = new Puzzle(srcSvg, dimension[0], dimension[1]);
 		puzzle.shuffle();
 		OMSVGSVGElement rootSvg = puzzle.getSvgElement();
-//		rootSvg.getStyle().setWidth(90, Unit.PCT);
-//		rootSvg.getStyle().setHeight(90, Unit.PCT);
-//		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 90f);
-//		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PERCENTAGE, 90f);
-//		rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PX, 600f);
-//		rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PX, 800f);
 		
 		// Add the SVG to the HTML page
 		Element div = svgContainer.getElement();
@@ -187,7 +167,6 @@ public class PuzzleMain implements EntryPoint {
 			div.appendChild(rootSvg.getElement());					
 		}
 		puzzleSvg = rootSvg;
-		resizeHandler.onResize(null);
 	}
 	
 	private String getLevelUrl() {
@@ -195,36 +174,18 @@ public class PuzzleMain implements EntryPoint {
 	}
 
 	public void readPuzzleDef() {
-		String url = getLevelUrl();
-		url += (url.indexOf("?") == -1) ? ("?ts=" + System.currentTimeMillis()) : ("&ts=" + + System.currentTimeMillis());
-		RequestBuilder pictureBuilder = new RequestBuilder(RequestBuilder.GET, url);
-		pictureBuilder.setCallback(new RequestCallback() {
-			public void onError(Request request, Throwable exception) {
+		String url = GWT.getModuleBaseURL() + DIR + "/" + levels[level];
+		loader.loadResource(url, new AsyncXmlLoaderCallback() {
+			@Override
+			public void onError(String resourceName, Throwable error) {
 				svgContainer.setHTML("Cannot find resource");
 			}
 
-			/**
-			 * Parse the SVG artwork and launch the maze generation process
-			 */
-			private void onSuccess(Request request, Response response) {
-				// Parse the document
-				srcSvg = OMSVGParser.parse(response.getText());
+			@Override
+			public void onSuccess(String resourceName, com.google.gwt.dom.client.Element root) {
+				srcSvg = OMNode.convert(root);
 				generate();
 			}
-			
-			public void onResponseReceived(Request request, Response response) {
-				if (response.getStatusCode() == Response.SC_OK) {
-					onSuccess(request, response);
-				} else {
-					onError(request, null);
-				}
-			}
 		});
-		// Send the picture request
-		try {
-			pictureBuilder.send();
-		} catch (RequestException e) {
-			GWT.log("Cannot fetch " + url, e);
-		}
 	}
 }

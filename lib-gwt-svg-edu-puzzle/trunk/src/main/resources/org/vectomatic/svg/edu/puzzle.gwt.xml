@@ -19,4 +19,9 @@
 
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.vectomatic.svg.edu.client.puzzle.PuzzleMain' />
+
+	<!-- By default use the HttpRequestXmlLoader loader -->
+	<replace-with class="org.vectomatic.svg.edu.client.commons.HttpRequestXmlLoader">
+		<when-type-is class="org.vectomatic.svg.edu.client.commons.AsyncXmlLoader" />
+	</replace-with>
 </module>
