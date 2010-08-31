@@ -1,5 +1,5 @@
-<svg width="48" height="48" space="preserve" version="1.1" viewBox="-5 -5 150 110" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-   <rect class="bgcolor" x="-2" y="-14" width="144" height="132" style="stroke:black;stroke-width:4;"/>
+<svg space="preserve" version="1.1" viewBox="-5 -14 150 132" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+   <rect class="bgcolor" x="-2" y="-14" width="144" height="132" style="fill:white;stroke:black;stroke-width:2;"/>
    <g>
     <path d="M54.173,18.782c0,4.243-0.838,8.62-2.546,12.515c10.908-3.314,23.911-3.335,34.782,0.138   c-3.397-8.823-3.418-20.817,0-29.679C85.35-0.18,73.437,0.082,71.26,0.028c-6.584-0.165-13.188,0.388-19.644,1.691   C54.282,6.741,54.173,13.238,54.173,18.782" style="fill:#FCE5E5;"/>
     <path d="M83.402,7.173c-0.74,5.119-6.087,6.185-10.437,6.296c-1.638,0.041-15.043,0.267-15.535-1.057   c-0.268-0.72,5.375-5.124,1.341-5.702c-1.032-0.148-7.053,1.029-2.424-1.579C59.623,3.286,84.28,1.117,83.402,7.173" style="fill:#FFFFFF;"/>
