@@ -14,27 +14,20 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with libgwtsvg-edu.  If not, see http://www.gnu.org/licenses/
+ * 
  **********************************************/
 package org.vectomatic.svg.edu.client.commons;
 
-import com.google.gwt.resources.client.CssResource;
-
 /**
- * CSS class for styles which are common to
- * all lig-gwt-svg-edu games
- * @author laaglu
+ * Class to define an API to load XML resources asynchronously
  */
-public interface CommonCss extends CssResource {
-	@ClassName("nav-up")
-	public String navigationUp();
-	@ClassName("nav-up-hovering")
-	public String navigationUpHovering();
-	@ClassName("nav-panel")
-	public String navigationPanel();
-	@ClassName("nav-panel-menu-btn")
-	public String navigationPanelMenuButton();
-	@ClassName("nav-panel-prev-btn")
-	public String navigationPanelPrevButton();
-	@ClassName("nav-panel-next-btn")
-	public String navigationPanelNextButton();
+public interface AsyncXmlLoader {
+	/**
+	 * Initiates a request to load an XML resource
+	 * @param resourceUrl
+	 * The resource to load
+	 * @param callback
+	 * A callback invoked to process the resource once it is loaded
+	 */
+	public void loadResource(String resourceUrl, AsyncXmlLoaderCallback callback);
 }

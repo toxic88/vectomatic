@@ -17,24 +17,26 @@
  **********************************************/
 package org.vectomatic.svg.edu.client.commons;
 
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.dom.client.Element;
 
 /**
- * CSS class for styles which are common to
- * all lig-gwt-svg-edu games
- * @author laaglu
+ * Interface to process Xml payloads returned by AsyncXmlLoader
  */
-public interface CommonCss extends CssResource {
-	@ClassName("nav-up")
-	public String navigationUp();
-	@ClassName("nav-up-hovering")
-	public String navigationUpHovering();
-	@ClassName("nav-panel")
-	public String navigationPanel();
-	@ClassName("nav-panel-menu-btn")
-	public String navigationPanelMenuButton();
-	@ClassName("nav-panel-prev-btn")
-	public String navigationPanelPrevButton();
-	@ClassName("nav-panel-next-btn")
-	public String navigationPanelNextButton();
+public interface AsyncXmlLoaderCallback {
+	/**
+	 * Method invoked if the resource could not be fetched
+	 * @param resourceName
+	 * The name of the resource
+	 * @param error
+	 * An error describing why the resource could not be fetched.
+	 */
+	public void onError(String resourceName, Throwable error);
+	/**
+	 * Method invoked if the resource has successfully been loaded
+	 * @param resourceName
+	 * The name of the resource
+	 * @param root
+	 * The root elment of the XML document corresponding to the resource
+	 */
+	public void onSuccess(String resourceName, Element root);
 }
