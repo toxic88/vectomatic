@@ -36,6 +36,8 @@ import org.vectomatic.dom.svg.OMSVGUseElement;
 import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
+import org.vectomatic.svg.edu.client.commons.AsyncXmlLoader;
+import org.vectomatic.svg.edu.client.commons.AsyncXmlLoaderCallback;
 import org.vectomatic.svg.edu.client.commons.CommonBundle;
 import org.vectomatic.svg.edu.client.commons.CommonConstants;
 import org.vectomatic.svg.edu.client.commons.LicenseBox;
@@ -50,14 +52,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -67,11 +62,10 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PushMain implements MouseDownHandler, EntryPoint {
@@ -96,9 +90,13 @@ public class PushMain implements MouseDownHandler, EntryPoint {
 	@UiField
 	ListBox levelList;
 	@UiField
-	HorizontalPanel navigationPanel;
+	FlowPanel navigationPanel;
 	Widget menuWidget;
 
+	/**
+	 * To load game levels
+	 */
+	AsyncXmlLoader loader;
 	private String[] levels;
 	private int currentLevel;
 	/**
@@ -191,21 +189,9 @@ public class PushMain implements MouseDownHandler, EntryPoint {
 		}
 	};
 	
-	interface PushMainBinder extends UiBinder<VerticalPanel, PushMain> {
+	interface PushMainBinder extends UiBinder<FlowPanel, PushMain> {
 	}
 	private static PushMainBinder mainBinder = GWT.create(PushMainBinder.class);
-	
-	private ResizeHandler resizeHandler = new ResizeHandler() {
-		@Override
-		public void onResize(ResizeEvent event) {
-			if (pushSvg != null) {
-				float w = Window.getClientWidth() * 0.9f;
-				float h = Window.getClientHeight() * 0.8f;
-				pushSvg.getStyle().setSVGProperty("width", Float.toString(w));
-				pushSvg.getStyle().setSVGProperty("height", Float.toString(h));
-			}		
-		}
-	};
 	
 	/**
 	 * Constructor for standalone game
@@ -229,9 +215,10 @@ public class PushMain implements MouseDownHandler, EntryPoint {
 		
 		// Load the game levels
 		levels = resources.levels().getText().split("\\s");
+		loader = GWT.create(AsyncXmlLoader.class);
 		
 		// Initialize the UI with UiBinder
-		VerticalPanel panel = mainBinder.createAndBindUi(this);
+		FlowPanel panel = mainBinder.createAndBindUi(this);
 		if (menuWidget == null) {
 			menuWidget = LicenseBox.createAboutButton();
 		}
@@ -240,7 +227,6 @@ public class PushMain implements MouseDownHandler, EntryPoint {
 		levelList.addItem(PushConstants.INSTANCE.medium());
 		levelList.addItem(PushConstants.INSTANCE.hard());
 		levelList.setSelectedIndex(0);
-		Window.addResizeHandler(resizeHandler);
 		RootPanel.get(CommonConstants.ID_UIROOT).add(panel);
 		readPushDef();
 	}
@@ -412,7 +398,6 @@ public class PushMain implements MouseDownHandler, EntryPoint {
 			div.appendChild(rootSvg.getElement());					
 		}
 		pushSvg = rootSvg;
-		resizeHandler.onResize(null);
 		if (!GWT.isScript()) {
 			GWT.log(pushSvg.getMarkup());
 		}
@@ -566,37 +551,19 @@ public class PushMain implements MouseDownHandler, EntryPoint {
 		if (animation != null) {
 			animation.cancel();
 		}
-		String url = getLevelUrl();
-		url += (url.indexOf("?") == -1) ? ("?ts=" + System.currentTimeMillis()) : ("&ts=" + + System.currentTimeMillis());
-		RequestBuilder pictureBuilder = new RequestBuilder(RequestBuilder.GET, url);
-		pictureBuilder.setCallback(new RequestCallback() {
-			public void onError(Request request, Throwable exception) {
+		String url = GWT.getModuleBaseURL() + DIR + "/" + levels[currentLevel];
+		loader.loadResource(url, new AsyncXmlLoaderCallback() {
+			@Override
+			public void onError(String resourceName, Throwable error) {
 				svgContainer.setHTML("Cannot find resource");
 			}
 
-			/**
-			 * Parse the SVG artwork and launch the maze generation process
-			 */
-			private void onSuccess(Request request, Response response) {
-				// Parse the document
-				srcSvg = OMSVGParser.parse(response.getText());
+			@Override
+			public void onSuccess(String resourceName, com.google.gwt.dom.client.Element root) {
+				srcSvg = OMNode.convert(root);
 				generate();
 			}
-			
-			public void onResponseReceived(Request request, Response response) {
-				if (response.getStatusCode() == Response.SC_OK) {
-					onSuccess(request, response);
-				} else {
-					onError(request, null);
-				}
-			}
 		});
-		// Send the picture request
-		try {
-			pictureBuilder.send();
-		} catch (RequestException e) {
-			GWT.log("Cannot fetch " + url, e);
-		}
 	}
 }
 

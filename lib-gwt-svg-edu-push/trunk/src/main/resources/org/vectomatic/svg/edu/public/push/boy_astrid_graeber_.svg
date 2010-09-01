@@ -116,6 +116,7 @@
    <flowPara>This is flowed text. Currently, you can only edit it by using the XML editor. You can paste style (Ctrl+Shift+V) from regular text objects to it.</flowPara>
   </flowDiv>
  </flowRoot>
+ <rect x="0" y="0" width="120" height="133" style="fill:white;"/>
  <path d="M90.52,104.48c-0.734-8.863-0.032-22.078-6.255-25.831,2.64-5.307,2.424-3.226,3.788-4.045,5.723,11.18,4.532,20.275,2.467,29.876z" fill-rule="nonzero" sodipodi:nodetypes="cccc" stroke-miterlimit="4.0000000" stroke-width="0.00000000" fill="#060715"/>
  <path d="M95.883,98.272c-0.215-8.892,1.257-22.044-4.736-26.153,2.944-5.144,2.607-3.08,4.017-3.817,5.056,11.495,3.341,20.505,0.719,29.97z" fill-rule="nonzero" sodipodi:nodetypes="cccc" stroke-miterlimit="4.0000000" stroke-width="0.00000000" fill="#060715"/>
  <path d="M92.236,102.45c0.519-8.876,3.07-21.862-2.563-26.451,3.358-4.885,2.852-2.855,4.318-3.473,4.096,11.873,1.638,20.711-1.755,29.924z" fill-rule="nonzero" sodipodi:nodetypes="cccc" stroke-miterlimit="4.0000000" stroke-width="0.00000000" fill="#060715"/>
