@@ -28,6 +28,10 @@ public interface MenuCss extends CssResource {
 	public String gameRule();
 	@ClassName("game-logo")
 	public String gameLogo();
-	@ClassName("game-table")
-	public String gameTable();
+	@ClassName("menu-panel")
+	public String menuPanel();
+	@ClassName("anchor")
+	public String anchor();
+	@ClassName("game-panel")
+	public String gamePanel();
 }
