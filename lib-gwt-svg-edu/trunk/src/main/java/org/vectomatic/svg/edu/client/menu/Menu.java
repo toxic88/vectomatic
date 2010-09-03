@@ -31,7 +31,6 @@ import org.vectomatic.dom.svg.ui.SVGButtonBase.SVGFaceName;
 import org.vectomatic.dom.svg.ui.SVGButtonBase.SVGStyleChange;
 import org.vectomatic.dom.svg.utils.DOMHelper;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
-import org.vectomatic.dom.svg.utils.SVGConstants;
 import org.vectomatic.dom.svg.utils.SVGPrefixResolver;
 import org.vectomatic.svg.edu.client.commons.CommonBundle;
 import org.vectomatic.svg.edu.client.commons.CommonConstants;
