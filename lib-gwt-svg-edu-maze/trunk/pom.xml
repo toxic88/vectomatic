@@ -102,7 +102,7 @@
 						<id>gwt compilation</id>
 						<configuration>
 							<modules>
-								<module>org.vectomatic.svg.edu.maze</module>
+								<module>${gwt.module}</module>
 							</modules>
 							<style>${gwt.style}</style>
 							<!-- <style>OBF</style>-->
@@ -210,6 +210,7 @@
     			<gwt.style>DETAILED</gwt.style>
     			<gwt.logLevel>WARN</gwt.logLevel>
     			<gwt.localWorkers>1</gwt.localWorkers>
+    			<gwt.module>org.vectomatic.svg.edu.maze</gwt.module>
     		</properties>
 		</profile>
 		<profile>
@@ -222,6 +223,20 @@
     			<gwt.style>OBF</gwt.style>
     			<gwt.logLevel>INFO</gwt.logLevel>
     			<gwt.localWorkers>2</gwt.localWorkers>
+     			<gwt.module>org.vectomatic.svg.edu.maze</gwt.module>
+    		</properties>
+		</profile>
+		<profile>
+			<id>plasmoid</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+ 				<!-- Build options for production mode -->
+    			<gwt.style>OBF</gwt.style>
+    			<gwt.logLevel>INFO</gwt.logLevel>
+    			<gwt.localWorkers>2</gwt.localWorkers>
+     			<gwt.module>org.vectomatic.svg.edu.mazePlasmoid</gwt.module>
     		</properties>
 		</profile>
 	</profiles>

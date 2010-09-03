@@ -38,11 +38,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -154,11 +153,9 @@ public class MazeMain implements EntryPoint {
 	 */
 	RectangularMaze maze;
 	
-	static {
-		StyleInjector.inject(style.getText(), true);
-		pathRule = getRule("." + style.path());
-	}
-	
+	/**
+	 * To load game levels
+	 */
 	AsyncXmlLoader loader;
 	
 	/**
@@ -179,6 +176,7 @@ public class MazeMain implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		common.css().ensureInjected();
+		style.ensureInjected();
 		
 		if (solutionTimer != null) {
 			solutionTimer.cancel();
@@ -223,7 +221,6 @@ public class MazeMain implements EntryPoint {
 				GWT.log("Cannot parse level=" + levelParam, e);
 			}
 		}
-		
 		readMazeDef();
 	}
 	
@@ -348,6 +345,12 @@ public class MazeMain implements EntryPoint {
 		});
 		if (maze.gameWon()) {
 			freeze();
+			// Retrieve the CSS rule governing the path color
+			// Animate it to show the game has been won.
+			if (pathRule == null) {
+				pathRule = getRule("." + style.path());
+				GWT.log(pathRule.toString());
+			}
 			solutionTimer = new Timer() {
 				private int H = 120, S = 40, V = 93;
 				@Override
@@ -470,9 +473,10 @@ public class MazeMain implements EntryPoint {
 	}-*/;
 	  
 	@UiHandler("focusPanel")
-	public void onKeyPress(KeyPressEvent event) {
+	public void onKeyDown(KeyDownEvent event) {
 		if (!frozen) {
-			switch (eventGetKeyCode(event.getNativeEvent())) {
+			int code = eventGetKeyCode(event.getNativeEvent());
+			switch (code) {
 				case KeyCodes.KEY_DOWN:
 					maze.down();
 					break;
@@ -489,7 +493,8 @@ public class MazeMain implements EntryPoint {
 					maze.back();
 					break;
 				default:
-					GWT.log("key code:" + (int)event.getCharCode() + " " + (int)event.getUnicodeCharCode());
+					//GWT.log("key code:" + (int)event.getCharCode() + " " + (int)event.getUnicodeCharCode());
+					GWT.log("key code:" + (int)event.getNativeKeyCode());
 			}
 			update();
 		}

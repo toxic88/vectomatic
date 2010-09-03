@@ -121,9 +121,14 @@
 			width:48%;
 			height:16%;
 		}
+		.main {
+			position:absolute;
+			width:100%;
+			height:100%;
+		}
 	</ui:style>
-	<g:FlowPanel>
-	  <g:FocusPanel ui:field="focusPanel" width="85%" height="88%" styleName="{style.focus}"/>
+	<g:FlowPanel styleName="{style.main}">
+	  <g:FocusPanel ui:field="focusPanel" width="85%" height="80%" styleName="{style.focus}"/>
 	  <g:ListBox ui:field='levelList' styleName='{style.levelList}'/>
 
 	  <g:FlowPanel styleName='{style.controlPanel}'>
