@@ -51,7 +51,6 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -86,15 +85,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.HSliderBar;
 import com.google.gwt.widgetideas.client.SliderBar;
@@ -105,7 +103,7 @@ import com.google.gwt.widgetideas.client.SliderListenerAdapter;
  * @author laaglu
  */
 public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHandler, MouseOverHandler, MouseUpHandler, LoseCaptureHandler, EntryPoint {
-	interface DotsMainBinder extends UiBinder<VerticalPanel, DotsMain> {
+	interface DotsMainBinder extends UiBinder<FlowPanel, DotsMain> {
 	}
 	private static DotsMainBinder mainBinder = GWT.create(DotsMainBinder.class);
 	
@@ -131,7 +129,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	@UiField
 	SVGPushButton nextButton;
 	@UiField
-	HorizontalPanel navigationPanel;
+	FlowPanel navigationPanel;
 	Widget menuWidget;
 
 	@UiField
@@ -154,7 +152,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	ListBox dotList;
 	@UiField
 	TextArea textArea;
-	private VerticalPanel panel;
+	private FlowPanel panel;
 	
 	/**
 	 * Index of the currently displayed image in the pictures array
@@ -262,8 +260,6 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		designPanel.setVisible(false);
 		RootPanel.get(CommonConstants.ID_UIROOT).add(panel);
 		Element div = svgContainer.getElement();
-		div.getStyle().setWidth(100, Style.Unit.PCT);
-		div.getStyle().setHeight(100, Style.Unit.PCT);
 		
 		// Handle resizing issues.
 		ResizeHandler resizeHandler = new ResizeHandler() {
@@ -389,15 +385,9 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	}
 
 	private void updatePictureSize() {
-		float width = Window.getClientWidth() - 50;
-		float height = Window.getClientHeight() - 50;
 		if (rootSvg != null) {
-			rootSvg.setWidth(OMSVGLength.SVG_LENGTHTYPE_PX, width * 0.8f);
-			rootSvg.setHeight(OMSVGLength.SVG_LENGTHTYPE_PX, height * 0.8f);
 			OMSVGMatrix m = dotSvg.getCTM().inverse();
 			updateScales(m.getA(), m.getD());
-			panel.setCellWidth(svgContainer, width * 0.8f + "px");
-			panel.setCellHeight(svgContainer, height * 0.8f + "px");
 		}
 	}
 	
@@ -862,6 +852,8 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		circle1.setClassNameBaseVal(className1);
 		OMSVGCircleElement circle2 = (OMSVGCircleElement) circle1.getNextSibling();
 		circle2.setClassNameBaseVal(className2);
+		OMSVGTextElement text = (OMSVGTextElement) dot.getFirstChild().getLastChild();
+		text.setClassNameBaseVal(css.dotText());
 	}
 	private String getDotClassName(OMSVGGElement dot) {
 		OMSVGCircleElement circle1 = (OMSVGCircleElement) dot.getFirstChild().getFirstChild();
