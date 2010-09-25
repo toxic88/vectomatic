@@ -3226,7 +3226,7 @@ public class El {
     return @com.extjs.gxt.ui.client.core.El::leftRightTest.test(s);
   }-*/;
   /* begin laaglu */
-  private static native String getClassName(Element dom) /*-{
+  public static native String getClassName(Element dom) /*-{
      var cn = dom.className;
 	 //@com.google.gwt.core.client.GWT::log(Ljava/lang/String;)(typeof(cn));
      if ("object" == typeof(cn)) {

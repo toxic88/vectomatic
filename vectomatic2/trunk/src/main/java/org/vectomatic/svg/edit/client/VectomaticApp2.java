@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author laaglu
  */
 public class VectomaticApp2 implements EntryPoint {
-	static final VectomaticApp2 APP = new VectomaticApp2();
+	static VectomaticApp2 APP;
 	private List<SVGWindow> windows;
 	private SVGWindow activeWindow;
 	private int windowX, windowY;
@@ -74,28 +74,32 @@ public class VectomaticApp2 implements EntryPoint {
 	private AboutDialog aboutDialog;
 	
 	public void onModuleLoad() {
+		APP = this;
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			public void onUncaughtException(Throwable throwable) {
-				String text = "Uncaught exception: ";
-				while (throwable != null) {
-					StackTraceElement[] stackTraceElements = throwable
-							.getStackTrace();
-					text += throwable.toString() + "\n";
-					for (int i = 0; i < stackTraceElements.length; i++) {
-						text += "    at " + stackTraceElements[i] + "\n";
+				GWT.log("Uncaught exception", throwable);
+				if (!GWT.isScript()) {
+					String text = "Uncaught exception: ";
+					while (throwable != null) {
+						StackTraceElement[] stackTraceElements = throwable
+								.getStackTrace();
+						text += throwable.toString() + "\n";
+						for (int i = 0; i < stackTraceElements.length; i++) {
+							text += "    at " + stackTraceElements[i] + "\n";
+						}
+						throwable = throwable.getCause();
+						if (throwable != null) {
+							text += "Caused by: ";
+						}
 					}
-					throwable = throwable.getCause();
-					if (throwable != null) {
-						text += "Caused by: ";
-					}
+					DialogBox dialogBox = new DialogBox(true);
+					DOM.setStyleAttribute(dialogBox.getElement(),
+							"backgroundColor", "#ABCDEF");
+					System.err.print(text);
+					text = text.replaceAll(" ", "&nbsp;");
+					dialogBox.setHTML("<pre>" + text + "</pre>");
+					dialogBox.center();
 				}
-				DialogBox dialogBox = new DialogBox(true);
-				DOM.setStyleAttribute(dialogBox.getElement(),
-						"backgroundColor", "#ABCDEF");
-				System.err.print(text);
-				text = text.replaceAll(" ", "&nbsp;");
-				dialogBox.setHTML("<pre>" + text + "</pre>");
-				dialogBox.center();
 			}
 		});
 		AppBundle.INSTANCE.css().ensureInjected();
