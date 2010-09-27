@@ -61,32 +61,38 @@ public class SVGWindow extends Window {
 	/**
 	 * The svg image to display
 	 */
-	private OMSVGSVGElement svg;
+	protected OMSVGSVGElement svg;
 	/**
 	 * A group to apply a visualization transform to the svg
 	 * It is the first and only child of the svg
 	 */
-	private OMSVGGElement xformGroup;
+	protected OMSVGGElement xformGroup;
 	/**
 	 * The current transform
 	 */
-	private OMSVGTransform xform;
+	protected OMSVGTransform xform;
 	/**
 	 * The current scaling the the svg
 	 */
-	private float angle;
+	protected float angle;
 	/**
 	 * The current rotation of the svg
 	 */
-	private float scale;
-	
+	protected float scale;
 	/**
-	 * Window constructor
+	 * The SVG rotation compass
+	 */
+	protected Compass compass;
+	/**
+	 * The SVG scale slider
+	 */
+	protected Slider scaleSlider;
+	/**
+	 * Specifies the SVG window to display
 	 * @param svg
 	 * The SVG image to display
 	 */
-	public SVGWindow(final OMSVGSVGElement svg) {
-		super();
+	public void setSvg(final OMSVGSVGElement svg) {
 		this.svg = svg;
 		setPlain(true);
 		setMaximizable(true);
@@ -144,7 +150,7 @@ public class SVGWindow extends Window {
 	    /////////////////////////////////////////////////
 		
 		// Create the compass
-	    Compass compass = new Compass();
+	    compass = GWT.create(Compass.class);
 	    final OMSVGSVGElement compassSvg = compass.getSvgElement();
 	    compassSvg.getStyle().setWidth(100, Unit.PCT);
 	    compassSvg.getStyle().setHeight(100, Unit.PCT);
@@ -163,7 +169,7 @@ public class SVGWindow extends Window {
 	    		20));
 	    
 		// Create the scale slider
-		final Slider scaleSlider = new Slider() {
+		scaleSlider = new Slider() {
 			@Override
 	    	protected String onFormatValue(int value) {
 				return Integer.toString((int)(scale * 100)) + "%";
@@ -210,15 +216,35 @@ public class SVGWindow extends Window {
 	}
 	
 	/**
+	 * Sets the scaling of the main image through the scale slider.
+	 * @param scale
+	 * The scale (50 means scale 1:1)
+	 */
+	public void setScaleSlider(int value) {
+		scaleSlider.setValue(value);
+	}
+	
+	/**
 	 * Sets the scaling of the main image.
 	 * @param scale
 	 * The scale (1 means scale 1:1, 2 means scale 2:1)
 	 */
-	public void setScale(float scale) {
+	protected void setScale(float scale) {
 		this.scale = scale;
 		OMSVGRect rect = svg.getViewBox().getBaseVal();
         svg.getStyle().setWidth(rect.getWidth() * scale, Unit.PX);
         svg.getStyle().setHeight(rect.getHeight() * scale, Unit.PX);
+	}
+
+	
+	/**
+	 * Sets the rotation of the main image through the
+	 * compass widget.
+	 * @param angleDeg
+	 * The angle (in degrees)
+	 */
+	public void setRotationCompass(int angleDeg) {
+		compass.setRotation(angleDeg);
 	}
 	
 	/**
@@ -226,7 +252,7 @@ public class SVGWindow extends Window {
 	 * @param angle
 	 * The angle (in degrees)
 	 */
-	public void setRotation(float angle) {
+	protected void setRotation(float angle) {
 		this.angle = angle;
 		OMSVGRect rect = svg.getViewBox().getBaseVal();
 		OMSVGPoint center = svg.createSVGPoint(rect.getCenterX(), rect.getCenterY());

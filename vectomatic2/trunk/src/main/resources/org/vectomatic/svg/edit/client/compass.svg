@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" height="100" version="1.1"
     viewBox="-1 -1 104.99999 104.99999" width="100" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <style type="text/css"><![CDATA[.digit {
+    <style type="text/css">.digit {
   font-family:Arial;
   font-weight:bold;
   font-size:9px;
@@ -42,7 +42,7 @@
   fill:yellow;
   opacity:0.5;
 }
-]]></style>
+</style>
     <defs>
         <path
             d="M 50.0,21.5 a 28.5,28.5 0,1,1 0,57.0 a 28.5,28.5 0,1,1 0,-57.0"
@@ -71,7 +71,7 @@
     <circle class="c2" cx="50.0" cy="50.0" r="2.5"/>
     <ellipse cx="50.0" cy="50.0" rx="50.0" ry="50.0" style="fill:url(#rg1);stroke:#0e1ddc;stroke-width:2;opacity:0.75;"/>
     <ellipse cx="50.0" cy="27.0" rx="35.0" ry="27.0" style="fill:url(#lg3);stroke:#a4aaf9;stroke-width:1.34302318;opacity:0.3495575;"/>
-    <g class="digit">
+    <g id="textGroup" class="digit" transform="rotate(0,50.0,50.0)">
         <text class="digitColor">
             <textPath startOffset="0.0" xlink:href="#textPath">0</textPath>
         </text>

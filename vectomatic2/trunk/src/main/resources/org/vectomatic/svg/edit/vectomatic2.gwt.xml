@@ -36,4 +36,36 @@
 			<when-property-is name="user.agent" value="gecko1_8" />
 		</any>
 	</replace-with>
+
+	<replace-with class="org.vectomatic.svg.edit.client.gxt.AbsoluteLayerLayout.PositionHack">
+		<when-type-is class="org.vectomatic.svg.edit.client.gxt.AbsoluteLayerLayout.PositionHack" />
+	</replace-with>
+	<replace-with class="org.vectomatic.svg.edit.client.gxt.AbsoluteLayerLayout.PositionHackMozilla">
+		<when-type-is class="org.vectomatic.svg.edit.client.gxt.AbsoluteLayerLayout.PositionHack" />
+		<any>
+			<when-property-is name="user.agent" value="gecko" />
+			<when-property-is name="user.agent" value="gecko1_8" />
+		</any>
+	</replace-with>
+
+	<!-- Workaround for bug http://code.google.com/p/chromium/issues/detail?id=55010 -->
+	<replace-with class="org.vectomatic.svg.edit.client.widget.Compass">
+		<when-type-is class="org.vectomatic.svg.edit.client.widget.Compass" />
+	</replace-with>
+	<replace-with class="org.vectomatic.svg.edit.client.widget.CompassWebkit">
+		<when-type-is class="org.vectomatic.svg.edit.client.widget.Compass" />
+		<any>
+			<when-property-is name="user.agent" value="safari" />
+		</any>
+	</replace-with>
+	<replace-with class="org.vectomatic.svg.edit.client.SVGWindow">
+		<when-type-is class="org.vectomatic.svg.edit.client.SVGWindow" />
+	</replace-with>
+	<replace-with class="org.vectomatic.svg.edit.client.SVGWindowWebkit">
+		<when-type-is class="org.vectomatic.svg.edit.client.SVGWindow" />
+		<any>
+			<when-property-is name="user.agent" value="safari" />
+		</any>
+	</replace-with>
+
 </module>

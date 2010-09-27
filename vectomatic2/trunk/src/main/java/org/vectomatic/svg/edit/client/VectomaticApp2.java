@@ -179,7 +179,8 @@ public class VectomaticApp2 implements EntryPoint {
 	}
 	
 	public SVGWindow addWindow(OMSVGSVGElement svg, String title) {
-		SVGWindow window = new SVGWindow(svg);
+		SVGWindow window = GWT.create(SVGWindow.class);
+		window.setSvg(svg);
 		window.setHeading(title);
 		windows.add(window);
 		// To be notified when a window is activated in order to
@@ -300,8 +301,8 @@ public class VectomaticApp2 implements EntryPoint {
 	
 	public void resetView() {
 		GWT.log("resetView()");
-		activeWindow.setRotation(0);
-		activeWindow.setScale(1f);
+		activeWindow.setRotationCompass(0);
+		activeWindow.setScaleSlider(50);
 	}
 	public void tileWindows() {
 		GWT.log("tileWindows()");

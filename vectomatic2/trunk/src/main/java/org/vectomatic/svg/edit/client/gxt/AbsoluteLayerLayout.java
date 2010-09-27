@@ -36,15 +36,32 @@ import com.google.gwt.user.client.ui.Widget;
  * @author laaglu
  */
 public class AbsoluteLayerLayout extends FitLayout {
+	public static class PositionHack {
+		protected int getDy(Window window) {
+			return window.getDraggable().getDragHandle().getOffsetHeight();
+		}
+	}
+	public static class PositionHackMozilla extends PositionHack {
+		@Override
+		protected int getDy(Window window) {
+			return 0;
+		}		
+	}
 	protected void onLayout(Container<?> container, El target) {
 		super.onLayout(container, target);
 		// Retrieve the first parent with absolute layout (it
 		// ought to be the Window)
 		Widget w = container;
-		while ((w = w.getParent()) != null && !(w instanceof Window))  {
+		while ((w = w.getParent()) != null)  {
+			String position = w.getElement().getStyle().getPosition();
+			if (Position.ABSOLUTE.getCssName().equals(position)) {
+				break;
+			}
 		}
 		Window window = (Window)w;
-		Point p = target.getOffsetsTo(window.getElement());
+		Point p = target.getOffsetsTo(w.getElement());
+		PositionHack ph = GWT.create(PositionHack.class);
+		p.y -= ph.getDy(window);
 		GWT.log("p = " + p.toString());
 		Size windowSize = window.el().getStyleSize();
 		for (int i = 0, count = container.getItemCount(); i < count; i++) {
@@ -74,62 +91,5 @@ public class AbsoluteLayerLayout extends FitLayout {
 			c.getElement().getStyle().setZIndex(data.getZIndex());
 		}
 	}
-	/*@Override
-	protected void onLayout(Container<?> container, El target) {
-		// GWT.log("target:" + target.toString());
-		// GWT.log("target.getTop:" + target.getTop());
-		// GWT.log("target.getLeft:" + target.getLeft());
-		// GWT.log("target.getTop(true):" + target.getTop(true));
-		// GWT.log("target.getLeft(true):" + target.getLeft(true));
-		// GWT.log("target.getScrollLeft:" + target.getScrollLeft());
-		// GWT.log("target.getScrollTop:" + target.getScrollTop());
-		// GWT.log("target.getX:" + target.getX());
-		// GWT.log("target.getY:" + target.getY());
-		// GWT.log("target.getWidth:" + target.getWidth());
-		// GWT.log("target.getHeight:" + target.getHeight());
-		// GWT.log("target.getComputedWidth:" + target.getComputedWidth());
-		// GWT.log("target.getClientHeight:" + target.getClientHeight());
-		// GWT.log("target.getStyleSize:" + target.getStyleSize().toString());
-		// GWT.log("target.getBounds:" + target.getBounds().toString());
-		// GWT.log("target.getBounds(true):" +
-		// target.getBounds(true).toString());
-		// GWT.log("target.getOffsetsTo(true):" +
-		// target.getOffsetsTo(window.getElement()));
-		super.onLayout(container, target);
-		// Retrieve the first parent with absolute layout (it
-		// ought to be the Window)
-		Widget w = container;
-		while ((w = w.getParent()) != null && !(w instanceof Window))  {
-		}
-		Window window = (Window)w;
-		Point p = target.getOffsetsTo(window.getElement());
-		GWT.log("p = " + p.toString());
-		Size windowSize = window.el().getStyleSize();
-		for (int i = 0, count = container.getItemCount(); i < count; i++) {
-			Size containerSize = target.getStyleSize();
-			Component c = container.getItem(i);
-			c.getElement().getStyle().setPosition(Position.ABSOLUTE);
-			AbsoluteLayerLayoutData data = (AbsoluteLayerLayoutData) c.getData("layoutData");
-			int horizontalOffset = data.getHorizontalOffset();
-			if (data.isAttachedLeft()) {
-				c.getElement().getStyle().setLeft(p.x + horizontalOffset, Unit.PX);
-			} else {
-				c.getElement().getStyle().setRight(windowSize.width - containerSize.width - p.x + horizontalOffset, Unit.PX);
-			}
-			int verticalOffset = data.getVerticalOffset();
-			if (data.isAttachedTop()) {
-				c.getElement().getStyle().setTop(p.y + verticalOffset, Unit.PX);
-			} else {
-				c.getElement().getStyle().setBottom(windowSize.height - containerSize.height - p.y + verticalOffset, Unit.PX);
-			}
-			if (c.isRendered()) {
-				containerSize.width -= getSideMargins(c);
-				containerSize.height -= c.el().getMargins("tb");
-				setSize(c, 
-						data.getWidth() > 0 ? data.getWidth() : containerSize.width, 
-						data.getHeight() > 0 ? data.getHeight() : containerSize.height);
-			}
-			c.getElement().getStyle().setZIndex(data.getZIndex());
-		}
-	}*/
 }
+

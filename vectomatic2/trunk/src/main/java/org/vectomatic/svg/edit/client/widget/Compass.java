@@ -17,6 +17,7 @@
  **********************************************/
 package org.vectomatic.svg.edit.client.widget;
 
+import org.vectomatic.dom.svg.OMSVGGElement;
 import org.vectomatic.dom.svg.OMSVGMatrix;
 import org.vectomatic.dom.svg.OMSVGPathElement;
 import org.vectomatic.dom.svg.OMSVGPoint;
@@ -30,6 +31,7 @@ import org.vectomatic.svg.edit.client.event.HasRotationHandlers;
 import org.vectomatic.svg.edit.client.event.RotationEvent;
 import org.vectomatic.svg.edit.client.event.RotationHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseEvent;
@@ -47,11 +49,12 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * @author laaglu
  */
 public class Compass implements HasRotationHandlers {
-	private OMSVGTransform rotation;
-	private boolean rotate;
-	private int angle;
-	private OMSVGSVGElement compass;
-	private HandlerManager handlerManager;
+	protected OMSVGTransform rotation;
+	protected boolean rotate;
+	protected int angle;
+	protected OMSVGSVGElement compass;
+	protected HandlerManager handlerManager;
+	protected OMSVGGElement textGroup;
 	
 	/**
 	 * Constructor.
@@ -64,9 +67,9 @@ public class Compass implements HasRotationHandlers {
 	 */
 	public Compass() {
 		compass = AppBundle.INSTANCE.compass().getSvg();
-		OMSVGPathElement textPath = (OMSVGPathElement)DOMHelper.evaluateXPath(compass, ".//svg:path[@id='textPath']", new SVGPrefixResolver()).next();
+		textGroup = (OMSVGGElement)DOMHelper.evaluateXPath(compass, ".//svg:g[@id='textGroup']", new SVGPrefixResolver()).next();
 		SVGProcessor.normalizeIds(compass);
-		rotation = textPath.getTransform().getBaseVal().getItem(0);
+		rotation = textGroup.getTransform().getBaseVal().getItem(0);
 		compass.addMouseDownHandler(new MouseDownHandler()  {
 			@Override
 			public void onMouseDown(MouseDownEvent event) {
@@ -81,20 +84,12 @@ public class Compass implements HasRotationHandlers {
 			public void onMouseMove(MouseMoveEvent event) {
 				if (rotate) {
 					OMSVGPoint p = getLocalCoordinates(event).substract(compass.createSVGPoint(50,50));
-//					GWT.log(p.getDescription() + " " + Float.toString(-p.getY() / p.length()));
+					GWT.log(p.getDescription() + " " + Float.toString(-p.getY() / p.length()));
 					double a = Math.acos(-p.getY() / p.length());
 					if (p.getX() < 0) {
 						a = 2 * Math.PI - a;
 					}
-//					GWT.log(p.getX() + " " + p.getY());
-//					GWT.log((p.getX() / p.length()) + " " + (p.getY() / p.length()) + " " + (a * 360 / (2 * Math.PI)));
-					
-					int angle2 = (((int)toDeg(a)) / 6) * 6;
-					if (angle2 != angle) {
-						angle = angle2;
-						rotation.setRotate(angle - 6, 50, 50);
-						fireEvent(new RotationEvent(angle)); 
-					}
+					setRotation((((int)toDeg(a)) / 6) * 6);
 					event.preventDefault();
 					event.stopPropagation();
 				}
@@ -111,6 +106,12 @@ public class Compass implements HasRotationHandlers {
 				}
 			}
 		});
+	}
+	
+	public void setRotation(int angle) {
+		this.angle = angle;
+		rotation.setRotate(angle, 50, 50);
+		fireEvent(new RotationEvent(angle)); 
 	}
 	
 	public OMSVGSVGElement getSvgElement() {
