@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
+import org.vectomatic.dom.svg.utils.SVGConstants;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -173,6 +174,7 @@ public class VectomaticApp2 implements EntryPoint {
 		viewPort.add(menuBar);
 		addWindow(AppBundle.INSTANCE.fish().getSvg(), "fish.svg");
 		addWindow(AppBundle.INSTANCE.fries().getSvg(), "fries.svg");
+		viewPort.setStyleAttribute("background-color", SVGConstants.CSS_BEIGE_VALUE);
 
 		update();
 		RootPanel.get().add(viewPort);
