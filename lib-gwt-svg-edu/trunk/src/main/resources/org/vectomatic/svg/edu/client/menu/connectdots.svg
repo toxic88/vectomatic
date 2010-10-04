@@ -1,6 +1,6 @@
 <svg version="1.0" viewBox="100 160 380 200"
 	xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<style type="text/css"><![CDATA[
+	<style type="text/css">
 	.dot1 {
 	  fill:white;
 	  stroke:black;
@@ -14,7 +14,6 @@
 	  font-size:10px;
 	  fill:black;
 	}
-	]]>
 	</style>
 	<defs>
 		<filter id="shadow">
