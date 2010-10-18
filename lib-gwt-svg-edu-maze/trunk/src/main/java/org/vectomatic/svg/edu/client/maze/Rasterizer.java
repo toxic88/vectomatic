@@ -208,7 +208,7 @@ public class Rasterizer {
 
 		
 		// Render the canvas path as a cell grid using isPointInPath
-		OMSVGDocument doc = cellGroup.getOwnerDocument();
+		OMSVGDocument doc = (OMSVGDocument) cellGroup.getOwnerDocument();
 		RasterizationResult result = new RasterizationResult(colCount, rowCount);
 		
 		float cellWidth = width / colCount;

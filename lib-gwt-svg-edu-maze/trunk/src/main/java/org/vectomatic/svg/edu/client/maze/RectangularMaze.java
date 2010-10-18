@@ -334,7 +334,7 @@ public class RectangularMaze extends Maze {
 		grid[srcX][srcY].setClassName(style.src());
 		grid[destX][destY].setClassName(style.dest());
 		OMSVGRectElement srcRect = grid[srcX][srcY].rect;
-		OMSVGDocument document = srcRect.getOwnerDocument();
+		OMSVGDocument document = (OMSVGDocument) srcRect.getOwnerDocument();
 		OMSVGGElement cellGroup = (OMSVGGElement)srcRect.getParentNode();
 		if (srcCircle == null) {
 			float srcX = srcRect.getX().getBaseVal().getValue();

@@ -515,7 +515,7 @@ public class MazeMain implements EntryPoint {
 			div.appendChild(svg.getElement());					
 		}
 		svgRoot = svg;
-		document = svgRoot.getOwnerDocument();
+		document = (OMSVGDocument) svgRoot.getOwnerDocument();
 		mazeDef = (OMSVGPathElement) document.getElementById(ID_MAZE);
 		cellGroup = null;
 		wallPath = null;
