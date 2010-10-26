@@ -57,12 +57,6 @@ public class Compass implements HasRotationHandlers {
 	
 	/**
 	 * Constructor.
-	 * @param svg
-	 * The root svg element.
-	 * @param R
-	 * The radius of the compass.
-	 * @param p
-	 * The center of the compass.
 	 */
 	public Compass() {
 		compass = AppBundle.INSTANCE.compass().getSvg();

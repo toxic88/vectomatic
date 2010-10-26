@@ -120,7 +120,7 @@ public class SVGWindow extends Window {
 	    		OMSVGRect viewBox = svg.getViewBox().getBaseVal();
 	    		if (viewBox.getWidth() == 0f || viewBox.getHeight() == 0f) {
 		    		GWT.log(svg.getBBox().getDescription());
-	    			OMSVGRect bbox = inset(svg.getBBox(), svg.createSVGRect(), -0.1f * svg.getBBox().getWidth(), -0.1f * svg.getBBox().getHeight());
+	    			OMSVGRect bbox = svg.getBBox().inset(svg.createSVGRect(), -0.1f * svg.getBBox().getWidth(), -0.1f * svg.getBBox().getHeight());
 	    			viewBox.setWidth(bbox.getWidth());
 	    			viewBox.setHeight(bbox.getHeight());
 	    			setScale(scale);
@@ -205,14 +205,6 @@ public class SVGWindow extends Window {
 	    
 		setLayout(new FitLayout());
 		add(layersContainer, new FitData(4));
-	}
-	
-	private static OMSVGRect inset(OMSVGRect src, OMSVGRect dest, float x, float y) {
-		dest.setX(src.getX() + x);
-		dest.setY(src.getY() + y);
-		dest.setWidth(src.getWidth() - x * 2);
-		dest.setHeight(src.getHeight() - y * 2);
-		return dest;
 	}
 	
 	/**

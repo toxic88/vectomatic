@@ -21,6 +21,7 @@ import org.vectomatic.dom.svg.ui.SVGResource;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
  * Application resource bundle class
@@ -36,4 +37,166 @@ public interface AppBundle extends ClientBundle {
 	SVGResource fries();
 	@Source("compass.svg")
 	SVGResource compass();
-}
+	
+    @Source("altGlyphDef.png")
+    ImageResource altGlyphDef();
+    @Source("altGlyphItem.png")
+    ImageResource altGlyphItem();
+    @Source("altGlyph.png")
+    ImageResource altGlyph();
+    @Source("animateColor.png")
+    ImageResource animateColor();
+    @Source("animateMotion.png")
+    ImageResource animateMotion();
+    @Source("animate.png")
+    ImageResource animate();
+    @Source("animateTransform.png")
+    ImageResource animateTransform();
+    @Source("a.png")
+    ImageResource a();
+    @Source("circle.png")
+    ImageResource circle();
+    @Source("clipPath.png")
+    ImageResource clipPath();
+    @Source("color-profile.png")
+    ImageResource colorProfile();
+    @Source("cursor.png")
+    ImageResource cursor();
+    @Source("defs.png")
+    ImageResource defs();
+    @Source("desc.png")
+    ImageResource desc();
+    @Source("ellipse.png")
+    ImageResource ellipse();
+    @Source("feBlend.png")
+    ImageResource feBlend();
+    @Source("feColorMatrix.png")
+    ImageResource feColorMatrix();
+    @Source("feComponentTransfer.png")
+    ImageResource feComponentTransfer();
+    @Source("feComposite.png")
+    ImageResource feComposite();
+    @Source("feConvolveMatrix.png")
+    ImageResource feConvolveMatrix();
+    @Source("feDiffuseLighting.png")
+    ImageResource feDiffuseLighting();
+    @Source("feDisplacementMap.png")
+    ImageResource feDisplacementMap();
+    @Source("feDistantLight.png")
+    ImageResource feDistantLight();
+    @Source("feFlood.png")
+    ImageResource feFlood();
+    @Source("feFuncA.png")
+    ImageResource feFuncA();
+    @Source("feFuncB.png")
+    ImageResource feFuncB();
+    @Source("feFuncG.png")
+    ImageResource feFuncG();
+    @Source("feFuncR.png")
+    ImageResource feFuncR();
+    @Source("feGaussianBlur.png")
+    ImageResource feGaussianBlur();
+    @Source("feImage.png")
+    ImageResource feImage();
+    @Source("feMergeNode.png")
+    ImageResource feMergeNode();
+    @Source("feMerge.png")
+    ImageResource feMerge();
+    @Source("feMorphology.png")
+    ImageResource feMorphology();
+    @Source("feOffset.png")
+    ImageResource feOffset();
+    @Source("fePointLight.png")
+    ImageResource fePointLight();
+    @Source("feSpecularLight.png")
+    ImageResource feSpecularLight();
+    @Source("feSpotLight.png")
+    ImageResource feSpotLight();
+    @Source("feTile.png")
+    ImageResource feTile();
+    @Source("feTurbulence.png")
+    ImageResource feTurbulence();
+    @Source("filter.png")
+    ImageResource filter();
+    @Source("font-face-format.png")
+    ImageResource fontFaceFormat();
+    @Source("font-face-name.png")
+    ImageResource fontFaceName();
+    @Source("font-face.png")
+    ImageResource fontFace();
+    @Source("font-face-src.png")
+    ImageResource fontFaceSrc();
+    @Source("font-face-uri.png")
+    ImageResource fontFaceUri();
+    @Source("font.png")
+    ImageResource font();
+    @Source("foreignObject.png")
+    ImageResource foreignObject();
+    @Source("glyph.png")
+    ImageResource glyph();
+    @Source("glyphRef.png")
+    ImageResource glyphRef();
+    @Source("g.png")
+    ImageResource g();
+    @Source("hkern.png")
+    ImageResource hkern();
+    @Source("image.png")
+    ImageResource image();
+    @Source("linearGradient.png")
+    ImageResource linearGradient();
+    @Source("line.png")
+    ImageResource line();
+    @Source("marker.png")
+    ImageResource marker();
+    @Source("mask.png")
+    ImageResource mask();
+    @Source("metadata.png")
+    ImageResource metadata();
+    @Source("missing-glyph.png")
+    ImageResource missingGlyph();
+    @Source("mpath.png")
+    ImageResource mpath();
+    @Source("path.png")
+    ImageResource path();
+    @Source("pattern.png")
+    ImageResource pattern();
+    @Source("polygon.png")
+    ImageResource polygon();
+    @Source("polyline.png")
+    ImageResource polyline();
+    @Source("radialGradient.png")
+    ImageResource radialGradient();
+    @Source("rect.png")
+    ImageResource rect();
+    @Source("script.png")
+    ImageResource script();
+    @Source("set.png")
+    ImageResource set();
+    @Source("stop.png")
+    ImageResource stop();
+    @Source("style.png")
+    ImageResource style();
+    @Source("svg.png")
+    ImageResource svg();
+    @Source("switch.png")
+    ImageResource switch_();
+    @Source("symbol.png")
+    ImageResource symbol();
+    @Source("textPath.png")
+    ImageResource textPath();
+    @Source("text.png")
+    ImageResource text();
+    @Source("title.png")
+    ImageResource title();
+    @Source("tref.png")
+    ImageResource tref();
+    @Source("tspan.png")
+    ImageResource tspan();
+    @Source("use.png")
+    ImageResource use();
+    @Source("view.png")
+    ImageResource view();
+    @Source("vkern.png")
+    ImageResource vkern();
+ }
+
