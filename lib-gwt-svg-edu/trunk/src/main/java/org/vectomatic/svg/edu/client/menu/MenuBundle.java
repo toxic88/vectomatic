@@ -30,13 +30,17 @@ public interface MenuBundle extends ClientBundle {
 	public static MenuBundle INSTANCE = GWT.create(MenuBundle.class);
 	@Source("home12.svg")
 	public SVGResource home();
+	@SVGResource.Validated(validated=false)
 	@Source("connectdots.svg")
 	public SVGResource connectdots();
+	@SVGResource.Validated(validated=false)
 	@Source("maze.svg")
 	public SVGResource maze();
 	@Source("push.svg")
+	@SVGResource.Validated(validated=false)
 	public SVGResource push();
 	@Source("puzzle.svg")
+	@SVGResource.Validated(validated=false)
 	public SVGResource puzzle();
 	@Source("Menu.css")
 	public MenuCss css();
