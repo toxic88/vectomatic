@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" space="preserve" height="64" viewBox="0 0 135.827 135.788" width="64" version="1.1">
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="64" viewBox="0 0 135.827 135.788" width="64" version="1.1">
  <path fill="#5471AF" d="M135.83,67.871c0,34.604-27.143,64.467-61.629,67.638-34.499,3.174-66.781-21.087-73.092-55.204-6.313-34.11,14.978-68.471,48.406-77.846,33.44-9.377,69.573,8.831,81.906,41.291,2.92,7.688,4.41,15.896,4.41,24.12"/>
  <radialGradient id="XMLID_2_" gradientUnits="userSpaceOnUse" cy="67.871" cx="67.899" r="63.123">
   <stop stop-color="#D4E4F7" offset="0"/>
