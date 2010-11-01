@@ -6,7 +6,7 @@
 	<packaging>war</packaging>
 	<version>0.3.8</version>
 	<name>lib-gwt-svg-edu</name>
-	<description>Education games for kindergarten children, based on lib-gwt-svg</description>
+	<description>Provides a navigation menu for a set of educational games for kindergarten children, based on lib-gwt-svg.</description>
 	<url>http://www.vectomatic.org/mvn-sites/lib-gwt-svg-edu</url>
 	<licenses>
 		<license>
@@ -14,6 +14,11 @@
 			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
 		</license>
 	</licenses>
+	<scm>
+		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu</url>
+		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu</connection>
+		<tag>tags/0.3.8</tag>
+	</scm>
 	<developers>
 		<developer>
 			<id>laaglu</id>
