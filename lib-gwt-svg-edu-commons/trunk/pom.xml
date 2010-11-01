@@ -6,7 +6,32 @@
 	<packaging>jar</packaging>
 	<version>0.3.8</version>
 	<name>lib-gwt-svg-edu-commons</name>
+	<description>A library of base classes to assist in the development of SVG educational games</description>
 	<url>http://maven.apache.org</url>
+	<licenses>
+		<license>
+			<name>GPLv3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+		</license>
+	</licenses>
+	<scm>
+		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu-commons</url>
+		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu-commons</connection>
+		<tag>tags/0.3.8</tag>
+	</scm>
+	<developers>
+		<developer>
+			<id>laaglu</id>
+			<name>Lukas Laag</name>
+			<email>laaglu@gmail.com</email>
+			<url>http://www.vectomatic.org</url>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>1</timezone>
+		</developer>
+	</developers>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
