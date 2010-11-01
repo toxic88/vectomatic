@@ -32,6 +32,11 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<scm>
+		<url>http://code.google.com/p/vectomatic/source/browse/#svn/chess/ruibal/carballo-gwt</url>
+		<connection>scm:svn:http://vectomatic.googlecode.com/svn/chess/ruibal/carballo-gwt</connection>
+		<tag>tags/0.3.2</tag>
+	</scm>
 	<developers>
 		<developer>
 			<id>rui</id>
