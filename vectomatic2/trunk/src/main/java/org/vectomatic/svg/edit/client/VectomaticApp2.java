@@ -24,6 +24,7 @@ import java.util.List;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
+import org.vectomatic.svg.edit.client.engine.SVGModel;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -181,8 +182,9 @@ public class VectomaticApp2 implements EntryPoint {
 	}
 	
 	public SVGWindow addWindow(OMSVGSVGElement svg, String title) {
-		SVGWindow window = GWT.create(SVGWindow.class);
-		window.setSvg(svg);
+		SVGModel model = GWT.create(SVGModel.class);;
+		model.setSvgElement(svg);
+		SVGWindow window = new SVGWindow(model);
 		window.setHeading(title);
 		windows.add(window);
 		// To be notified when a window is activated in order to
@@ -376,4 +378,9 @@ public class VectomaticApp2 implements EntryPoint {
 		stackWindowsItem.setEnabled(windows.size() > 0);
 		resetViewItem.setEnabled(windows.size() > 0);
 	}
+	
+    public static final native void log(String msg) /*-{
+	    console.log(msg);
+	}-*/;
+
 }

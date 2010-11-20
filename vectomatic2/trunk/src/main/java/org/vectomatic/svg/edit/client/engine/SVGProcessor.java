@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.vectomatic.dom.svg.OMSVGSVGElement;
+import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.impl.Attr;
 import org.vectomatic.dom.svg.impl.NamedNodeMap;
 import org.vectomatic.dom.svg.utils.DOMHelper;
@@ -56,7 +56,7 @@ public class SVGProcessor {
 		}
 	}
 	
-	public static int normalizeIds(OMSVGSVGElement srcSvg) {
+	public static int normalizeIds(OMSVGElement srcSvg) {
 		docId++;
 		// Collect all the original element ids and replace them with a
 		// normalized id

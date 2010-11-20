@@ -13,3 +13,30 @@
 	height:60px;
 }
 
+.compass-container {
+	overflow:hidden;
+	pointer-events:none;
+}
+
+.compass {
+	pointer-events:auto;
+	position:absolute;
+	right:40px;
+	top:5px;
+	width:100px;
+	height:100px;
+}
+
+.scale-slider-container {
+	overflow:hidden;
+	pointer-events:none;
+}
+
+.scale-slider {
+	pointer-events:auto;
+	position:absolute;
+	right:20px;
+	top:5px;
+	width:20px;
+	height:100px;
+}

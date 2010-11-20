@@ -28,4 +28,12 @@ public interface AppCss extends CssResource {
 	public String thumb();
 	@ClassName("thumb-wrap")
 	public String thumbWrap();
+	@ClassName("compass-container")
+	public String compassContainer();
+	@ClassName("compass")
+	public String compass();
+	@ClassName("scale-slider-container")
+	public String scaleSliderContainer();
+	@ClassName("scale-slider")
+	public String scaleSlider();
 }

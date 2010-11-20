@@ -17,17 +17,11 @@
  **********************************************/
 package org.vectomatic.svg.edit.client;
 
-import org.vectomatic.dom.svg.OMSVGGElement;
-import org.vectomatic.dom.svg.OMSVGMatrix;
-import org.vectomatic.dom.svg.OMSVGPoint;
-import org.vectomatic.dom.svg.OMSVGRect;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
-import org.vectomatic.dom.svg.OMSVGTransform;
-import org.vectomatic.dom.svg.OMSVGTransformList;
 import org.vectomatic.dom.svg.ui.SVGImage;
-import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
-import org.vectomatic.svg.edit.client.engine.SVGProcessor;
+import org.vectomatic.svg.edit.client.engine.SVGIconTreeNode;
+import org.vectomatic.svg.edit.client.engine.SVGModel;
 import org.vectomatic.svg.edit.client.event.RotationEvent;
 import org.vectomatic.svg.edit.client.event.RotationHandler;
 import org.vectomatic.svg.edit.client.gxt.AbsoluteLayerLayout;
@@ -35,19 +29,30 @@ import org.vectomatic.svg.edit.client.gxt.AbsoluteLayerLayoutData;
 import org.vectomatic.svg.edit.client.widget.Compass;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.data.ModelIconProvider;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.DragEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.SliderEvent;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * GXT window class dedicated to displaying and editing
@@ -59,26 +64,9 @@ import com.google.gwt.dom.client.Style.Unit;
  */
 public class SVGWindow extends Window {
 	/**
-	 * The svg image to display
+	 * The SVG model backing this window
 	 */
-	protected OMSVGSVGElement svg;
-	/**
-	 * A group to apply a visualization transform to the svg
-	 * It is the first and only child of the svg
-	 */
-	protected OMSVGGElement xformGroup;
-	/**
-	 * The current transform
-	 */
-	protected OMSVGTransform xform;
-	/**
-	 * The current scaling the the svg
-	 */
-	protected float angle;
-	/**
-	 * The current rotation of the svg
-	 */
-	protected float scale;
+	private SVGModel model;
 	/**
 	 * The SVG rotation compass
 	 */
@@ -87,44 +75,47 @@ public class SVGWindow extends Window {
 	 * The SVG scale slider
 	 */
 	protected Slider scaleSlider;
+
 	/**
-	 * Specifies the SVG window to display
-	 * @param svg
-	 * The SVG image to display
+	 * Constructor
+	 * @param model
+	 * The SVG model to display
 	 */
-	public void setSvg(final OMSVGSVGElement svg) {
-		this.svg = svg;
+	public SVGWindow(final SVGModel model) {
+		super();
+		this.model = model;
 		setPlain(true);
 		setMaximizable(true);
 		setSize(500, 300);
 		setMinWidth(200);
 		setMinHeight(170);
 		
+	    /////////////////////////////////////////////////
 		// A CSS multi-layer container
-		// The lower layer contains the image itself
-		// The higher layer contains the control (compass and scale slider)
-		LayoutContainer layersContainer = new LayoutContainer();
+	    // The container hierarchy is as follows:
+	    // splitterPanel (LayoutContainer + BorderLayout)
+	    //   tree (TreePanel)
+	    //   layersContainer (LayoutContainer + AbsoluteLayerLayout)
+	    //     svgContainer (LayoutContainer)
+	    //       image (SVGImage)
+	    //     compass (SVGImage)
+	    //     scaleSlider (Slider)
+	    /////////////////////////////////////////////////
+	    LayoutContainer splitterPanel = new LayoutContainer();
+	    splitterPanel.setLayout(new BorderLayout());
+
+	    LayoutContainer layersContainer = new LayoutContainer();
 		GWT.log("borders: " + getBorders());
 	    layersContainer.setLayout(new AbsoluteLayerLayout());
-
-	    /////////////////////////////////////////////////
-	    // Populate the lower layer
-	    /////////////////////////////////////////////////
+	    
+	    // Create the SVG view
 		LayoutContainer svgContainer = new LayoutContainer();
 	    svgContainer.setScrollMode(Style.Scroll.AUTO);
 	    svgContainer.setStyleAttribute("background-color", SVGConstants.CSS_WHITE_VALUE);
-	    SVGProcessor.normalizeIds(svg);
-	    SVGImage image = new SVGImage(svg) {
+	    SVGImage image = new SVGImage(model.getDocumentRoot()) {
 	    	protected void onAttach() {
 	    		GWT.log("onAttach");
-	    		OMSVGRect viewBox = svg.getViewBox().getBaseVal();
-	    		if (viewBox.getWidth() == 0f || viewBox.getHeight() == 0f) {
-		    		GWT.log(svg.getBBox().getDescription());
-	    			OMSVGRect bbox = svg.getBBox().inset(svg.createSVGRect(), -0.1f * svg.getBBox().getWidth(), -0.1f * svg.getBBox().getHeight());
-	    			viewBox.setWidth(bbox.getWidth());
-	    			viewBox.setHeight(bbox.getHeight());
-	    			setScale(scale);
-	    		}
+	    		model.onAttach();
 	    	}
 	    };
 	    svgContainer.add(image);
@@ -136,14 +127,37 @@ public class SVGWindow extends Window {
 	    		0,
 	    		10));
 	    
-	    // Tweak the image to insert a group immediately below
-	    // the root. This group will be used to control the viewing
-	    // transform
-	    xformGroup = reparent(image.getSvgElement());
-		OMSVGTransformList xformList = xformGroup.getTransform().getBaseVal();
-		xform = svg.createSVGTransform();
-		xformList.appendItem(xform);
-	    setScale(1f);
+	    // Create the tree view
+	    TreeStore<SVGIconTreeNode> treeStore = new TreeStore<SVGIconTreeNode>();
+	    treeStore.add(model.getNavigationTree(), true);
+		TreePanel<SVGIconTreeNode> tree = new TreePanel<SVGIconTreeNode>(treeStore);
+	    tree.setIconProvider(new ModelIconProvider<SVGIconTreeNode>() {
+			@Override
+			public AbstractImagePrototype getIcon(SVGIconTreeNode model) {
+				return model.getIcon();
+			}
+	    	
+	    });
+	    tree.setCheckable(true);
+	    tree.setWidth(150);  
+	    tree.setDisplayProperty(SVGModel.TITLE_PROPERTY.getPropertyId());
+	    tree.setTrackMouseOver(true);
+	    tree.addListener(Events.OnMouseOver, new Listener<TreePanelEvent<SVGIconTreeNode>>() {
+	        public void handleEvent(TreePanelEvent<SVGIconTreeNode> be) {
+	        	SVGIconTreeNode node = be.getItem();
+	        	if (node != null) {
+	        		model.highlightElement(node.getElement());
+	        	}
+	        }
+	    });
+	    tree.setStyleAttribute("background-color", SVGConstants.CSS_WHITE_VALUE);
+	    
+	    BorderLayoutData layoutData = new BorderLayoutData(LayoutRegion.WEST, 150, 100, 250);  
+	    layoutData.setMargins(new Margins(0, 5, 0, 0));  
+	    layoutData.setSplit(true);  
+	    layoutData.setCollapsible(true);  
+	    splitterPanel.add(tree, layoutData);
+	    splitterPanel.add(layersContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
 	    /////////////////////////////////////////////////
 	    // Populate the higher layer
@@ -152,119 +166,82 @@ public class SVGWindow extends Window {
 		// Create the compass
 	    compass = GWT.create(Compass.class);
 	    final OMSVGSVGElement compassSvg = compass.getSvgElement();
-	    compassSvg.getStyle().setWidth(100, Unit.PCT);
-	    compassSvg.getStyle().setHeight(100, Unit.PCT);
+	    compassSvg.getStyle().setWidth(100, Unit.PX);
+	    compassSvg.getStyle().setHeight(100, Unit.PX);
 	    compass.addRotationHandler(new RotationHandler() {
 	    	@Override
 	    	public void onRotate(RotationEvent event) {
-	    		setRotation(event.getAngle());
+	    		model.setRotation(event.getAngle());
 	    	}	
 	    });
-	    layersContainer.add(new SVGImage(compassSvg), new AbsoluteLayerLayoutData(
+		LayoutContainer compassContainer = new LayoutContainer();
+		AppCss css = AppBundle.INSTANCE.css();
+		compassContainer.addStyleName(css.compassContainer());
+		SVGImage compassImage = new SVGImage(compassSvg);
+		compassImage.addClassNameBaseVal(css.compass());
+		compassContainer.add(compassImage);
+	    layersContainer.add(compassContainer, new AbsoluteLayerLayoutData(
 	    		AbsoluteLayerLayoutData.HORIZONTAL_ATTACH_RIGHT | AbsoluteLayerLayoutData.VERTICAL_ATTACH_TOP,
-	    		40,
-	    		5,
-	    		100,
-	    		100,
+	    		0,
+	    		0,
+	    		0,
+	    		0,
 	    		20));
 	    
 		// Create the scale slider
+		LayoutContainer sliderContainer = new LayoutContainer();
+		sliderContainer.addStyleName(css.scaleSliderContainer());
 		scaleSlider = new Slider() {
 			@Override
 	    	protected String onFormatValue(int value) {
-				return Integer.toString((int)(scale * 100)) + "%";
+				return Integer.toString((int)(model.getScale() * 100)) + "%";
 	    	}
 
 		};
+		scaleSlider.addStyleName(css.scaleSlider());
+		sliderContainer.add(scaleSlider);
 		scaleSlider.setHeight(100);
 		scaleSlider.setMinValue(0);
 		scaleSlider.setMaxValue(100);
 		scaleSlider.setIncrement(1);
 		scaleSlider.setValue(50);
 		scaleSlider.setVertical(true);
-		layersContainer.add(scaleSlider, new AbsoluteLayerLayoutData(
+		layersContainer.add(sliderContainer, new AbsoluteLayerLayoutData(
 	    		AbsoluteLayerLayoutData.HORIZONTAL_ATTACH_RIGHT | AbsoluteLayerLayoutData.VERTICAL_ATTACH_TOP,
-	    		20,
-	    		5,
-	    		20,
-	    		100,
+	    		0,
+	    		0,
+	    		0,
+	    		0,
 	    		20));
-	    scaleSlider.addListener(Events.Change, new Listener<SliderEvent>() {
+		scaleSlider.addListener(Events.Change, new Listener<SliderEvent>() {
 			@Override
 			public void handleEvent(SliderEvent be) {
 				// Convert from slider unit to transform unit
 				int value = be.getNewValue();
+				float scale;
 				if (value >= 50) {
 					scale = 1f + (value - 50f) / 10f * 4 / 5;
 				} else {
 					scale = 1f / (1f + (49 - value) / 10f * 4 / 5);
 				}
-				setScale(scale);
+				model.setScale(scale);
 			}	    	
 	    });
 	    
+	    ToolBar toolBar = new ToolBar();
+	    ToggleButton selectButton = new ToggleButton();
+	    selectButton.setIcon(AbstractImagePrototype.create(AppBundle.INSTANCE.cursor()));
+	    selectButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				model.setSelectionMode(((ToggleButton)ce.getButton()).isPressed());
+			}
+	    });
+	    toolBar.add(selectButton);
+	    setTopComponent(toolBar);
+	    
 		setLayout(new FitLayout());
-		add(layersContainer, new FitData(4));
-	}
-	
-	/**
-	 * Sets the scaling of the main image through the scale slider.
-	 * @param scale
-	 * The scale (50 means scale 1:1)
-	 */
-	public void setScaleSlider(int value) {
-		scaleSlider.setValue(value);
-	}
-	
-	/**
-	 * Sets the scaling of the main image.
-	 * @param scale
-	 * The scale (1 means scale 1:1, 2 means scale 2:1)
-	 */
-	protected void setScale(float scale) {
-		this.scale = scale;
-		OMSVGRect rect = svg.getViewBox().getBaseVal();
-        svg.getStyle().setWidth(rect.getWidth() * scale, Unit.PX);
-        svg.getStyle().setHeight(rect.getHeight() * scale, Unit.PX);
-	}
-
-	
-	/**
-	 * Sets the rotation of the main image through the
-	 * compass widget.
-	 * @param angleDeg
-	 * The angle (in degrees)
-	 */
-	public void setRotationCompass(int angleDeg) {
-		compass.setRotation(angleDeg);
-	}
-	
-	/**
-	 * Sets the rotation of the main image.
-	 * @param angle
-	 * The angle (in degrees)
-	 */
-	protected void setRotation(float angle) {
-		this.angle = angle;
-		OMSVGRect rect = svg.getViewBox().getBaseVal();
-		OMSVGPoint center = svg.createSVGPoint(rect.getCenterX(), rect.getCenterY());
-		OMSVGMatrix m1 = svg.createSVGMatrix().translate(center.getX(), center.getY());
-    	OMSVGMatrix m2 = svg.createSVGMatrix().rotate(this.angle);
-    	OMSVGMatrix m3 = svg.createSVGMatrix().translate(-center.getX(), -center.getY());
-    	OMSVGMatrix m = m1.multiply(m2).multiply(m3);
-		xform.setMatrix(m);
-	}
-	
-	private OMSVGGElement reparent(OMSVGSVGElement svg) {
-		OMSVGGElement g = OMSVGParser.currentDocument().createSVGGElement();
-		Element gElement = g.getElement();
-		Element svgElement = svg.getElement();
-		Node node;
-		while((node = svgElement.getFirstChild()) != null) {
-			gElement.appendChild(svgElement.removeChild(node));
-		}
-		svgElement.appendChild(gElement);
-		return g;
+		add(splitterPanel, new FitData(4));
 	}
 	
 	@Override
@@ -274,6 +251,29 @@ public class SVGWindow extends Window {
 			de.setY(windowBarHeight);
 		}
 	}
+	
+	public SVGModel getModel() {
+		return model;
+	}
+
+	/**
+	 * Sets the scaling of the main image through the scale slider.
+	 * @param scale
+	 * The scale (50 means scale 1:1)
+	 */
+	public void setScaleSlider(int value) {
+		scaleSlider.setValue(value);
+	}
+
+	/**
+	 * Sets the rotation of the main image through the
+	 * compass widget.
+	 * @param angleDeg
+	 * The angle (in degrees)
+	 */
+	public void setRotationCompass(int angleDeg) {
+		compass.setRotation(angleDeg);
+	}	
 	/* GWT bug ?
 	 * line 234: The method endDrag(DragEvent) in the type Window is not applicable for the arguments (DragEvent, boolean)*/
 //	protected void endDrag(DragEvent de, boolean canceled) {

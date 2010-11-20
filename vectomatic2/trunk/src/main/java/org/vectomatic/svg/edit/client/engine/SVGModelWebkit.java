@@ -15,21 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with vectomatic2.  If not, see http://www.gnu.org/licenses/
  **********************************************/
-package org.vectomatic.svg.edit.client.widget;
+package org.vectomatic.svg.edit.client.engine;
 
 import org.vectomatic.dom.svg.utils.SVGConstants;
-import org.vectomatic.svg.edit.client.event.RotationEvent;
-
 
 /**
- * Subclass of Compass to bypass Chrome/Webkit bug 
+ * Subclass of SVGModel to bypass Chrome/Webkit bug 
  * <a href="http://code.google.com/p/chromium/issues/detail?id=55010">#55010</a>.
  * @author laaglu
  */
-public class CompassWebkit extends Compass {
-	public void setRotation(int angle) {
-		this.angle = angle;
-		textGroup.setAttribute(SVGConstants.SVG_TRANSFORM_ATTRIBUTE, SVGConstants.TRANSFORM_ROTATE + "(" + angle + ",50,50)");
-		fireEvent(new RotationEvent(angle)); 
+public class SVGModelWebkit extends SVGModel {
+	@Override
+	public void setRotation(float angle) {
+		super.setRotation(angle);
+		String value = displayXform.getDescription();
+//    	VectomaticApp2.log("desc = " + value);
+		displayGroup.setAttribute(SVGConstants.SVG_TRANSFORM_ATTRIBUTE, value);
+		selectionGroup.setAttribute(SVGConstants.SVG_TRANSFORM_ATTRIBUTE, value);
 	}
 }
