@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class FetchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final int MAX_SIZE = 1024 * 256;
+	private static final int MAX_SIZE = 1024 * 2024;
 	private static final String PARAM_URL = "url";
 	private static final String PARAM_TYPE = "type";
 	private static final String HTTP_PROTOCOL = "http";
