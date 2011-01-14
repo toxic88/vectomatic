@@ -355,6 +355,11 @@ public class VectomaticApp2 implements EntryPoint {
 			update();
 		}
 	}
+	
+	public SVGWindow getActiveWindow() {
+		return activeWindow;
+	}
+	
 	public void about() {
 		GWT.log("about()");
 		if (aboutDialog == null) {
