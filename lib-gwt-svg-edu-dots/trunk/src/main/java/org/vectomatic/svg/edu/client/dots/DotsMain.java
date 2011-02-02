@@ -20,6 +20,7 @@ package org.vectomatic.svg.edu.client.dots;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.vectomatic.dom.svg.OMNode;
 import org.vectomatic.dom.svg.OMNodeList;
 import org.vectomatic.dom.svg.OMSVGCircleElement;
 import org.vectomatic.dom.svg.OMSVGDefsElement;
@@ -43,6 +44,8 @@ import org.vectomatic.dom.svg.ui.SVGPushButton;
 import org.vectomatic.dom.svg.utils.DOMHelper;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
+import org.vectomatic.svg.edu.client.commons.AsyncXmlLoader;
+import org.vectomatic.svg.edu.client.commons.AsyncXmlLoaderCallback;
 import org.vectomatic.svg.edu.client.commons.CommonBundle;
 import org.vectomatic.svg.edu.client.commons.CommonConstants;
 import org.vectomatic.svg.edu.client.commons.LicenseBox;
@@ -51,36 +54,26 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.LoseCaptureEvent;
-import com.google.gwt.event.dom.client.LoseCaptureHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -102,7 +95,7 @@ import com.google.gwt.widgetideas.client.SliderListenerAdapter;
  * Main game class
  * @author laaglu
  */
-public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHandler, MouseOverHandler, MouseUpHandler, LoseCaptureHandler, EntryPoint {
+public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseUpHandler, EntryPoint {
 	interface DotsMainBinder extends UiBinder<FlowPanel, DotsMain> {
 	}
 	private static DotsMainBinder mainBinder = GWT.create(DotsMainBinder.class);
@@ -161,27 +154,26 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	/**
 	 * The SVG document. The document has the following structure
 	 * <tt>
-	 * <svg>           // rootSvg
-	 *  <svg/>         // pictureSvg
-	 *  <svg>          // dotSvg
-	 *   <g>           // lineGroup
-	 *    <polyline>   // polyline
-	 *   </g>
-	 *   <g>           // dotGroup
-	 *    <g/>         // first dot
-	 *    <g/>         // N-th dot
-	 *   </g>
-	 *  </svg>
+	 * <svg>          // rootSvg
+	 *  <defs>
+	 *  <g/>          // pictureGroup
+	 *  <g>           // lineGroup
+	 *   <polyline>   // polyline
+	 *  </g>
+	 *  <g>           // dotGroup
+	 *   <g/>         // first dot
+	 *   <g/>         // N-th dot
+	 *  </g>
 	 * </svg>
 	 * </tt>
 	 */
 	private OMSVGDocument doc;
 	private OMSVGSVGElement rootSvg;
-	private OMSVGSVGElement pictureSvg;
-	private OMSVGSVGElement dotSvg;
-	private OMSVGGElement dotGroup;
+	private OMSVGDefsElement defs;
+	private OMSVGGElement pictureGroup;
 	private OMSVGGElement lineGroup;
-	OMSVGPolylineElement polyline;
+	private OMSVGPolylineElement polyline;
+	private OMSVGGElement dotGroup;
 	/**
 	 * The vertices of the polyline
 	 */
@@ -223,14 +215,14 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	 */
 	private OMSVGPoint p0;
 	/**
-	 * The current mode
-	 */
-	private Mode mode;
-	/**
 	 * The index of the last dot found by the player
 	 */
 	private int maxIndex;
-	
+	/**
+	 * To load game levels
+	 */
+	AsyncXmlLoader loader;
+
 	/**
 	 * Constructor for standalone game
 	 */
@@ -282,13 +274,9 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		// Create the root SVG structure elements
 		doc = OMSVGParser.createDocument();
 		rootSvg = doc.createSVGSVGElement();
-		pictureSvg = doc.createSVGSVGElement();
-		dotSvg = doc.createSVGSVGElement();
-		dotGroup = doc.createSVGGElement();
-		lineGroup = doc.createSVGGElement();
 
 		// Create the SVG filters
-		OMSVGDefsElement defs = doc.createSVGDefsElement();
+		defs = doc.createSVGDefsElement();
 		OMSVGFilterElement alpha1Filter = doc.createSVGFilterElement();
 		alpha1Filter.setId(ID_ALPHA1_FILTER);
 		OMSVGFEColorMatrixElement feColorMatrix1 = doc.createSVGFEColorMatrixElement();
@@ -337,8 +325,17 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 
 
 		// Compose the root SVG structure
-		rootSvg.appendChild(pictureSvg);
 		rootSvg.appendChild(defs);
+		pictureGroup = doc.createSVGGElement();
+		dotGroup = doc.createSVGGElement();
+		dotGroup.setAttribute("id", "dots");
+		lineGroup = doc.createSVGGElement();
+		polyline = doc.createSVGPolylineElement();
+		polyline.setClassNameBaseVal(css.lineInvisible());			
+		polyline.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA2_FILTER));
+		points = polyline.getPoints();
+		lineGroup.appendChild(polyline);
+		rootSvg.appendChild(pictureGroup);
 		defs.appendChild(alpha1Filter);
 		alpha1Filter.appendChild(feColorMatrix1);
 		defs.appendChild(transitionFilter);
@@ -346,9 +343,8 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		transitionFilter.appendChild(feColorMatrix2);
 		defs.appendChild(alpha3Filter);
 		alpha3Filter.appendChild(feColorMatrix3);
-		rootSvg.appendChild(dotSvg);
-		dotSvg.appendChild(lineGroup);
-		dotSvg.appendChild(dotGroup);
+		rootSvg.appendChild(lineGroup);
+		rootSvg.appendChild(dotGroup);
 
 		// Add the SVG to the HTML page
 		div.appendChild(rootSvg.getElement());					
@@ -363,12 +359,11 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 					level = value;
 				}
 			} catch(NumberFormatException e) {
-				GWT.log("Cannot parse level=" + levelParam, e);
 			}
 		}
+		
+		loader = GWT.create(AsyncXmlLoader.class);
 
-		updateLevel();
-		// For opera, a second read is necessary of the first level (bug ?)
 		updateLevel();
 	}
 	
@@ -386,21 +381,19 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 
 	private void updatePictureSize() {
 		if (rootSvg != null) {
-			OMSVGMatrix m = dotSvg.getCTM().inverse();
+			OMSVGMatrix m = dotGroup.getCTM().inverse();
 			updateScales(m.getA(), m.getD());
 		}
 	}
 	
 	private void updateLevel() {
 		fileLabel.setText(pictures[level]);
-		
 
 		// The data come in two files: a picture file and a dot file
 		// In design mode, both must be read
 		// In game mode, the dot file is read first and the picture file
 		// is read later if the player succeeds
-		readMode();
-		if (mode == Mode.DESIGN) {
+		if (getMode() == Mode.DESIGN) {
 			readPicture(true);
 		} else {
 			readDots();
@@ -412,191 +405,113 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	}
 	
 	private String getDotsUrl() {
-		return GWT.getModuleBaseURL() + DIR + "/" + pictures[level] + ".dots";
+		String url = GWT.getModuleBaseURL() + DIR + "/" + pictures[level] + ".dots";
+		// Add a bogus query to bypass the browser cache as advised by:
+		// https://developer.mozilla.org/En/Using_XMLHttpRequest#Bypassing_the_cache
+		url += (url.indexOf("?") == -1) ? ("?ts=" + System.currentTimeMillis()) : ("&ts=" + + System.currentTimeMillis());
+		return url;
 	}
 	
-	private void readMode() {
-		// Get the mode
-		String modeString = Window.Location.getParameter("mode");
-		mode = "design".equals(modeString) ? Mode.DESIGN : Mode.GAME;
+	private Mode getMode() {
+		return "design".equals(Window.Location.getParameter("mode")) ? Mode.DESIGN : Mode.GAME;
 	}
 	
 	public void readPicture(final boolean readDots) {
-		RequestBuilder pictureBuilder = new RequestBuilder(RequestBuilder.GET, getPictureUrl());
-		pictureBuilder.setCallback(new RequestCallback() {
-			public void onError(Request request, Throwable exception) {
+		loader.loadResource(getPictureUrl(), new AsyncXmlLoaderCallback() {
+			@Override
+			public void onError(String resourceName, Throwable error) {
 				svgContainer.setHTML("Cannot find resource");
 			}
 
-			/**
-			 * Parse the SVG artwork and launch the parse of the dot structure
-			 */
-			private void onSuccess(Request request, Response response) {
-				// Parse the document
-				OMSVGSVGElement svg = OMSVGParser.parse(response.getText());
-				
-				// Position the filter
+			@Override
+			public void onSuccess(String resourceName, com.google.gwt.dom.client.Element root) {
+				OMSVGSVGElement svg = OMNode.convert(root);
+
+				// Position the filter on the picture
+				OMSVGGElement g = reparent(svg);
 				pictureAlpha2.setValue(0f);
-				svg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_TRANSITION_FILTER));
+				OMSVGRect viewBox = svg.getViewBox().getBaseVal();
+				rootSvg.setViewBox(viewBox.inset(svg.createSVGRect(), viewBox.getWidth() * -0.025f, viewBox.getHeight() * -0.025f));
 				
-				// Insert the SVG root element into the HTML UI
-				rootSvg.replaceChild(svg, pictureSvg);
-				pictureSvg = svg;
-					
+				// Insert the picture into the SVG structure
+				rootSvg.replaceChild(g, pictureGroup);
+				pictureGroup = g;
+				pictureGroup.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_TRANSITION_FILTER));
+
 				// Send the dots request
 				if (readDots) {
 					readDots();
 				} else {
 					transition(null);
-				}
-			}
-			
-			public void onResponseReceived(Request request, Response response) {
-				if (response.getStatusCode() == Response.SC_OK) {
-					onSuccess(request, response);
-				} else {
-					onError(request, null);
-				}
+				}				
 			}
 		});
-		// Send the picture request
-		try {
-			pictureBuilder.send();
-		} catch (RequestException e) {
-			GWT.log("Cannot fetch " + getPictureUrl(), e);
-		}
 	}
 	
 	public void readDots() {
-		// Add a bogus query to bypass the browser cache as advised by:
-		// https://developer.mozilla.org/En/Using_XMLHttpRequest#Bypassing_the_cache
-		String url = getDotsUrl();
-		url += (url.indexOf("?") == -1) ? ("?ts=" + System.currentTimeMillis()) : ("&ts=" + + System.currentTimeMillis());
-		final RequestBuilder dotsBuilder = new RequestBuilder(RequestBuilder.GET, getDotsUrl());
-		dotsBuilder.setCallback(new RequestCallback() {
-			/**
-			 * Create a blank dots structure
-			 */
-			@Override
-			public void onError(Request request, Throwable exception) {
-				if (mode == Mode.GAME) {
-					mode = Mode.DESIGN;
-					readPicture(true);
-					return;
+		maxIndex = -1;
+		dots.clear();
+		dotList.clear();
+		points.clear();
+		loader.loadResource(getDotsUrl(), new AsyncXmlLoaderCallback() {
+			private void finish() {
+				if (getMode() == Mode.DESIGN) {
+					pictureGroup.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA1_FILTER));
+					setPictureAlpha(1f);
+					showLineCheck.setValue(false);
+					pictureAlphaSlider.setCurrentValue(1);			
+				} else {
+					pictureGroup.getStyle().setVisibility(Visibility.HIDDEN);
+					polyline.setClassNameBaseVal(css.lineVisible());
 				}
-				OMSVGSVGElement svg = doc.createSVGSVGElement();
-				svg.setAttribute(SVGConstants.XMLNS_PREFIX, SVGConstants.SVG_NAMESPACE_URI);
-				svg.setAttribute(SVGConstants.XMLNS_PREFIX + ":" + SVGConstants.XLINK_PREFIX, SVGConstants.XLINK_NAMESPACE_URI);
-				rootSvg.replaceChild(svg, dotSvg);
-				dotSvg = svg;
+				dotAlpha.setValue(1f);
+				dotGroup.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA2_FILTER));
+				designPanel.setVisible(getMode() == Mode.DESIGN);
 
-				// Synchronize the the dot coordinates with the picture coordinates
-				if (mode == Mode.DESIGN) {
-					dotSvg.setViewBox(pictureSvg.getViewBox().getBaseVal());
-				}
-				
-				// Reset the polyline
-				lineGroup = doc.createSVGGElement();
-				dotSvg.appendChild(lineGroup);
-				polyline = doc.createSVGPolylineElement();
-				polyline.setClassNameBaseVal(css.lineInvisible());			
-				points = polyline.getPoints();
-				lineGroup.appendChild(polyline);
-				
-				// Reset the dots
-				dotGroup = doc.createSVGGElement();
-				dotSvg.appendChild(dotGroup);
+				// Resize to the size of the window
+				updatePictureSize();
+				updateUI();
 			}
 			
-			/**
-			 * Create a dots structure populated by the SVG data
-			 */
-			private void onSuccess(Request request, Response response) {
-				OMSVGSVGElement svg = OMSVGParser.parse(response.getText());
-				rootSvg.replaceChild(svg, dotSvg);
-				dotSvg = svg;
-
-				// Synchronize the the dot coordinates with the picture coordinates
-				if (mode == Mode.DESIGN) {
-					dotSvg.setViewBox(pictureSvg.getViewBox().getBaseVal());
+			@Override
+			public void onError(String resourceName, Throwable error) {
+				if (getMode() == Mode.GAME) {
+					svgContainer.setHTML("Cannot find resource");
+					return;
 				}
-				
-				dotGroup = (OMSVGGElement) dotSvg.getFirstChild();
-				// Reset the polyline
-				lineGroup = doc.createSVGGElement();
-				dotSvg.appendChild(lineGroup);
-				polyline = doc.createSVGPolylineElement();
-				polyline.setClassNameBaseVal(css.lineInvisible());			
-				points = polyline.getPoints();
-				lineGroup.appendChild(polyline);
+				OMSVGGElement g = doc.createSVGGElement();
+				rootSvg.replaceChild(g, dotGroup);
+				dotGroup = g;
+				finish();
+			}
+
+			@Override
+			public void onSuccess(String resourceName, com.google.gwt.dom.client.Element root) {
+				OMSVGSVGElement svg = OMNode.convert(root);
+				OMSVGGElement g = (OMSVGGElement) svg.getFirstChild();
+				rootSvg.replaceChild(g, dotGroup);
+				dotGroup = g;
+				OMSVGRect viewBox = svg.getViewBox().getBaseVal();
+				rootSvg.setViewBox(viewBox.inset(svg.createSVGRect(), viewBox.getWidth() * -0.025f, viewBox.getHeight() * -0.025f));
 				
 				// Parse the dots to recreate the polyline
 				OMNodeList<OMSVGGElement> childNodes = dotGroup.getChildNodes();
 				for (int i = 0, size = childNodes.getLength(); i < size; i++) {
 					OMSVGGElement g1 = childNodes.getItem(i);
 					g1.addMouseDownHandler(DotsMain.this);
-					if (mode == Mode.DESIGN) {
+					dots.add(g1);
+					if (getMode() == Mode.DESIGN) {
 						g1.addMouseMoveHandler(DotsMain.this);
 						g1.addMouseUpHandler(DotsMain.this);
-					}
-					g1.addMouseOverHandler(DotsMain.this);
-					g1.addMouseOutHandler(DotsMain.this);
-					setDotClassName(g1, css.dotBorder(), css.dotContent());
-					dots.add(g1);
-					dotList.addItem(toDotName(i));
-					if (mode == Mode.DESIGN) {
+						dotList.addItem(toDotName(i));
 						OMSVGMatrix m = g1.getTransform().getBaseVal().getItem(0).getMatrix();
-						points.appendItem(dotSvg.createSVGPoint(m.getE(), m.getF()));
+						points.appendItem(rootSvg.createSVGPoint(m.getE(), m.getF()));
 					}
 				}
-			}
-
-			@Override
-			public void onResponseReceived(Request request, Response response) {
-				maxIndex = -1;
-				dots.clear();
-				dotList.clear();
-
-				if (response.getStatusCode() == Response.SC_OK) {
-					onSuccess(request, response);
-				} else {
-					if (mode == Mode.GAME) {
-						mode = Mode.DESIGN;
-						readPicture(true);
-						return;
-					}
-					onError(request, null);
-				}
-
-				if (mode == Mode.DESIGN) {
-					pictureSvg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA1_FILTER));
-					setPictureAlpha(1f);
-					showLineCheck.setValue(false);
-					pictureAlphaSlider.setCurrentValue(1);			
-				} else {
-					pictureSvg.getStyle().setVisibility(Visibility.HIDDEN);
-					polyline.setClassNameBaseVal(css.lineVisible());
-				}
-				dotAlpha.setValue(1f);
-				dotSvg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA2_FILTER));
-				designPanel.setVisible(mode == Mode.DESIGN);
-
-				// Resize to the size of the window
-				updatePictureSize();
-				updateUI();
+				finish();
 			}
 		});
-		// Send the dots request
-		try {
-			dotsBuilder.send();
-		} catch (RequestException e) {
-			GWT.log("Cannot fetch " + dotsBuilder.getUrl(), e);
-		}
 	}
-	
-	protected static native void operaFix() /*-{
-		$wnd.resizeBy(0,0);
-	}-*/;
 	
 	@UiHandler("prevButton")
 	public void previousPicture(ClickEvent event) {
@@ -617,22 +532,23 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	}
 
 	private OMSVGPoint getLocalCoordinates(MouseEvent<? extends EventHandler> e) {
-		OMSVGPoint p = dotSvg.createSVGPoint(e.getClientX(), e.getClientY());
-		OMSVGMatrix m = dotSvg.getScreenCTM().inverse();
+		OMSVGPoint p = rootSvg.createSVGPoint(e.getClientX(), e.getClientY());
+		OMSVGMatrix m = rootSvg.getScreenCTM().inverse();
 		return p.matrixTransform(m);
 	}
 	
 	@UiHandler("addButton")
 	public void addDot(ClickEvent event) {
 		int pIndex = dots.size();
-		OMSVGRect viewBox = dotSvg.getViewBox().getBaseVal();
+		OMSVGRect viewBox = rootSvg.getViewBox().getBaseVal();
 		// Position the new points in a circle centered at the view box
 		// with a radius of 20%
 		float r = Math.min(viewBox.getWidth(), viewBox.getHeight()) * 0.2f;
 		float x = ((float)Math.cos(pIndex / 16d * 2d * Math.PI)) * r + viewBox.getCenterX();
 		float y = ((float)Math.sin(pIndex / 16d * 2d * Math.PI)) * r + viewBox.getCenterY();
-		OMSVGGElement g1 = createPoint(pIndex + 1, x, y);
+		OMSVGGElement g1 = createDot(pIndex + 1, x, y);
 		dots.add(g1);
+		points.appendItem(rootSvg.createSVGPoint(x, y));
 		dotGroup.appendChild(g1);
 		dotList.addItem(toDotName(pIndex));
 		// Autoselect the new point
@@ -653,11 +569,15 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 
 	@UiHandler("saveButton")
 	public void save(ClickEvent event) {
-		dotSvg.removeChild(lineGroup);
-		dotSvg.removeAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE);
-		textArea.setText(dotSvg.getMarkup());
-		dotSvg.insertBefore(lineGroup, dotGroup);
-		dotSvg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA2_FILTER));
+		rootSvg.removeChild(defs);
+		rootSvg.removeChild(pictureGroup);
+		rootSvg.removeChild(lineGroup);
+		dotGroup.removeAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE);
+		textArea.setText(rootSvg.getMarkup());
+		rootSvg.insertBefore(lineGroup, dotGroup);
+		rootSvg.insertBefore(pictureGroup, lineGroup);
+		rootSvg.insertBefore(defs, pictureGroup);
+		dotGroup.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA2_FILTER));
 	}
 
 	@UiHandler("showLineCheck")
@@ -675,9 +595,9 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		pictureAlpha2.setValue(0f);
 		gaussianBlur.setStdDeviation(10f, 10f);
 		polyline.setClassNameBaseVal(css.lineVisible());
-		pictureSvg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_TRANSITION_FILTER));
+		pictureGroup.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_TRANSITION_FILTER));
 		if (points.getNumberOfItems() > 0) {
-			points.appendItem(points.getItem(0).assignTo(dotSvg.createSVGPoint()));
+			points.appendItem(points.getItem(0).assignTo(rootSvg.createSVGPoint()));
 		}
 		Animation transition = new Animation() {
 			@Override
@@ -689,9 +609,9 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 			}
 			@Override
 			protected void onComplete() {
-				if (mode == Mode.DESIGN) {
+				if (getMode() == Mode.DESIGN) {
 					polyline.setClassNameBaseVal(showLineCheck.getValue() ? css.lineVisible() : css.lineInvisible());
-					pictureSvg.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA1_FILTER));
+					pictureGroup.getStyle().setSVGProperty(SVGConstants.SVG_FILTER_ATTRIBUTE, DOMHelper.toUrl(ID_ALPHA1_FILTER));
 					dotAlpha.setValue(1f);
 					if (points.getNumberOfItems() > 0) {
 						points.removeItem(points.getNumberOfItems() - 1);
@@ -703,7 +623,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 				}
 			}
 		};
-		pictureSvg.getStyle().setVisibility(Visibility.VISIBLE);
+		pictureGroup.getStyle().setVisibility(Visibility.VISIBLE);
 		transition.run(2000, Duration.currentTimeMillis() + 1000);
 	}
 	
@@ -712,7 +632,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		removeButton.setEnabled(dotList.getSelectedIndex() != -1);
 	}
 
-	private OMSVGGElement createPoint(int pIndex, float x, float y) {
+	private OMSVGGElement createDot(int pIndex, float x, float y) {
 		OMSVGGElement g1 = doc.createSVGGElement();
 		OMSVGTransform translation = rootSvg.createSVGTransform();
 		translation.setTranslate(x, y);
@@ -720,18 +640,13 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 
 		OMSVGGElement g2 = doc.createSVGGElement();
 		OMSVGTransform scaling = rootSvg.createSVGTransform();
-		OMSVGMatrix m = dotSvg.getScreenCTM().inverse();
+		OMSVGMatrix m = rootSvg.getScreenCTM().inverse();
 		scaling.setScale(m.getA(), m.getD());
 		g2.getTransform().getBaseVal().appendItem(scaling);
 
 		OMSVGCircleElement circle1 = doc.createSVGCircleElement(0f, 0f, 5f);
-		circle1.setClassNameBaseVal(css.dotBorder());
-		
 		OMSVGCircleElement circle2 = doc.createSVGCircleElement(0f, 0f, 3f);
-		circle2.setClassNameBaseVal(css.dotContent());
-		
 		OMSVGTextElement text = doc.createSVGTextElement(0f, 16f, OMSVGLength.SVG_LENGTHTYPE_PX, Integer.toString(pIndex));
-		text.setClassNameBaseVal(css.dotText());
 		
 		g1.appendChild(g2);
 		g2.appendChild(circle1);
@@ -741,12 +656,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		g1.addMouseDownHandler(this);
 		g1.addMouseMoveHandler(this);
 		g1.addMouseUpHandler(this);
-		g1.addMouseOverHandler(this);
-		g1.addMouseOutHandler(this);
 		
-		OMSVGPoint p = dotSvg.createSVGPoint(x, y);
-		points.appendItem(p);
-
 		return g1;
 	}
 	
@@ -776,17 +686,18 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 		mouseDownPoint = getLocalCoordinates(event);
 		currentDot = (OMSVGGElement) event.getSource();
 		currentDotIndex = dots.indexOf(currentDot);
-		if (mode == Mode.DESIGN) {
+		if (getMode() == Mode.DESIGN) {
 			OMSVGMatrix m = currentDot.getTransform().getBaseVal().getItem(0).getMatrix();
-			p0 = dotSvg.createSVGPoint(m.getE(), m.getF());
-			DOMHelper.setCaptureElement(currentDot, this);
+			p0 = rootSvg.createSVGPoint(m.getE(), m.getF());
+			DOMHelper.setCaptureElement(currentDot, null);
 			event.stopPropagation();
+			event.preventDefault();
 		} else {
 			if (currentDotIndex == maxIndex + 1) {
 				maxIndex++;
-				setDotClassName(currentDot, css.dotContentValidated(), css.dotBorderValidated());
+				currentDot.setClassNameBaseVal(css.validated());
 				OMSVGMatrix m = currentDot.getTransform().getBaseVal().getItem(0).getMatrix();
-				points.appendItem(dotSvg.createSVGPoint(m.getE(), m.getF()));
+				points.appendItem(rootSvg.createSVGPoint(m.getE(), m.getF()));
 				if (maxIndex + 1 == dots.size()) {
 					// Level is succcessfully completed
 					readPicture(false);
@@ -808,6 +719,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 			p1.assignTo(points.getItem(currentDotIndex));
 		}
 		event.stopPropagation();
+		event.preventDefault();
 	}
 
 	@Override
@@ -818,46 +730,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 			currentDotIndex = -1;
 		}
 		event.stopPropagation();
-	}
-	
-	@Override
-	public void onLoseCapture(LoseCaptureEvent event) {
-		if (currentDot != null) {
-			DOMHelper.releaseCaptureElement();
-			currentDot = null;
-			currentDotIndex = -1;
-		}
-		event.stopPropagation();
-	}
-
-	
-	@Override
-	public void onMouseOut(MouseOutEvent event) {
-		OMSVGGElement dot = (OMSVGGElement)event.getSource();
-		if (mode == Mode.DESIGN || !css.dotContentValidated().equals(getDotClassName(dot))) {
-			setDotClassName(dot, css.dotBorder(), css.dotContent());
-		}
-	}
-
-	@Override
-	public void onMouseOver(MouseOverEvent event) {
-		OMSVGGElement dot = (OMSVGGElement)event.getSource();
-		if (mode == Mode.DESIGN || !css.dotContentValidated().equals(getDotClassName(dot))) {
-			setDotClassName((OMSVGGElement)event.getSource(), css.dotBorderSelected(), css.dotContentSelected());
-		}
-	}
-	
-	private void setDotClassName(OMSVGGElement dot, String className1, String className2) {
-		OMSVGCircleElement circle1 = (OMSVGCircleElement) dot.getFirstChild().getFirstChild();
-		circle1.setClassNameBaseVal(className1);
-		OMSVGCircleElement circle2 = (OMSVGCircleElement) circle1.getNextSibling();
-		circle2.setClassNameBaseVal(className2);
-		OMSVGTextElement text = (OMSVGTextElement) dot.getFirstChild().getLastChild();
-		text.setClassNameBaseVal(css.dotText());
-	}
-	private String getDotClassName(OMSVGGElement dot) {
-		OMSVGCircleElement circle1 = (OMSVGCircleElement) dot.getFirstChild().getFirstChild();
-		return circle1.getClassName().getBaseVal();
+		event.preventDefault();
 	}
 	
 	private static String toDotName(int pIndex) {
@@ -868,5 +741,24 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseOutHan
 	PushButton createPushButton(ImageResource image) {
 		return new PushButton(new Image(image));
 	}
+	
+	/**
+	 * Removes all the child nodes of the svg document and
+	 * puts them in a group
+	 * @param svg the svg document root
+	 * @return the new group
+	 */
+	protected OMSVGGElement reparent(OMSVGSVGElement svg) {
+		OMSVGGElement g = OMSVGParser.currentDocument().createSVGGElement();
+		Element gElement = g.getElement();
+		Element svgElement = svg.getElement();
+		Node node;
+		while((node = svgElement.getFirstChild()) != null) {
+			gElement.appendChild(svgElement.removeChild(node));
+		}
+		svgElement.appendChild(gElement);
+		return g;
+	}
+
 
 }

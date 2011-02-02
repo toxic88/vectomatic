@@ -20,20 +20,8 @@ package org.vectomatic.svg.edu.client.dots;
 import com.google.gwt.resources.client.CssResource;
 
 public interface DotsCss extends CssResource {
-	@ClassName("dot-border")
-	String dotBorder();
-	@ClassName("dot-content")
-	String dotContent();
-	@ClassName("dot-text")
-	String dotText();
-	@ClassName("dot-border-selected")
-	String dotBorderSelected();
-	@ClassName("dot-content-selected")
-	String dotContentSelected();
-	@ClassName("dot-border-validated")
-	String dotBorderValidated();
-	@ClassName("dot-content-validated")
-	String dotContentValidated();
+	@ClassName("validated")
+	String validated();
 	@ClassName("line-visible")
 	String lineVisible();
 	@ClassName("line-invisible")

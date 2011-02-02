@@ -20,8 +20,10 @@
 
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.vectomatic.svg.edu.client.dots.DotsMain' />
-	<!-- By default use the HttpRequestXmlLoader loader -->
-	<replace-with class="org.vectomatic.svg.edu.client.commons.HttpRequestXmlLoader">
+
+	<!-- Use the IFrameXmlLoader loader -->
+	<replace-with class="org.vectomatic.svg.edu.client.commons.IFrameXmlLoader">
 		<when-type-is class="org.vectomatic.svg.edu.client.commons.AsyncXmlLoader" />
 	</replace-with>
+    <!-- <set-property name="user.agent" value="opera"/>-->
 </module>
