@@ -36,6 +36,8 @@ import org.vectomatic.svg.edu.client.commons.LicenseBox;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -46,8 +48,6 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -335,13 +335,13 @@ public class MazeMain implements EntryPoint {
 		upButton.setEnabled(maze.canGoUp());
 		downButton.setEnabled(maze.canGoDown());
 		backButton.setEnabled(maze.canGoBack());
-		DeferredCommand.addCommand(new Command() {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
 				// Do this asynchronously while the button
 				// is no longer the focus
 				focusPanel.setFocus(true);
-			}			
+			}
 		});
 		if (maze.gameWon()) {
 			freeze();
