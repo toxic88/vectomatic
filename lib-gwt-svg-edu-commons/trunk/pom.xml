@@ -4,7 +4,7 @@
 	<groupId>org.vectomatic</groupId>
 	<artifactId>lib-gwt-svg-edu-commons</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3.8</version>
+	<version>0.3.9-SNAPSHOT</version>
 	<name>lib-gwt-svg-edu-commons</name>
 	<description>A library of base classes to assist in the development of SVG educational games</description>
 	<url>http://www.vectomatic.org/lib-gwt-svg-edu</url>
@@ -15,9 +15,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu-commons</url>
-		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu-commons</connection>
-		<tag>tags/0.3.8</tag>
+		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu-commons/trunk</url>
+		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu-commons/trunk</connection>
+		<developerConnection>scm:svn:file:///home/laaglu/svn/laaglu-svn/lib-gwt-svg-edu-commons/trunk</developerConnection>
 	</scm>
 	<developers>
 		<developer>
@@ -42,18 +42,18 @@
 		<dependency>
 			<groupId>org.vectomatic</groupId>
 			<artifactId>lib-gwt-svg</artifactId>
-			<version>0.5.0</version>
+			<version>0.5.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<version>2.1.0</version>
+			<version>2.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
-			<version>2.1.0</version>
+			<version>2.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -126,6 +126,11 @@
 			<name>maven repository</name>
 			<url>${deployment.root}/mvn</url>
 		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>local nexus snapshot repository</name>
+			<url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
 		<site>
 			<id>${deployment.id}</id>
 			<name>maven site</name>
