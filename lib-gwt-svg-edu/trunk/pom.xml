@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.vectomatic</groupId>
 	<artifactId>lib-gwt-svg-edu</artifactId>
 	<packaging>war</packaging>
-	<version>0.3.9-SNAPSHOT</version>
+	<version>0.3.9</version>
 	<name>lib-gwt-svg-edu</name>
 	<description>Provides a navigation menu for a set of educational games for kindergarten children, based on lib-gwt-svg.</description>
 	<url>http://www.vectomatic.org/mvn-sites/lib-gwt-svg-edu</url>
@@ -15,9 +14,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu/trunk</url>
-		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu/trunk</connection>
-		<developerConnection>scm:svn:file:///home/laaglu/svn/laaglu-svn/lib-gwt-svg-edu/trunk</developerConnection>
+		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu/tags/0.3.9</url>
+		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu/tags/0.3.9</connection>
+		<developerConnection>scm:svn:file:///home/laaglu/svn/laaglu-svn/lib-gwt-svg-edu/tags/0.3.9</developerConnection>
 	</scm>
 	<developers>
 		<developer>
