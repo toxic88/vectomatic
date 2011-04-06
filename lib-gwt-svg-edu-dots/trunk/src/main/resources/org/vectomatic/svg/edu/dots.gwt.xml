@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.1.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.1.0/distro-source/core/src/gwt-module.dtd">
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.2.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.2.0/distro-source/core/src/gwt-module.dtd">
 <module>
 	<!-- Inherit the core Web Toolkit stuff.                        -->
 	<inherits name="com.google.gwt.core.Core" />
@@ -21,7 +21,7 @@
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.vectomatic.svg.edu.client.dots.DotsMain' />
 	<!-- By default use the HttpRequestXmlLoader loader -->
-	<replace-with class="org.vectomatic.svg.edu.client.commons.HttpRequestXmlLoader">
-		<when-type-is class="org.vectomatic.svg.edu.client.commons.AsyncXmlLoader" />
+	<replace-with class="org.vectomatic.dom.svg.utils.HttpRequestXmlLoader">
+		<when-type-is class="org.vectomatic.dom.svg.utils.AsyncXmlLoader" />
 	</replace-with>
 </module>
