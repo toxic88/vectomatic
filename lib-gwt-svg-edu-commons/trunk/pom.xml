@@ -3,7 +3,7 @@
 	<groupId>org.vectomatic</groupId>
 	<artifactId>lib-gwt-svg-edu-commons</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3.10-SNAPSHOT</version>
+	<version>0.3.10</version>
 	<name>lib-gwt-svg-edu-commons</name>
 	<description>A library of base classes to assist in the development of SVG educational games</description>
 	<url>http://www.vectomatic.org/lib-gwt-svg-edu</url>
@@ -14,9 +14,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu-commons/trunk</url>
-		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu-commons/trunk</connection>
-		<developerConnection>scm:svn:file:///home/laaglu/svn/laaglu-svn/lib-gwt-svg-edu-commons/trunk</developerConnection>
+		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu-commons/tags/0.3.10</url>
+		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu-commons/tags/0.3.10</connection>
+		<developerConnection>scm:svn:file:///home/laaglu/svn/laaglu-svn/lib-gwt-svg-edu-commons/tags/0.3.10</developerConnection>
 	</scm>
 	<developers>
 		<developer>
