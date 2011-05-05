@@ -22,7 +22,7 @@
 	<entry-point class='org.vectomatic.svg.edu.client.menu.Menu' />
 
 	<!-- By default use the HttpRequestXmlLoader loader -->
-	<replace-with class="org.vectomatic.svg.edu.client.commons.HttpRequestXmlLoader">
-		<when-type-is class="org.vectomatic.svg.edu.client.commons.AsyncXmlLoader" />
+	<replace-with class="org.vectomatic.dom.svg.utils.HttpRequestXmlLoader">
+		<when-type-is class="org.vectomatic.dom.svg.utils.AsyncXmlLoader" />
 	</replace-with>
 </module>
