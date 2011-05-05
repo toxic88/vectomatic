@@ -540,4 +540,3 @@ public class MazeMain implements EntryPoint {
 		});
 	}
 }
-
