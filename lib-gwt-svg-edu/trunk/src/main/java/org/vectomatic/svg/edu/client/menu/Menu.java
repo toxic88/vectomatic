@@ -17,18 +17,20 @@
  **********************************************/
 package org.vectomatic.svg.edu.client.menu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGTSpanElement;
-import org.vectomatic.dom.svg.ui.SVGImage;
-import org.vectomatic.dom.svg.ui.SVGPushButton;
-import org.vectomatic.dom.svg.ui.SVGResource;
 import org.vectomatic.dom.svg.ui.SVGButtonBase.SVGFace;
 import org.vectomatic.dom.svg.ui.SVGButtonBase.SVGFaceName;
 import org.vectomatic.dom.svg.ui.SVGButtonBase.SVGStyleChange;
+import org.vectomatic.dom.svg.ui.SVGImage;
+import org.vectomatic.dom.svg.ui.SVGPushButton;
+import org.vectomatic.dom.svg.ui.SVGResource;
 import org.vectomatic.dom.svg.utils.DOMHelper;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGPrefixResolver;
@@ -45,11 +47,11 @@ import org.vectomatic.svg.edu.client.puzzle.PuzzleMain;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -230,8 +232,16 @@ public class Menu implements EntryPoint {
 				}
 				
 			});
+			
+			List<OMSVGTSpanElement> tspans = new ArrayList<OMSVGTSpanElement>();
 			Iterator<OMSVGTSpanElement> iterator = DOMHelper.evaluateXPath(svgImage.getSvgElement(), ".//svg:tspan[@v:title]", resolver);
-			iterator.next().appendChild(document.createTextNode(gameTitle));
+			while(iterator.hasNext()) {
+				// Use a temporary list since the iterator is immutable
+				tspans.add(iterator.next());
+			}
+			for (OMSVGTSpanElement tspan : tspans) {
+				tspan.appendChild(document.createTextNode(gameTitle));
+			}
 			return svgImage;
 		}
 
@@ -262,7 +272,7 @@ public class Menu implements EntryPoint {
 
         // use a deferred command so that the handler catches onModuleLoad2()                                                                             
         // exceptions                                                    
-		DeferredCommand.addCommand(new Command() {
+		Scheduler.get().scheduleDeferred(new Command() {
 			@Override
 			public void execute() {
 				onModuleLoad2();
