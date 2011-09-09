@@ -3,7 +3,7 @@
 	<groupId>org.vectomatic</groupId>
 	<artifactId>lib-gwt-svg-edu</artifactId>
 	<packaging>war</packaging>
-	<version>0.3.11-SNAPSHOT</version>
+	<version>0.3.11</version>
 	<name>lib-gwt-svg-edu</name>
 	<description>Provides a navigation menu for a set of educational games for kindergarten children, based on lib-gwt-svg.</description>
 	<url>http://www.vectomatic.org/mvn-sites/lib-gwt-svg-edu</url>
@@ -14,9 +14,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu/trunk</url>
-		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu/trunk</connection>
-		<developerConnection>scm:svn:file:///home/laaglu/svn/laaglu-svn/lib-gwt-svg-edu/trunk</developerConnection>
+		<url>http://code.google.com/p/vectomatic/source/browse/#svn/lib-gwt-svg-edu/tags/0.3.11</url>
+		<connection>scm:svn:http://vectomatic.googlecode.com/svn/lib-gwt-svg-edu/tags/0.3.11</connection>
+		<developerConnection>scm:svn:file:///home/laaglu/svn/laaglu-svn/lib-gwt-svg-edu/tags/0.3.11</developerConnection>
 	</scm>
 	<developers>
 		<developer>
