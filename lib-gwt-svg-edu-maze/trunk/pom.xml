@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.vectomatic</groupId>
 			<artifactId>lib-gwt-svg</artifactId>
-			<version>0.5.3</version>
+			<version>0.5.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -63,7 +63,7 @@
 		<dependency>
 			<groupId>org.vectomatic</groupId>
 			<artifactId>lib-gwt-svg-edu-commons</artifactId>
-			<version>0.3.12</version>
+			<version>0.3.13</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
