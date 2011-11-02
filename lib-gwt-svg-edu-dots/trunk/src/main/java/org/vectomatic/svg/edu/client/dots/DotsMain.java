@@ -272,7 +272,7 @@ public class DotsMain implements MouseDownHandler, MouseMoveHandler, MouseUpHand
 		dots = new ArrayList<OMSVGGElement>();
 		
 		// Create the root SVG structure elements
-		doc = OMSVGParser.createDocument();
+		doc = OMSVGParser.currentDocument();
 		rootSvg = doc.createSVGSVGElement();
 
 		// Create the SVG filters
