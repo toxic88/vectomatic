@@ -119,21 +119,4 @@
 			</plugin>
 		</plugins>
 	</reporting>
-	<distributionManagement>
-		<repository>
-			<id>${deployment.id}</id>
-			<name>maven repository</name>
-			<url>${deployment.root}/mvn</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>local nexus snapshot repository</name>
-			<url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-		<site>
-			<id>${deployment.id}</id>
-			<name>maven site</name>
-			<url>${deployment.root}/mvn-sites/${project.artifactId}</url>
-		</site>
-	</distributionManagement>
 </project>
